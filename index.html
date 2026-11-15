@@ -6,7 +6,7 @@
 <meta name="theme-color" content="#1a1a2e">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Freelance Manager">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E💄%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E🧾%3C/text%3E%3C/svg%3E">
 <title>Freelance Manager</title>
 <style>
 :root{--bg:#f4f3ef;--surface:#fff;--border:#e0dfd9;--text:#1a1a1a;--muted:#777;--accent:#1a1a2e;--al:#eeeef5;--green:#1e7a47;--gbg:#e6f4ed;--amber:#7a5000;--abg:#fdf0d5;--red:#8a1f1f;--rbg:#fce8e8;--r:8px;--font:'Segoe UI',Arial,sans-serif}
@@ -246,9 +246,9 @@ html{-webkit-text-size-adjust:100%}
 <!-- LOAD -->
 <div id="loadScreen">
   <div class="lcard">
-    <div class="logo">💄</div>
+    <div class="logo">🧾</div>
     <h1>Freelance Manager</h1>
-    <p class="sub">Rechnungen und Ausgaben – einfach, übersichtlich und in deinem eigenen Google Drive gespeichert.</p>
+    <p class="sub">Rechnungen und Ausgaben für Selbstständige und Freelancer – einfach, übersichtlich und in deinem eigenen Google Drive gespeichert.</p>
     <button class="btn-drive" id="btnDriveLoad">Mit Google Drive starten</button>
     <button id="btnDraft"></button>
     <div class="alt">
@@ -265,7 +265,7 @@ html{-webkit-text-size-adjust:100%}
 <!-- APP -->
 <div id="app">
   <header>
-    <h1>💄 <span class="ht">Freelance Manager</span></h1>
+    <h1>🧾 <span class="ht">Freelance Manager</span></h1>
     <span class="fn" id="fn"></span>
     <span class="cloud" id="cloudDot" title="Mit Google Drive verbunden">☁</span>
     <span class="dirty" id="dirty">●<span class="bl"> ungespeichert</span></span>
@@ -278,7 +278,7 @@ html{-webkit-text-size-adjust:100%}
   <div class="nav">
     <button class="ntab active" data-page="pgInv">🧾 Rechnungen</button>
     <button class="ntab" data-page="pgCosts">📦 Betriebsausgaben</button>
-    <button class="ntab" data-page="pgEur">📊 EÜR Übersicht</button>
+    <button class="ntab" id="navEur" data-page="pgEur">📊 EÜR Übersicht</button>
   </div>
 
   <main>
@@ -299,6 +299,7 @@ html{-webkit-text-size-adjust:100%}
       <div class="stats" id="stats"></div>
       <div class="ytabs" id="ytabs"></div>
       <div class="info-box" id="kleinInfo" style="display:none"></div>
+      <div class="info-box" id="cashInfo" style="display:none"></div>
       <div class="controls">
         <select id="fs">
           <option value="">Alle Status</option>
@@ -340,7 +341,7 @@ html{-webkit-text-size-adjust:100%}
           <thead><tr>
             <th>Datum</th><th>Kategorie</th><th>Beschreibung</th><th>Lieferant</th><th>Beleg-Nr.</th>
             <th style="text-align:right">Brutto</th><th style="text-align:right">USt</th>
-            <th style="text-align:right">Netto</th><th style="text-align:right">EÜR-Ansatz</th><th>Notiz</th><th></th>
+            <th style="text-align:right">Netto</th><th style="text-align:right">Ansatz</th><th>Notiz</th><th></th>
           </tr></thead>
           <tbody id="costTb"></tbody>
         </table>
@@ -373,13 +374,15 @@ html{-webkit-text-size-adjust:100%}
   <h2>👋 Willkommen!</h2>
   <p class="hint" style="margin-bottom:14px;font-size:13px">Diese Angaben erscheinen auf deinen Rechnungen. Du kannst sie jederzeit unter ⚙ Profil ändern.</p>
   <div class="fg">
+    <div class="fr s2"><label>Land der Geschäftstätigkeit</label><select id="w_land"><option value="DE">Deutschland</option><option value="AT">Österreich</option></select></div>
     <div class="fr s2"><label>Dein Name / Firmenname</label><input id="w_name" autocomplete="name"></div>
-    <div class="fr s2"><label>Berufsbezeichnung (optional)</label><input id="w_job" placeholder="z.B. Make-up-Artistin"></div>
+    <div class="fr s2"><label>Berufsbezeichnung (optional)</label><input id="w_job" placeholder="z.B. Grafikdesignerin, Fotograf, Beraterin"></div>
     <div class="fr s2"><label>Straße und Hausnummer</label><input id="w_a1" autocomplete="address-line1"></div>
     <div class="fr s2"><label>PLZ und Ort</label><input id="w_a2" placeholder="z.B. 22111 Hamburg"></div>
     <div class="fr"><label>Steuernummer</label><input id="w_tax"></div>
-    <div class="fr"><label>Kleinunternehmer (§ 19 UStG)?</label>
+    <div class="fr"><label>Kleinunternehmer (ohne USt)?</label>
       <select id="w_ku"><option value="ja">Ja – ohne Umsatzsteuer</option><option value="nein">Nein – mit Umsatzsteuer</option></select></div>
+    <div class="fr s2"><label>USt-IdNr. / UID-Nummer (falls vorhanden)</label><input id="w_uid"></div>
     <div class="fr s2"><label>IBAN (für die Zahlung)</label><input id="w_iban"></div>
   </div>
   <div class="ma"><button class="btn" id="wSkip">Später</button><button class="btn acc" id="wSave">Los geht's</button></div>
@@ -406,23 +409,21 @@ html{-webkit-text-size-adjust:100%}
       <div class="fr"><label>Status</label>
         <select id="i_st"><option value="offen">Offen</option><option value="bezahlt">Bezahlt</option></select>
       </div>
-      <div class="fr s2"><label>Firmenname / Name des Kunden</label><input id="i_cl" placeholder="z.B. Theater Hamburg GmbH"></div>
+      <div class="fr s2"><label>Firmenname / Name des Kunden</label><input id="i_cl" placeholder="z.B. Muster GmbH"></div>
       <div class="fr s2"><label>Straße und Hausnummer</label><input id="i_street" placeholder="z.B. Musterstraße 12"></div>
       <div class="fr"><label>Postleitzahl (PLZ)</label><input id="i_zip" inputmode="numeric" placeholder="z.B. 20095"></div>
       <div class="fr"><label>Stadt</label><input id="i_city" placeholder="z.B. Hamburg"></div>
-      <div class="fr s2"><label>Leistungsbeschreibung</label><input id="i_de" placeholder="z.B. Auftritt bei Veranstaltung XY"></div>
+      <div class="fr s2"><label>USt-IdNr. / UID des Kunden (optional)</label><input id="i_cv" placeholder="z.B. ATU12345678"></div>
+      <div class="fr s2"><label>Leistungsbeschreibung</label><input id="i_de" placeholder="z.B. Konzeption und Umsetzung Logo-Design"></div>
       <div class="fr"><label>Rechnungsdatum</label><input type="date" id="i_da"></div>
       <div class="fr"><label>Leistungsdatum (bzw. Beginn)</label><input type="date" id="i_ld"></div>
       <div class="fr"><label>Leistungszeitraum bis (optional)</label><input type="date" id="i_le"></div>
       <div class="fr"><label>Fällig am</label><input type="date" id="i_du"></div>
       <div class="fr"><label>Zahlungseingangsdatum</label><input type="date" id="i_pd"><small id="pdHint" class="hint"></small></div>
+      <div class="fr"><label>Zahlungsart</label><select id="i_pm"><option value="Überweisung">Überweisung</option><option value="Bar">Bar</option><option value="Karte vor Ort">Karte vor Ort</option></select></div>
       <div class="fr"><label>Nettobetrag (€)</label><input type="number" id="i_ne" step="0.01" min="0"></div>
       <div class="fr"><label>Umsatzsteuer</label>
-        <select id="i_va">
-          <option value="0">0% – Kleinunternehmer (§19 UStG)</option>
-          <option value="7">7% – ermäßigt</option>
-          <option value="19">19% – Regelsteuersatz</option>
-        </select>
+        <select id="i_va"></select>
       </div>
       <div class="fr s2"><label>Notiz (intern)</label><input id="i_no"></div>
     </div>
@@ -447,36 +448,14 @@ html{-webkit-text-size-adjust:100%}
     <div class="fg">
       <div class="fr"><label>Datum</label><input type="date" id="c_da"></div>
       <div class="fr"><label>Kategorie</label>
-        <select id="c_cat">
-          <option value="Makeup & Materialien">💄 Makeup & Materialien</option>
-          <option value="Kostüme & Requisiten">🎭 Kostüme & Requisiten</option>
-          <option value="Werkzeug & Equipment">🔧 Werkzeug & Equipment</option>
-          <option value="Fahrtkosten">🚗 Fahrtkosten (Betriebsfahrt mit eigenem Pkw: 0,30 €/km)</option>
-          <option value="Reisekosten">✈ Reisekosten (Hotel, Bahn, Flug)</option>
-          <option value="Homeoffice-Pauschale">🏠 Homeoffice-Pauschale (6 €/Tag, max. 1.260 €/Jahr)</option>
-          <option value="Telefon & Internet">📱 Telefon & Internet</option>
-          <option value="Weiterbildung">📚 Weiterbildung & Kurse</option>
-          <option value="Fachbücher & Software">💻 Fachbücher & Software</option>
-          <option value="Berufshaftpflicht">🛡 Berufshaftpflicht</option>
-          <option value="KSK Beiträge">🎨 KSK Beiträge</option>
-          <option value="Krankenversicherung">🏥 Krankenversicherung (anteilig)</option>
-          <option value="Steuerberater">📋 Steuerberater / Buchführung</option>
-          <option value="Bankgebühren">🏦 Bankgebühren</option>
-          <option value="Werbung & Marketing">📣 Werbung & Marketing</option>
-          <option value="Raummiete">🏢 Raummiete / Atelier</option>
-          <option value="Sonstiges">📎 Sonstiges</option>
-        </select>
+        <select id="c_cat"></select>
       </div>
-      <div class="fr s2"><label>Beschreibung</label><input id="c_de" placeholder="z.B. MAC Foundation Set, 3 Farben"></div>
-      <div class="fr"><label>Lieferant / Händler</label><input id="c_su" placeholder="z.B. Douglas, DM"></div>
+      <div class="fr s2"><label>Beschreibung</label><input id="c_de" placeholder="z.B. Druckerpapier und Toner"></div>
+      <div class="fr"><label>Lieferant / Händler</label><input id="c_su" placeholder="z.B. Büromarkt, Online-Shop"></div>
       <div class="fr"><label>Beleg-Nr. / Rechnungs-Nr.</label><input id="c_bn" placeholder="z.B. RE-2025-001"></div>
       <div class="fr"><label>Bruttobetrag (€) – vom Beleg</label><input type="number" id="c_gr" step="0.01" min="0"></div>
       <div class="fr"><label>USt auf Beleg</label>
-        <select id="c_va">
-          <option value="0">0% (kein Ausweis)</option>
-          <option value="7">7% ermäßigt</option>
-          <option value="19">19% Standard</option>
-        </select>
+        <select id="c_va"></select>
       </div>
       <div class="fr s2"><label>Nettobetrag (€) – wird berechnet, bei Bedarf anpassbar</label><input type="number" id="c_ne" step="0.01" min="0"></div>
       <div class="fr s2"><label>Notiz</label><input id="c_no" placeholder="z.B. 50% beruflich genutzt"></div>
@@ -925,16 +904,43 @@ let activeYear=new Date().getFullYear(), fname='rechnungen.xlsx';
 let editInvId=null, editCostId=null, dirty=false, idSeq=1;
 
 // Spaltenreihenfolge in der Excel-Datei (links → rechts). Beim Einlesen zählen die Überschriften, nicht die Position.
-const IDEF=[['nr','Re.-Nr.'],['state','Zustand'],['status','Zahlung'],['date','Rechnungsdatum'],['serviceDate','Leistungsdatum'],['serviceEnd','Leistung bis'],['due','Fällig am'],['paymentDate','Zahlungseingang'],
-  ['client','Kunde'],['street','Straße und Hausnummer'],['zip','PLZ'],['city','Stadt'],['desc','Leistung'],
+const IDEF=[['nr','Re.-Nr.'],['state','Zustand'],['status','Zahlung'],['date','Rechnungsdatum'],['serviceDate','Leistungsdatum'],['serviceEnd','Leistung bis'],['due','Fällig am'],['paymentDate','Zahlungseingang'],['payMethod','Zahlungsart'],
+  ['client','Kunde'],['clientVat','Kunden-UID/USt-IdNr.'],['street','Straße und Hausnummer'],['zip','PLZ'],['city','Stadt'],['desc','Leistung'],
   ['net','Netto (€)'],['vat','USt %'],['gross','Brutto (€)'],['cancels','Storno zu'],['cancelledBy','Storniert durch'],['note','Notiz']];
 const CDEF=[['date','Datum'],['receipt','Beleg-Nr.'],['cat','Kategorie'],['desc','Beschreibung'],['supplier','Lieferant'],
   ['gross','Brutto (€)'],['vat','USt %'],['net','Netto (€)'],['receiptName','Beleg-Datei'],['note','Notiz'],['receiptId','Drive-ID']];
 const ICOLS=IDEF.map(d=>d[1]),CCOLS=CDEF.map(d=>d[1]);
-const SK=['Ihr Name','Berufsbezeichnung','Firmenname','Adresse Zeile 1','Adresse Zeile 2','Steuernummer','USt-IdNr.','IBAN','BIC','Bank','Kleinunternehmer (ja/nein)','Standard Zahlungsziel (Tage)','Rechnungstext Fußzeile'];
-const KLEIN_TEXT='Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.';
-// Kleinunternehmer ab 2025: Vorjahr ≤ 25.000 €, laufendes Jahr ≤ 100.000 €
-const KU_PREV=25000, KU_CUR=100000;
+const SK=['Land','Ihr Name','Berufsbezeichnung','Firmenname','Adresse Zeile 1','Adresse Zeile 2','Steuernummer','USt-IdNr.','IBAN','BIC','Bank','Kleinunternehmer (ja/nein)','Standard Zahlungsziel (Tage)','Rechnungstext Fußzeile'];
+// ── LÄNDER-REGELN (Deutschland / Österreich) ───────────────
+const COUNTRIES={
+  DE:{name:'Deutschland',rates:[19,7],costRates:[7,19],defRate:19,vatId:'USt-IdNr.',kuLabel:'§ 19 UStG',kuRe:/§\s*19/,
+    kuText:'Als Kleinunternehmer im Sinne von § 19 Abs. 1 UStG wird keine Umsatzsteuer berechnet.',
+    eur:'EÜR',eurLong:'Einnahmen-Überschuss-Rechnung',retention:8,
+    social:'Sozialversicherung (KSK, Krankenversicherung)',home:'Homeoffice-Pauschale (6 €/Tag, max. 1.260 €/Jahr)',km:'Fahrtkosten (Betriebsfahrt mit eigenem Pkw: 0,30 €/km)'},
+  AT:{name:'Österreich',rates:[20,10,13],costRates:[10,13,20],defRate:20,vatId:'UID-Nummer',kuLabel:'§ 6 Abs. 1 Z 27 UStG',kuRe:/§\s*6\b/,
+    kuText:'Umsatzsteuerbefreit – Kleinunternehmer gemäß § 6 Abs. 1 Z 27 UStG.',
+    eur:'E/A-Rechnung',eurLong:'Einnahmen-Ausgaben-Rechnung',retention:7,
+    social:'Sozialversicherung (SVS)',home:'Arbeitsplatz / Homeoffice',km:'Fahrtkosten'}
+};
+const country=()=>String(settings['Land']||'DE').toUpperCase()==='AT'?'AT':'DE';
+const C=()=>COUNTRIES[country()];
+const kuText=()=>C().kuText;
+const COSTCATS=[['Material & Waren','📦'],['Arbeitsmittel & Equipment','🔧'],['Software & Abos','💻'],['Fahrtkosten','🚗'],['Reisekosten','✈'],['Homeoffice','🏠'],['Telefon & Internet','📱'],['Weiterbildung','📚'],['Fachbücher & Literatur','📖'],['Versicherungen','🛡'],['Sozialversicherung','🏥'],['Steuerberatung & Buchführung','📋'],['Bankgebühren','🏦'],['Werbung & Marketing','📣'],['Miete (Büro/Atelier/Raum)','🏢'],['Sonstiges','📎']];
+function catLabel(v){const c=C(),e=(COSTCATS.find(x=>x[0]===v)||[])[1]||'📎';return e+' '+({'Fahrtkosten':c.km,'Homeoffice':c.home,'Sozialversicherung':c.social}[v]||v);}
+function fillSel(sel,pairs,def){
+  const cur=sel.value;sel.innerHTML=pairs.map(([v,l])=>`<option value="${esc(v)}">${esc(l)}</option>`).join('');
+  sel.value=cur;if(!cur||sel.value!==String(cur))sel.value=String(def);
+}
+function ensureOpt(sel,v){
+  v=String(v);if(![...sel.options].some(o=>o.value===v)){const o=document.createElement('option');o.value=v;o.textContent=v+' %';sel.appendChild(o);}sel.value=v;
+}
+function applyCountry(){
+  const c=C();
+  fillSel($('i_va'),[0,...c.rates].map(r=>[r,r===0?`0 % – Kleinunternehmer (${c.kuLabel})`:`${r} %`+(r===c.defRate?' – Regelsteuersatz':' – ermäßigt')]),c.defRate);
+  fillSel($('c_va'),[0,...c.costRates].map(r=>[r,r===0?'0 % (kein Ausweis)':`${r} %`]),0);
+  fillSel($('c_cat'),COSTCATS.map(x=>[x[0],catLabel(x[0])]),COSTCATS[0][0]);
+  $('navEur').textContent='📊 '+c.eur+' Übersicht';
+}
 
 // ── HELPERS ────────────────────────────────────────────────
 const $=id=>document.getElementById(id);
@@ -1020,13 +1026,13 @@ function loadFile(f){
 
 function createNew(){
   wb=null;invoices=[];costs=[];
-  settings={'Ihr Name':'','Berufsbezeichnung':'','Firmenname':'','Adresse Zeile 1':'','Adresse Zeile 2':'','Steuernummer':'','USt-IdNr.':'','IBAN':'','BIC':'','Bank':'','Kleinunternehmer (ja/nein)':'ja','Standard Zahlungsziel (Tage)':'14','Rechnungstext Fußzeile':KLEIN_TEXT};
+  settings={'Land':'DE','Ihr Name':'','Berufsbezeichnung':'','Firmenname':'','Adresse Zeile 1':'','Adresse Zeile 2':'','Steuernummer':'','USt-IdNr.':'','IBAN':'','BIC':'','Bank':'','Kleinunternehmer (ja/nein)':'ja','Standard Zahlungsziel (Tage)':'14','Rechnungstext Fußzeile':''};
   startApp();
 }
 
 function openWelcome(){
   const s=settings;
-  $('w_name').value=s['Ihr Name']||'';$('w_job').value=s['Berufsbezeichnung']||'';$('w_a1').value=s['Adresse Zeile 1']||'';
+  $('w_land').value=country();$('w_uid').value=s['USt-IdNr.']||'';$('w_name').value=s['Ihr Name']||'';$('w_job').value=s['Berufsbezeichnung']||'';$('w_a1').value=s['Adresse Zeile 1']||'';
   $('w_a2').value=s['Adresse Zeile 2']||'';$('w_tax').value=s['Steuernummer']||'';$('w_iban').value=s['IBAN']||'';
   $('w_ku').value=isKlein()?'ja':'nein';$('welcomeOv').classList.add('open');
 }
@@ -1037,9 +1043,7 @@ $('wSave').addEventListener('click',()=>{
   const ku=$('w_ku').value;
   Object.assign(settings,{'Ihr Name':name,'Berufsbezeichnung':$('w_job').value.trim(),'Adresse Zeile 1':$('w_a1').value.trim(),'Adresse Zeile 2':$('w_a2').value.trim(),
     'Steuernummer':$('w_tax').value.trim(),'IBAN':$('w_iban').value.trim().toUpperCase(),'Kleinunternehmer (ja/nein)':ku});
-  const f=settings['Rechnungstext Fußzeile']||'';
-  if(ku==='ja'&&!f)settings['Rechnungstext Fußzeile']=KLEIN_TEXT;
-  if(ku==='nein'&&/§\s*19/.test(f))settings['Rechnungstext Fußzeile']='';
+  settings['Land']=$('w_land').value==='AT'?'AT':'DE';settings['USt-IdNr.']=$('w_uid').value.trim();applyCountry();
   $('welcomeOv').classList.remove('open');markChanged();
   toast('✔ Fertig! Lege jetzt mit „+ Neue Rechnung“ deine erste Rechnung an.',true,5000);
   if(drive.linked)saveToDrive();
@@ -1049,7 +1053,7 @@ $('infoClose').addEventListener('click',()=>$('infoOv').classList.remove('open')
 
 function startApp(){
   $('loadScreen').style.display='none';$('app').style.display='block';
-  updateCloud();
+  updateCloud();applyCountry();
   const ts=settings['Zuletzt gespeichert'];
   $('lastSavedLabel').textContent=ts?'gespeichert '+tsDisplay(ts):'';
   setDirty(false);renderAll();
@@ -1078,7 +1082,7 @@ function parseAll(){
     const o={nr:String(r.nr).trim(),client:String(r.client),desc:String(r.desc),note:String(r.note),street:String(r.street),zip:String(r.zip),city:String(r.city),
       date:toISO(r.date),serviceDate:toISO(r.serviceDate),due:toISO(r.due),paymentDate:toISO(r.paymentDate),net:num(r.net),vat:num(r.vat),
       status:String(r.status).trim().toLowerCase()==='bezahlt'?'bezahlt':'offen',_id:nid(),
-      serviceEnd:toISO(r.serviceEnd),cancels:String(r.cancels||''),cancelledBy:String(r.cancelledBy||''),
+      serviceEnd:toISO(r.serviceEnd),clientVat:String(r.clientVat||''),payMethod:(['Bar','Karte vor Ort'].includes(String(r.payMethod).trim())?String(r.payMethod).trim():'Überweisung'),cancels:String(r.cancels||''),cancelledBy:String(r.cancelledBy||''),
       state:({entwurf:'draft',storniert:'cancelled'})[String(r.state).trim().toLowerCase()]||'issued'};
     if(!o.nr&&o.state!=='draft')return;
     if(o.status==='bezahlt'&&!o.paymentDate){o.paymentDate=o.date;notes.push(`Rechnung ${o.nr}: bezahlt ohne Zahlungsdatum – Rechnungsdatum als Zahlungsdatum gesetzt. Bitte prüfen.`);}
@@ -1097,7 +1101,7 @@ function parseAll(){
 
 // ── RENDER ─────────────────────────────────────────────────
 function renderAll(){
-  renderYearTabs();renderStats();updateKleinInfo();renderInvTable();
+  renderYearTabs();renderStats();updateKleinInfo();renderCashInfo();renderInvTable();
   renderCostStats();populateCatFilter();renderCostTable();renderEUR();renderSettings();
 }
 function allYears(){
@@ -1138,14 +1142,37 @@ function updateKleinInfo(){
   if(!isKlein()){box.style.display='none';return;}
   const cur=invoices.filter(active).filter(i=>year(i.date)===String(activeYear)).reduce((s,i)=>s+i.net,0);
   const prev=invoices.filter(active).filter(i=>year(i.date)===String(activeYear-1)).reduce((s,i)=>s+i.net,0);
-  const msgs=[];
-  if(prev>KU_PREV)msgs.push(`Dein Umsatz ${activeYear-1} lag bei ${fmt(prev)} und damit über ${KU_PREV.toLocaleString('de-DE')} €. Die Kleinunternehmerregelung gilt für ${activeYear} dann nicht mehr.`);
-  if(cur>KU_CUR)msgs.push(`Dein Umsatz ${activeYear} beträgt ${fmt(cur)} und überschreitet ${KU_CUR.toLocaleString('de-DE')} €: Ab dem Umsatz, der die Grenze übersteigt, ist Umsatzsteuer fällig.`);
-  else if(cur>KU_CUR*0.85)msgs.push(`Dein Umsatz ${activeYear} liegt bei ${fmt(cur)} – nahe an der Grenze von ${KU_CUR.toLocaleString('de-DE')} €.`);
-  else if(cur>KU_PREV)msgs.push(`Dein Umsatz ${activeYear} liegt bei ${fmt(cur)} und damit über ${KU_PREV.toLocaleString('de-DE')} €: Für ${activeYear+1} entfällt dann die Kleinunternehmerregelung (laufendes Jahr bleibt bis ${KU_CUR.toLocaleString('de-DE')} € möglich).`);
+  const L=n=>n.toLocaleString('de-DE')+' €',msgs=[];let src;
+  if(country()==='AT'){
+    src='Grenzen nach § 6 Abs. 1 Z 27 UStG (ab 2025)';
+    if(cur>60500)msgs.push(`Dein Umsatz ${activeYear} beträgt ${fmt(cur)} und liegt über ${L(60500)} (Grenze ${L(55000)} plus einmalige 10 % Toleranz). Die Kleinunternehmerregelung entfällt – bitte umgehend mit einer Steuerberatung klären.`);
+    else if(cur>55000)msgs.push(`Dein Umsatz ${activeYear} beträgt ${fmt(cur)} und liegt über ${L(55000)}. Die einmalige Toleranz (bis ${L(60500)}) kann gelten – ab dem Folgejahr ist dann Umsatzsteuer fällig. Bitte klären.`);
+    else if(cur>55000*0.85)msgs.push(`Dein Umsatz ${activeYear} liegt bei ${fmt(cur)} – nahe an der Grenze von ${L(55000)}.`);
+  }else{
+    src='Grenzen nach § 19 UStG (ab 2025)';
+    if(prev>25000)msgs.push(`Dein Umsatz ${activeYear-1} lag bei ${fmt(prev)} und damit über ${L(25000)}. Die Kleinunternehmerregelung gilt für ${activeYear} dann nicht mehr.`);
+    if(cur>100000)msgs.push(`Dein Umsatz ${activeYear} beträgt ${fmt(cur)} und überschreitet ${L(100000)}: Ab dem Umsatz, der die Grenze übersteigt, ist Umsatzsteuer fällig.`);
+    else if(cur>100000*0.85)msgs.push(`Dein Umsatz ${activeYear} liegt bei ${fmt(cur)} – nahe an der Grenze von ${L(100000)}.`);
+    else if(cur>25000)msgs.push(`Dein Umsatz ${activeYear} liegt bei ${fmt(cur)} und damit über ${L(25000)}: Für ${activeYear+1} entfällt dann die Kleinunternehmerregelung (laufendes Jahr bleibt bis ${L(100000)} möglich).`);
+  }
   if(!msgs.length){box.style.display='none';return;}
   box.style.display='';
-  box.innerHTML='⚠ '+msgs.map(esc).join('<br>⚠ ')+'<br><span style="opacity:.8">Grenzen nach § 19 UStG (ab 2025), grobe Orientierung – bitte mit der Steuerberatung klären.</span>';
+  box.innerHTML='⚠ '+msgs.map(esc).join('<br>⚠ ')+`<br><span style="opacity:.8">${src}, grobe Orientierung – bitte mit der Steuerberatung klären.</span>`;
+}
+// Österreich: Registrierkassenpflicht ab 15.000 € Jahresumsatz UND 7.500 € Bar-/Kartenumsatz (netto, je Jahr)
+function renderCashInfo(){
+  const box=$('cashInfo');
+  if(country()!=='AT'){box.style.display='none';return;}
+  const y=String(activeYear);
+  const cash=round2(invoices.filter(i=>active(i)&&i.status==='bezahlt'&&(i.payMethod==='Bar'||i.payMethod==='Karte vor Ort')&&year(i.paymentDate)===y).reduce((s,i)=>s+i.net,0));
+  if(!cash){box.style.display='none';return;}
+  const total=round2(invoices.filter(active).filter(i=>year(i.date)===y).reduce((s,i)=>s+i.net,0));
+  let m=`Bar- und Kartenzahlungen vor Ort ${y}: ${fmt(cash)} (Gesamtumsatz ${fmt(total)}). Eine Registrierkasse ist nötig, wenn der Jahresumsatz über 15.000 € <b>und</b> die Barumsätze über 7.500 € liegen (jeweils netto).`;
+  if(cash>7500&&total>15000)m='⚠ '+m+' <b>Beide Grenzen sind überschritten – bitte umgehend mit einer Steuerberatung klären.</b>';
+  else if(cash>7500*0.85)m='⚠ '+m+' Du näherst dich der Grenze.';
+  else m='ℹ '+m;
+  box.style.display='';
+  box.innerHTML=m+'<br><span style="opacity:.8">Für jede Barzahlung ist ein Beleg auszustellen (Belegerteilungspflicht ab dem ersten Euro). Diese App ersetzt keine Registrierkasse.</span>';
 }
 
 function renderInvTable(){
@@ -1228,7 +1255,7 @@ function renderEUR(){
   const catRows=Object.entries(d.bycat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="eur-row"><span style="padding-left:16px;color:var(--muted)">${esc(k)}</span><span>${fmt(v)}</span></div>`).join('');
   const ts=settings['Zuletzt gespeichert'];
   $('eurBox').innerHTML=`
-    <h3>📊 EÜR – Einnahmen-Überschuss-Rechnung ${activeYear} <span style="font-size:11px;font-weight:400;color:var(--muted)">${ts?'· Stand: '+tsDisplay(ts):''}</span></h3>
+    <h3>📊 ${C().eur} – ${C().eurLong} ${activeYear} <span style="font-size:11px;font-weight:400;color:var(--muted)">${ts?'· Stand: '+tsDisplay(ts):''}</span></h3>
     <div class="eur-row"><span>💰 Betriebseinnahmen${klein?'':' (Netto)'}</span><span style="font-weight:600">${fmt(d.incNet)}</span></div>
     ${klein?'':`<div class="eur-row" style="color:var(--muted);font-size:12px"><span style="padding-left:16px">Brutto (zur Info)</span><span>${fmt(d.incGross)}</span></div>`}
     <div class="eur-row" style="margin-top:8px"><span>📦 Betriebsausgaben gesamt (${klein?'Brutto':'Netto'})</span><span style="font-weight:600;color:var(--red)">${fmt(d.costSum)}</span></div>
@@ -1238,9 +1265,15 @@ function renderEUR(){
 }
 
 // ── SETTINGS ───────────────────────────────────────────────
+function settingField(k,i){
+  const v=settings[k]||'';
+  if(k==='Land')return `<div class="fr"><label>Land der Geschäftstätigkeit</label><select id="s_${i}"><option value="DE"${country()==='DE'?' selected':''}>Deutschland</option><option value="AT"${country()==='AT'?' selected':''}>Österreich</option></select></div>`;
+  if(k==='Kleinunternehmer (ja/nein)')return `<div class="fr"><label>Kleinunternehmer (ohne Umsatzsteuer)?</label><select id="s_${i}"><option value="ja"${isKlein()?' selected':''}>Ja</option><option value="nein"${isKlein()?'':' selected'}>Nein</option></select></div>`;
+  return `<div class="fr"><label>${esc(k==='USt-IdNr.'?C().vatId:k)}</label><input id="s_${i}" value="${esc(v)}"></div>`;
+}
 function renderSettings(){
   if($('sPanel').dataset.editing==='1')return;   // laufende Eingaben nicht überschreiben
-  $('sg').innerHTML=SK.map((k,i)=>`<div class="fr"><label>${esc(k)}</label><input id="s_${i}" value="${esc(settings[k]||'')}"></div>`).join('')
+  $('sg').innerHTML=SK.map(settingField).join('')
     +`<div class="fr"><label>Zuletzt gespeichert</label><input readonly style="background:#f4f3ef;color:var(--muted)" value="${esc(tsDisplay(settings['Zuletzt gespeichert']||'')||'–')}"></div>`;
 }
 function toggleS(){
@@ -1255,6 +1288,7 @@ $('btnSettingsOk').addEventListener('click',()=>{
   SK.forEach((k,i)=>{const el=$('s_'+i);if(el)settings[k]=el.value.trim();});
   const k=String(settings['Kleinunternehmer (ja/nein)']||'ja').toLowerCase();
   settings['Kleinunternehmer (ja/nein)']=k==='nein'?'nein':'ja';
+  settings['Land']=settings['Land']==='AT'?'AT':'DE';applyCountry();
   $('sPanel').style.display='none';$('sPanel').dataset.editing='0';
   markChanged();
   toast('✔ Profil übernommen – oben auf 💾 Speichern klicken, um es in die Datei zu schreiben.');
@@ -1288,7 +1322,7 @@ function nextNr(){
 function applyKleinToForm(){
   const sel=$('i_va');
   if(isKlein()){sel.value='0';sel.disabled=true;}
-  else{sel.disabled=false;if(sel.value==='0')sel.value='19';}
+  else{sel.disabled=false;if(sel.value==='0')sel.value=String(C().defRate);}
 }
 function handleStatus(){
   const paid=$('i_st').value==='bezahlt',h=$('pdHint');
@@ -1309,12 +1343,12 @@ $('i_da').addEventListener('change',()=>{
   }
 });
 
-const INV_FIELDS=['i_cl','i_street','i_zip','i_city','i_de','i_da','i_ld','i_le','i_du','i_ne','i_va'];
+const INV_FIELDS=['i_cl','i_street','i_zip','i_city','i_cv','i_de','i_da','i_ld','i_le','i_du','i_ne','i_va'];
 // Schaltflächen und gesperrte Felder je nach Zustand
 function setInvMode(inv){
   const draft=!inv||inv.state==='draft',storno=inv&&(inv.state==='cancelled'||inv.cancels);
   INV_FIELDS.forEach(id=>$(id).disabled=!draft);
-  ['i_st','i_pd','i_no'].forEach(id=>$(id).disabled=!!storno);
+  ['i_st','i_pd','i_pm','i_no'].forEach(id=>$(id).disabled=!!storno);
   if(draft)applyKleinToForm();
   const show=(id,v)=>$(id).style.display=v?'':'none';
   show('invDelBtn',inv&&draft);show('invPreview',draft);show('invIssue',draft);
@@ -1329,7 +1363,7 @@ function setInvMode(inv){
 function openInvModal(){
   editInvId=null;
   $('i_nr').value='wird beim Ausstellen vergeben';
-  ['i_cl','i_street','i_zip','i_city','i_de','i_no','i_pd','i_ne','i_le'].forEach(id=>$(id).value='');
+  ['i_cl','i_street','i_zip','i_city','i_cv','i_de','i_no','i_pd','i_ne','i_le'].forEach(id=>$(id).value='');$('i_pm').value='Überweisung';
   const t=todayISO(),days=parseInt(settings['Standard Zahlungsziel (Tage)'])||14;
   $('i_da').value=t;$('i_ld').value=t;$('i_du').value=addDaysISO(t,days);$('i_st').value='offen';
   setInvMode(null);handleStatus();upGross();$('invOv').classList.add('open');
@@ -1338,17 +1372,17 @@ function editInv(id){
   const inv=invoices.find(i=>i._id===id);if(!inv)return;
   editInvId=id;
   $('i_nr').value=inv.nr||'wird beim Ausstellen vergeben';
-  $('i_cl').value=inv.client;$('i_street').value=inv.street;$('i_zip').value=inv.zip;$('i_city').value=inv.city;
+  $('i_cv').value=inv.clientVat||'';$('i_pm').value=inv.payMethod||'Überweisung';$('i_cl').value=inv.client;$('i_street').value=inv.street;$('i_zip').value=inv.zip;$('i_city').value=inv.city;
   $('i_de').value=inv.desc;$('i_da').value=inv.date;$('i_ld').value=inv.serviceDate;$('i_le').value=inv.serviceEnd||'';$('i_du').value=inv.due;$('i_pd').value=inv.paymentDate;
   $('i_ne').value=inv.net;$('i_st').value=inv.status;$('i_no').value=inv.note;
-  $('i_va').value=String(inv.vat||0);if(!$('i_va').value)$('i_va').value='0';
+  ensureOpt($('i_va'),inv.vat||0);
   setInvMode(inv);handleStatus();upGross();$('invOv').classList.add('open');
 }
 const closeInv=()=>$('invOv').classList.remove('open');
 function getInvForm(){
   const cur=editInvId!==null?invoices.find(i=>i._id===editInvId):null;
   return{nr:cur?cur.nr:'',state:'draft',client:$('i_cl').value.trim(),street:$('i_street').value.trim(),zip:$('i_zip').value.trim(),city:$('i_city').value.trim(),
-    desc:$('i_de').value.trim(),date:$('i_da').value,serviceDate:$('i_ld').value,serviceEnd:$('i_le').value,due:$('i_du').value,paymentDate:$('i_pd').value,
+    clientVat:$('i_cv').value.trim(),payMethod:$('i_pm').value,desc:$('i_de').value.trim(),date:$('i_da').value,serviceDate:$('i_ld').value,serviceEnd:$('i_le').value,due:$('i_du').value,paymentDate:$('i_pd').value,
     net:round2(+$('i_ne').value),vat:isKlein()?0:(+$('i_va').value||0),status:$('i_st').value,note:$('i_no').value.trim(),cancels:'',cancelledBy:''};
 }
 // Pflichtangaben nach § 14 Abs. 4 UStG (vollständiger Satz, gilt auch für Rechnungen > 250 €)
@@ -1356,7 +1390,8 @@ function missingForIssue(f){
   const m=[],s=settings;
   if(!(s['Ihr Name']||s['Firmenname']))m.push('Dein Name (⚙ Profil)');
   if(!s['Adresse Zeile 1']||!s['Adresse Zeile 2'])m.push('Deine Anschrift (⚙ Profil)');
-  if(!(s['Steuernummer']||s['USt-IdNr.']))m.push('Deine Steuernummer oder USt-IdNr. (⚙ Profil)');
+  if(country()==='AT'){if(!isKlein()&&!s['USt-IdNr.'])m.push('Deine UID-Nummer (⚙ Profil)');}
+  else if(!(s['Steuernummer']||s['USt-IdNr.']))m.push('Deine Steuernummer oder USt-IdNr. (⚙ Profil)');
   if(!f.client)m.push('Name des Kunden');
   if(!f.street||!f.zip||!f.city)m.push('Anschrift des Kunden (Straße, PLZ, Stadt)');
   if(!f.desc)m.push('Leistungsbeschreibung (Art und Umfang der Leistung)');
@@ -1373,7 +1408,7 @@ function saveInv(){
   if(cur&&isLocked(cur)){      // gesperrt: nur Zahlung + Notiz
     const st=$('i_st').value,pd=$('i_pd').value;
     if(st==='bezahlt'&&!pd){alert('Bitte das tatsächliche Zahlungseingangsdatum eintragen.');$('i_pd').focus();return;}
-    cur.status=st;cur.paymentDate=st==='bezahlt'?pd:'';cur.note=$('i_no').value.trim();
+    cur.status=st;cur.paymentDate=st==='bezahlt'?pd:'';cur.payMethod=$('i_pm').value;cur.note=$('i_no').value.trim();
     closeInv();markChanged();return;
   }
   const f=getInvForm();
@@ -1408,6 +1443,7 @@ function issueInv(){
   const cur=editInvId!==null?invoices.find(i=>i._id===editInvId):null;if(cur)f._id=cur._id;
   const miss=missingForIssue(f);
   if(miss.length){alert('Bitte vervollständigen, bevor die Rechnung ausgestellt wird:\n\n• '+miss.join('\n• '));return;}
+  if(country()==='AT'&&!f.clientVat&&f.net*(1+(isKlein()?0:f.vat)/100)>10000&&!confirm('Die Rechnung liegt über 10.000 € brutto. Für Rechnungen an Unternehmen ist in Österreich dann die UID des Kunden anzugeben.\n\nTrotzdem ohne Kunden-UID ausstellen?'))return;
   if(!confirm('Rechnung jetzt ausstellen?\n\nSie erhält die nächste Rechnungsnummer und kann danach nicht mehr geändert oder gelöscht werden. Fehler korrigierst du später mit einer Stornorechnung.'))return;
   commitIssue(f,null);
 }
@@ -1416,7 +1452,7 @@ function stornoInv(){
   if(o.status==='bezahlt'){alert('Bezahlte Rechnungen lassen sich hier nicht stornieren. Bitte kläre Rückzahlung bzw. Gutschrift mit deiner Steuerberatung.');return;}
   if(!confirm(`Rechnung ${o.nr} stornieren?\n\nDafür wird eine Stornorechnung mit eigener Nummer erstellt (PDF). Danach kannst du eine neue, korrigierte Rechnung ausstellen.`))return;
   const t=todayISO();
-  commitIssue({client:o.client,street:o.street,zip:o.zip,city:o.city,desc:`Stornierung der Rechnung ${o.nr}: ${o.desc}`,date:t,serviceDate:o.serviceDate,serviceEnd:o.serviceEnd,due:t,paymentDate:'',net:-o.net,vat:o.vat,status:'offen',note:'',cancels:o.nr,cancelledBy:''},o);
+  commitIssue({client:o.client,street:o.street,zip:o.zip,city:o.city,clientVat:o.clientVat||'',payMethod:'Überweisung',desc:`Stornierung der Rechnung ${o.nr}: ${o.desc}`,date:t,serviceDate:o.serviceDate,serviceEnd:o.serviceEnd,due:t,paymentDate:'',net:-o.net,vat:o.vat,status:'offen',note:'',cancels:o.nr,cancelledBy:''},o);
 }
 function deleteInv(){
   const cur=invoices.find(i=>i._id===editInvId);
@@ -1497,8 +1533,7 @@ function editCost(id){
   if(![...$('c_cat').options].some(o=>o.value===c.cat)){const o=document.createElement('option');o.value=o.textContent=c.cat;$('c_cat').appendChild(o);}
   $('c_cat').value=c.cat;
   $('c_de').value=c.desc;$('c_su').value=c.supplier;$('c_bn').value=c.receipt;
-  $('c_gr').value=c.gross;$('c_va').value=String(c.vat||0);$('c_ne').value=c.net;$('c_no').value=c.note;
-  if(!$('c_va').value)$('c_va').value='0';
+  $('c_gr').value=c.gross;ensureOpt($('c_va'),c.vat||0);$('c_ne').value=c.net;$('c_no').value=c.note;
   $('c_file').value='';rcpt={id:c.receiptId||'',name:c.receiptName||''};refreshReceiptUI();
   costHint();$('costOv').classList.add('open');
 }
@@ -1570,11 +1605,12 @@ function makeInvoicePDF(inv){
   font('bold',16,[26,26,46]);T(name,L,22);
   if(s['Berufsbezeichnung']){font('normal',9,110);T(s['Berufsbezeichnung'],L,27.5);}
   font('normal',9,70);
-  [s['Firmenname']&&s['Ihr Name']?s['Ihr Name']:'',s['Adresse Zeile 1'],s['Adresse Zeile 2'],s['Steuernummer']?'Steuernummer: '+s['Steuernummer']:'',s['USt-IdNr.']?'USt-IdNr.: '+s['USt-IdNr.']:'']
+  [s['Firmenname']&&s['Ihr Name']?s['Ihr Name']:'',s['Adresse Zeile 1'],s['Adresse Zeile 2'],s['Steuernummer']?'Steuernummer: '+s['Steuernummer']:'',s['USt-IdNr.']?C().vatId+': '+s['USt-IdNr.']:'']
     .filter(Boolean).forEach((l,i)=>T(l,R,19+i*4.5,{align:'right'}));
   font('normal',8,130);T('Rechnungsempfänger',L,56);
   font('bold',11);T(inv.client||'',L,62);font('normal',10.5);
   T(inv.street||'',L,67.5);T([inv.zip,inv.city].filter(Boolean).join(' '),L,73);
+  if(inv.clientVat)T(C().vatId+': '+inv.clientVat,L,78.5);
   const storno=!!inv.cancels;
   font('bold',15,[26,26,46]);T(storno?'Stornorechnung':(inv.nr?'Rechnung':'Rechnung (Entwurf)'),L,92);
   const period=inv.serviceEnd&&inv.serviceEnd!==inv.serviceDate?`${fmtDate(inv.serviceDate)} – ${fmtDate(inv.serviceEnd)}`:fmtDate(inv.serviceDate);
@@ -1594,8 +1630,9 @@ function makeInvoicePDF(inv){
   font('bold',12.5,[26,26,46]);T('Gesamtbetrag',125,y);T(eur(gross),R-3,y,{align:'right'});
   y+=14;
   if(!storno){
-    const rows=[s['IBAN']?'IBAN: '+s['IBAN']:'',s['BIC']?'BIC: '+s['BIC']+(s['Bank']?' · '+s['Bank']:''):''].filter(Boolean);
-    const pay=doc.splitTextToSize(`Bitte überweisen Sie den Betrag bis zum ${fmtDate(inv.due)} unter Angabe der Rechnungsnummer ${inv.nr||''}.`,R-L-8);
+    const pm=inv.payMethod||'Überweisung';
+    const rows=pm!=='Überweisung'?[]:[s['IBAN']?'IBAN: '+s['IBAN']:'',s['BIC']?'BIC: '+s['BIC']+(s['Bank']?' · '+s['Bank']:''):''].filter(Boolean);
+    const pay=doc.splitTextToSize(pm==='Überweisung'?`Bitte überweisen Sie den Betrag bis zum ${fmtDate(inv.due)} unter Angabe der Rechnungsnummer ${inv.nr||''}.`:`Zahlungsart: ${pm==='Bar'?'Barzahlung':'Kartenzahlung vor Ort'}.`,R-L-8);
     const h=10+rows.length*5+pay.length*4.6;
     doc.setFillColor(244,243,239);doc.roundedRect(L,y,R-L,h,2,2,'F');
     font('bold',10,[26,26,46]);T('Zahlungsinformationen',L+4,y+6);font('normal',10,40);
@@ -1604,7 +1641,7 @@ function makeInvoicePDF(inv){
     y+=h+10;
   }
   const custom=(s['Rechnungstext Fußzeile']||'').trim();
-  const note=klein?[KLEIN_TEXT,custom&&!/§\s*19/.test(custom)?custom:''].filter(Boolean).join(' '):(/§\s*19/.test(custom)?'':custom);
+  const note=klein?[kuText(),custom&&!C().kuRe.test(custom)?custom:''].filter(Boolean).join(' '):(C().kuRe.test(custom)?'':custom);
   if(note){font('normal',8.5,120);const nl=doc.splitTextToSize(note,R-L);doc.setDrawColor(210);doc.line(L,Math.max(y,262-nl.length*3.8)-4,R,Math.max(y,262-nl.length*3.8)-4);nl.forEach((l,i)=>T(l,L,Math.max(y,262-nl.length*3.8)+i*3.8));}
   return doc.output('arraybuffer');
 }
@@ -1631,7 +1668,7 @@ function buildWorkbook(){
   const sd=[['Einstellung','Wert']];
   [...SK,'Letzte Rechnungsnummer','Zuletzt gespeichert'].forEach(k=>sd.push([k,settings[k]!==undefined?settings[k]:'']));
   const out=XLSX.utils.book_new();
-  const wi=XLSX.utils.aoa_to_sheet(idata);wi['!cols']=[12,12,10,14,14,14,12,15,24,24,8,16,32,12,8,12,12,14,24].map(w=>({wch:w}));
+  const wi=XLSX.utils.aoa_to_sheet(idata);wi['!cols']=[12,12,10,14,14,14,12,15,14,24,18,24,8,16,32,12,8,12,12,14,24].map(w=>({wch:w}));
   XLSX.utils.book_append_sheet(out,wi,'Rechnungen');
   const wc=XLSX.utils.aoa_to_sheet(cdata);wc['!cols']=[12,16,24,32,20,12,8,12,26,24,34].map(w=>({wch:w}));
   XLSX.utils.book_append_sheet(out,wc,'Ausgaben');
@@ -1667,7 +1704,7 @@ $('btnSave').addEventListener('click',onSave);
 
 // ── GOOGLE DRIVE ───────────────────────────────────────────
 // Berechtigung „drive.file“: Die App sieht nur Dateien, die sie selbst angelegt hat – nicht dein restliches Drive.
-const GOOGLE_CLIENT_ID='37267156022-rf3schbrt9g3479ukr468klsitdvv35p.apps.googleusercontent.com';   // optional hier eintragen; sonst fragt die App beim ersten Verbinden danach
+const GOOGLE_CLIENT_ID='';   // optional hier eintragen; sonst fragt die App beim ersten Verbinden danach
 const SCOPE='https://www.googleapis.com/auth/drive.file';
 const DRIVE_FILE='rechnungen.xlsx',DRIVE_FOLDER='FreelanceManager';
 const XLSX_MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -1894,7 +1931,7 @@ $('btnCsvCost').addEventListener('click',()=>{
 });
 $('btnCsvEur').addEventListener('click',()=>{
   const d=eurData(),k=isKlein();
-  const rows=[['EÜR '+activeYear,''],['Betriebseinnahmen (Zahlungseingang im Jahr)',d.incNet],[`Betriebsausgaben (${k?'brutto':'netto'})`,d.costSum],['Gewinn/Verlust',d.profit],['',''],['Ausgaben nach Kategorie','']];
+  const rows=[[C().eur+' '+activeYear,''],['Betriebseinnahmen (Zahlungseingang im Jahr)',d.incNet],[`Betriebsausgaben (${k?'brutto':'netto'})`,d.costSum],['Gewinn/Verlust',d.profit],['',''],['Ausgaben nach Kategorie','']];
   Object.entries(d.bycat).forEach(([c,v])=>rows.push([c,v]));
   dlCSV(rows,`EUR_${activeYear}.csv`);
 });
@@ -1917,7 +1954,7 @@ $('btnPrintYear').addEventListener('click',()=>{
 });
 $('btnPrintEur').addEventListener('click',()=>{
   const d=eurData(),k=isKlein();
-  const body=`<h1>Einnahmen-Überschuss-Rechnung ${activeYear}</h1>
+  const body=`<h1>${C().eurLong} ${activeYear}</h1>
   <p>${esc(settings['Firmenname']||settings['Ihr Name']||'')} | StNr: ${esc(settings['Steuernummer']||'–')}</p>
   <table><tr><th>Position</th><th>Betrag</th></tr>
   <tr><td>Betriebseinnahmen (Zahlungseingang im Jahr)</td><td>${fmt(d.incNet)}</td></tr>
@@ -1974,9 +2011,9 @@ async function exportZip(){
       catch(e){notes.push(`Beleg konnte nicht geladen werden: ${fmtDate(c.date)} ${c.desc}`);}
     }
     // CSV-Dateien (Semikolon, Dezimalkomma, UTF-8 mit BOM – öffnet direkt in deutschem Excel)
-    const ei=[['Re.-Nr.','Rechnungsdatum','Leistungsdatum','Leistung bis','Kunde','Leistung','Netto (€)','USt %','USt-Betrag (€)','Brutto (€)','Zahlung','Zahlungseingang','Zustand','Storno zu','Storniert durch']];
-    invs.forEach(i=>{const g=brutto(i);ei.push([i.nr,fmtDate(i.date),fmtDate(i.serviceDate),fmtDate(i.serviceEnd),i.client,i.desc,i.net,effVat(i),round2(g-i.net),g,i.status==='bezahlt'?'bezahlt':'offen',fmtDate(i.paymentDate),STATE_LBL[i.state]||'Ausgestellt',i.cancels,i.cancelledBy]);});
-    const ea=[['Datum','Beleg-Nr.','Kategorie','Beschreibung','Lieferant','Brutto (€)','USt %','USt-Betrag (€)','Netto (€)','EÜR-Ansatz (€)','Beleg-Datei','Notiz']];
+    const ei=[['Re.-Nr.','Rechnungsdatum','Leistungsdatum','Leistung bis','Kunde','Leistung','Netto (€)','USt %','USt-Betrag (€)','Brutto (€)','Zahlung','Zahlungseingang','Zahlungsart','Kunden-UID/USt-IdNr.','Zustand','Storno zu','Storniert durch']];
+    invs.forEach(i=>{const g=brutto(i);ei.push([i.nr,fmtDate(i.date),fmtDate(i.serviceDate),fmtDate(i.serviceEnd),i.client,i.desc,i.net,effVat(i),round2(g-i.net),g,i.status==='bezahlt'?'bezahlt':'offen',fmtDate(i.paymentDate),i.payMethod||'Überweisung',i.clientVat||'',STATE_LBL[i.state]||'Ausgestellt',i.cancels,i.cancelledBy]);});
+    const ea=[['Datum','Beleg-Nr.','Kategorie','Beschreibung','Lieferant','Brutto (€)','USt %','USt-Betrag (€)','Netto (€)',C().eur+'-Ansatz (€)','Beleg-Datei','Notiz']];
     cs.forEach(c=>ea.push([fmtDate(c.date),c.receipt,c.cat,c.desc,c.supplier,c.gross,c.vat,round2(c.gross-c.net),c.net,costAmt(c),rf.get(c._id)||'',c.note]));
     zip.file(`Einnahmen_${label}.csv`,csvText(ei));
     zip.file(`Ausgaben_${label}.csv`,csvText(ea));
@@ -1996,7 +2033,8 @@ async function exportZip(){
       `• Betriebseinnahmen netto: ${fmt(inc)}`,
       `• Betriebsausgaben (${isKlein()?'brutto, Kleinunternehmer':'netto'}): ${fmt(exp)}`,
       `• Ergebnis: ${fmt(inc-exp)}`,'',
-      `Kleinunternehmer (§ 19 UStG): ${isKlein()?'ja':'nein'}`,
+      `Land: ${C().name} · Kleinunternehmer (${C().kuLabel}): ${isKlein()?'ja':'nein'}`,
+      `Aufbewahrungsfrist für Rechnungen und Belege in ${C().name}: ${C().retention} Jahre`,
       noRcpt?`Hinweis: ${noRcpt} Ausgabe(n) ohne angehängten Beleg.`:'',
       ...notes.map(n=>'Hinweis: '+n),'',
       'Zusammenstellung der erfassten Daten – keine Steuerberatung.'
