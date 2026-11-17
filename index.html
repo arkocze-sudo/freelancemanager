@@ -139,6 +139,14 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 #drivePanel .warn{color:var(--amber)}
 button:disabled{opacity:.5;cursor:wait}
 .req{color:#c0392b;margin-left:2px}
+.pos{display:grid;grid-template-columns:72px 92px 1fr 96px 34px;grid-template-areas:"d d d d d" "q u p a x";gap:6px;align-items:center;padding:8px 0;border-bottom:1px solid var(--border)}
+.pos .p-desc{grid-area:d}.pos .p-qty{grid-area:q}.pos .p-unit{grid-area:u}.pos .p-price{grid-area:p}
+.pos .p-amt{grid-area:a;text-align:right;font-variant-numeric:tabular-nums;font-size:13px;font-weight:600}
+.pos .p-del,.pos>span:last-child{grid-area:x}
+.pos input{min-width:0}
+.posadd{display:block;width:100%;margin-top:8px;padding:9px;border:1px dashed #b9b6ac;background:none;border-radius:8px;color:#1a73e8;font-size:14px;cursor:pointer;font-family:inherit}
+.pick{display:flex;flex-direction:column;align-items:flex-start;width:100%;text-align:left;padding:10px 12px;margin-bottom:6px;border:1px solid var(--border);border-radius:8px;background:#fff;cursor:pointer;font-family:inherit;font-size:14px}
+.pick span{font-size:12px;color:var(--muted)}
 .risk{font-size:11px;color:var(--muted);text-align:center;padding:14px 12px;line-height:1.5}.risk a{color:var(--muted)}
 .logo{font-size:46px;margin-bottom:4px}
 .sub{color:var(--muted);font-size:14px;margin-bottom:22px;line-height:1.5}
@@ -179,7 +187,7 @@ html{-webkit-text-size-adjust:100%}
   .controls{gap:8px}
   .controls select,.controls input{flex:1 1 100%;width:100%;height:42px;font-size:16px}
   .controls .btn{flex:1 1 auto;height:42px;justify-content:center;font-size:14px}
-  #btnNewInv,#btnNewCost{position:fixed;right:14px;bottom:calc(66px + env(safe-area-inset-bottom));z-index:95;height:50px;padding:0 22px;border-radius:26px;font-size:15px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.3);flex:none}
+  #btnNewInv,#btnNewCost,#btnNewCust{position:fixed;right:14px;bottom:calc(66px + env(safe-area-inset-bottom));z-index:95;height:50px;padding:0 22px;border-radius:26px;font-size:15px;font-weight:600;box-shadow:0 4px 14px rgba(0,0,0,.3);flex:none}
 
   /* Tabellen → Karten */
   .tw{background:none;border:none;overflow:visible}
@@ -203,6 +211,14 @@ html{-webkit-text-size-adjust:100%}
   #invTb td:nth-child(9){grid-row:3;grid-column:2;text-align:right!important}
   #invTb td:nth-child(10){grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
 
+  /* Kunden-Karte */
+  #custTb td:nth-child(1){grid-row:1;grid-column:2;text-align:right!important;font-size:12px}
+  #custTb td:nth-child(2){grid-row:1;grid-column:1;font-size:16px}
+  #custTb td:nth-child(3){grid-row:2;grid-column:1/3;font-size:13px}
+  #custTb td:nth-child(4){grid-row:3;grid-column:1/3}
+  #custTb td:nth-child(5){grid-row:4;grid-column:1;font-size:13px}
+  #custTb td:nth-child(6){grid-row:4;grid-column:2;font-size:13px;text-align:right!important}
+  #custTb td:nth-child(7){grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
   /* Ausgaben-Karte */
   #costTb td:nth-child(1){grid-row:2;grid-column:2;font-size:13px;color:var(--muted);text-align:right!important}
   #costTb td:nth-child(2){grid-row:2;grid-column:1}
@@ -257,7 +273,7 @@ html{-webkit-text-size-adjust:100%}
       <button class="linkbtn" id="dzLink">Datei von diesem Gerät öffnen</button>
       <button class="linkbtn" id="btnNew">Ohne Drive ausprobieren</button>
     </div>
-    <p class="risk">Nutzung auf eigenes Risiko. Keine Steuer- oder Rechtsberatung.</p>
+    <p class="risk">Freelance Manager <span class="ver"></span> · Nutzung auf eigenes Risiko. Keine Steuer- oder Rechtsberatung.</p>
     <div class="dz" id="dz" style="display:none"><input type="file" id="fi" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
   </div>
   <div style="font-size:12px;color:#aaa;text-align:center">Deine Daten liegen nur auf deinem Gerät bzw. in deinem eigenen Google Drive.</div>
@@ -280,6 +296,7 @@ html{-webkit-text-size-adjust:100%}
 
   <div class="nav">
     <button class="ntab active" data-page="pgInv">🧾 Rechnungen</button>
+    <button class="ntab" data-page="pgCust">👥 Kunden</button>
     <button class="ntab" data-page="pgCosts">📦 Betriebsausgaben</button>
     <button class="ntab" id="navEur" data-page="pgEur">📊 EÜR Übersicht</button>
   </div>
@@ -333,6 +350,21 @@ html{-webkit-text-size-adjust:100%}
       </div>
     </div>
 
+    <!-- CUSTOMERS -->
+    <div class="page" id="pgCust">
+      <div class="controls">
+        <input id="cuSearch" placeholder="Suche nach Name, Ort, Nr. …">
+        <button class="btn acc" id="btnNewCust">+ Neuer Kunde</button>
+      </div>
+      <div class="tw">
+        <table style="min-width:760px">
+          <thead><tr><th>Kd.-Nr.</th><th>Name / Firma</th><th>Adresse</th><th>Kontakt</th><th style="text-align:right">Rechnungen</th><th style="text-align:right">Umsatz (bezahlt, netto)</th><th></th></tr></thead>
+          <tbody id="custTb"></tbody>
+        </table>
+        <div id="custEmpty" class="empty" style="display:none"></div>
+      </div>
+    </div>
+
     <!-- COSTS -->
     <div class="page" id="pgCosts">
       <div class="stats" id="costStats"></div>
@@ -373,7 +405,7 @@ html{-webkit-text-size-adjust:100%}
       <p style="font-size:12px;color:var(--muted);margin-top:12px">⚠ Diese Übersicht dient zur Orientierung; die Nutzung erfolgt auf eigenes Risiko. Lass die EÜR von einer Steuerberatung prüfen.</p>
     </div>
   </main>
-  <div class="risk">Nutzung auf eigenes Risiko – keine Steuer- oder Rechtsberatung. <a href="#" id="riskInfo">Mehr</a></div>
+  <div class="risk">Freelance Manager <span class="ver"></span> · Nutzung auf eigenes Risiko – keine Steuer- oder Rechtsberatung. <a href="#" id="riskInfo">Mehr</a></div>
 </div>
 
 
@@ -409,6 +441,7 @@ html{-webkit-text-size-adjust:100%}
     <li>Die Datei ist eine normale Excel-Datei. Du kannst sie jederzeit selbst öffnen oder die Verbindung trennen (⚙ Profil).</li>
     <li><strong>Nutzung auf eigenes Risiko:</strong> Die App ersetzt keine Steuer- oder Rechtsberatung. Für die Richtigkeit, Vollständigkeit und steuerliche Zulässigkeit der erzeugten Rechnungen und Auswertungen wird keine Haftung übernommen. Wichtige Fragen kläre bitte mit einer Steuerberatung.</li>
   </ul>
+  <p class="hint" style="margin:6px 0 0">Freelance Manager <span class="ver"></span></p>
   <div class="ma"><button class="btn acc" id="infoClose">Verstanden</button></div>
 </div></div>
 
@@ -419,21 +452,24 @@ html{-webkit-text-size-adjust:100%}
     <p class="hint" style="margin:-6px 0 10px">* Pflichtfeld zum Ausstellen</p>
     <div class="fg">
       <div class="fr s2"><label>Rechnungsnummer</label><input id="i_nr" readonly style="background:#f4f3ef;color:var(--muted)"></div>
-            <div class="fr s2"><label>Firmenname / Name des Kunden <span class="req">*</span></label><input id="i_cl" placeholder="z.B. Muster GmbH"></div>
+            <div class="fr s2"><label>Firmenname / Name des Kunden <span class="req">*</span></label><div style="display:flex;gap:6px"><input id="i_cl" placeholder="z.B. Muster GmbH" style="flex:1;min-width:0"><button type="button" class="btn" id="btnPickCust" style="white-space:nowrap">👥 Kunden wählen</button></div></div>
       <div class="fr s2"><label>Straße und Hausnummer <span class="req">*</span></label><input id="i_street" placeholder="z.B. Musterstraße 12"></div>
       <div class="fr"><label>PLZ <span class="req">*</span></label><input id="i_zip" inputmode="numeric" placeholder="z.B. 20095"></div>
       <div class="fr"><label>Ort <span class="req">*</span></label><input id="i_city" placeholder="z.B. Hamburg"></div>
       <div class="fr"><label>Land</label><input id="i_co" placeholder="z.B. Deutschland"></div>
       <div class="fr"><label>USt-IdNr. / UID des Kunden</label><input id="i_cv"></div>
-      <div class="fr s2"><label>Leistungsbeschreibung <span class="req">*</span></label><input id="i_de" placeholder="z.B. Konzeption und Umsetzung Logo-Design"></div>
+      <div class="fr s2" id="posBox"><label>Positionen <span class="req">*</span></label>
+        <div id="posList"></div>
+        <button type="button" class="posadd" id="posAdd" title="Weitere Position hinzufügen">＋ Weitere Position</button>
+        <datalist id="unitList"><option value="Stück"><option value="Std"><option value="Tag"><option value="pauschal"><option value="km"></datalist>
+      </div>
       <div class="fr"><label>Rechnungsdatum <span class="req">*</span></label><input type="date" id="i_da"></div>
       <div class="fr"><label>Leistungsdatum (bzw. Beginn) <span class="req">*</span></label><input type="date" id="i_ld"></div>
       <div class="fr"><label>Leistungszeitraum bis</label><div style="display:flex;gap:6px"><input type="date" id="i_le" style="flex:1;min-width:0"><button type="button" class="btn" id="i_leClear" title="Datum löschen" style="padding:0 14px">✕</button></div></div>
       <div class="fr"><label>Fällig am <span class="req">*</span></label><input type="date" id="i_du"></div>
       <div class="fr"><label>Zahlungseingang (Datum)</label><div style="display:flex;gap:6px"><input type="date" id="i_pd" style="flex:1;min-width:0"><button type="button" class="btn" id="i_pdClear" title="Datum löschen" style="padding:0 14px">✕</button></div><small id="pdHint" class="hint"></small></div>
       <div class="fr"><label>Zahlungsart</label><select id="i_pm"><option value="Überweisung">Überweisung</option><option value="Bar">Bar</option><option value="Karte vor Ort">Karte vor Ort</option></select></div>
-      <div class="fr"><label>Nettobetrag (€) <span class="req">*</span></label><input type="number" id="i_ne" step="0.01" min="0"></div>
-      <div class="fr"><label>Umsatzsteuer</label>
+            <div class="fr"><label>Umsatzsteuer</label>
         <select id="i_va"></select>
       </div>
       <div class="fr s2"><label>Notiz (intern)</label><input id="i_no"></div>
@@ -452,6 +488,34 @@ html{-webkit-text-size-adjust:100%}
     </div>
   </div>
 </div>
+
+<!-- KUNDE -->
+<div class="ov" id="custOv"><div class="modal">
+  <h2 id="cuMT">Neuer Kunde</h2>
+  <p class="hint" style="margin:-6px 0 10px">* Pflichtfeld</p>
+  <div class="fg">
+    <div class="fr s2"><label>Kundennummer</label><input id="cu_no" readonly style="background:#f4f3ef;color:var(--muted)"></div>
+    <div class="fr s2"><label>Name / Firma <span class="req">*</span></label><input id="cu_name"></div>
+    <div class="fr s2"><label>Straße und Hausnummer <span class="req">*</span></label><input id="cu_street"></div>
+    <div class="fr"><label>PLZ <span class="req">*</span></label><input id="cu_zip" inputmode="numeric"></div>
+    <div class="fr"><label>Ort <span class="req">*</span></label><input id="cu_city"></div>
+    <div class="fr"><label>Land</label><input id="cu_country"></div>
+    <div class="fr"><label>USt-IdNr. / UID</label><input id="cu_vat"></div>
+    <div class="fr"><label>Telefon</label><input id="cu_phone" type="tel"></div>
+    <div class="fr"><label>E-Mail</label><input id="cu_email" type="email"></div>
+    <div class="fr"><label>Zahlungsziel (Tage)</label><input id="cu_days" type="number" min="0" step="1" inputmode="numeric"></div>
+    <div class="fr s2"><label>Notiz</label><input id="cu_note"></div>
+  </div>
+  <div class="ma"><button class="dbtn" id="cuDel" style="display:none">🗑 Löschen</button><button class="btn" id="cuCancel">Abbrechen</button><button class="btn acc" id="cuSave">Speichern</button></div>
+</div></div>
+
+<!-- KUNDE WÄHLEN -->
+<div class="ov" id="pickOv"><div class="modal">
+  <h2>Kunde wählen</h2>
+  <input id="pk_q" placeholder="Suche nach Name, Ort, Nr. …" style="margin-bottom:10px">
+  <div id="pk_list" style="max-height:55vh;overflow:auto"></div>
+  <div class="ma"><button class="btn" id="pkClose">Schließen</button></div>
+</div></div>
 
 <!-- COST MODAL -->
 <div class="ov" id="costOv">
@@ -912,11 +976,12 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 <script>
 'use strict';
 // ── STATE ──────────────────────────────────────────────────
-let wb=null, invoices=[], costs=[], settings={};
+let wb=null, invoices=[], costs=[], customers=[], settings={};
 let activeYear=new Date().getFullYear(), fname='rechnungen.xlsx';
 let editInvId=null, editCostId=null, dirty=false, idSeq=1;
 
 // Spaltenreihenfolge in der Excel-Datei (links → rechts). Beim Einlesen zählen die Überschriften, nicht die Position.
+const APP_VERSION='V0.1';
 const RISK='Die Nutzung erfolgt auf eigenes Risiko. Keine Steuer- oder Rechtsberatung; für Richtigkeit und Vollständigkeit wird keine Gewähr übernommen.';
 const SK=['Land','Ihr Name','Berufsbezeichnung','Firmenname','Straße','PLZ','Ort','Land (Anschrift)','Steuernummer','USt-IdNr.','IBAN','BIC','Bank','Kleinunternehmer (ja/nein)','Standard Zahlungsziel (Tage)','Rechnungstext Fußzeile'];
 // ── LÄNDER-REGELN (Deutschland / Österreich) ───────────────
@@ -972,7 +1037,7 @@ function toast(msg,ok,ms){
   document.body.appendChild(b);setTimeout(()=>b.remove(),ms||4000);
 }
 const DRAFT_KEY='freelanceManagerDraft';
-function saveDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify({invoices,costs,settings,fname,at:Date.now()}));}catch(e){}}
+function saveDraft(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify({invoices,costs,customers,settings,fname,at:Date.now()}));}catch(e){}}
 function clearDraft(){try{localStorage.removeItem(DRAFT_KEY);}catch(e){}}
 function readDraft(){try{const d=JSON.parse(localStorage.getItem(DRAFT_KEY)||'null');return d&&Array.isArray(d.invoices)?d:null;}catch(e){return null;}}
 function setDirty(v){dirty=v;$('dirty').classList.toggle('on',v);if(v)saveDraft();}
@@ -1010,8 +1075,8 @@ $('btnNew').addEventListener('click',createNew);
   const b=$('btnDraft');b.style.display='block';
   b.textContent=`↩ Nicht gespeicherte Änderungen wiederherstellen (${new Date(d.at).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})})`;
   b.addEventListener('click',()=>{
-    invoices=d.invoices;costs=d.costs;settings=d.settings||{};fname=d.fname||'rechnungen.xlsx';
-    idSeq=Math.max(1,...invoices.map(i=>i._id||0),...costs.map(c=>c._id||0))+1;
+    invoices=d.invoices;costs=d.costs;customers=d.customers||[];settings=d.settings||{};fname=d.fname||'rechnungen.xlsx';
+    idSeq=Math.max(1,...invoices.map(i=>i._id||0),...costs.map(c=>c._id||0),...customers.map(c=>c._id||0))+1;
     startApp();setDirty(true);
     toast('Entwurf wiederhergestellt – bitte oben auf 💾 speichern.');
   });
@@ -1033,7 +1098,7 @@ function loadFile(f){
 }
 
 function createNew(){
-  wb=null;invoices=[];costs=[];
+  wb=null;invoices=[];costs=[];customers=[];
   settings={'Land':'DE','Ihr Name':'','Berufsbezeichnung':'','Firmenname':'','Straße':'','PLZ':'','Ort':'','Land (Anschrift)':'','Steuernummer':'','USt-IdNr.':'','IBAN':'','BIC':'','Bank':'','Kleinunternehmer (ja/nein)':'ja','Standard Zahlungsziel (Tage)':'14','Rechnungstext Fußzeile':''};
   startApp();
 }
@@ -1086,6 +1151,7 @@ const statusText=i=>i.state==='draft'?'Entwurf':i.state==='cancelled'?'Storniert
 const daysOverdue=i=>(statusText(i)==='Offen'&&i.due&&i.due<todayISO())?xlSerial(todayISO())-xlSerial(i.due):'';
 const vatAmount=i=>round2(i.net*effVat(i)/100);
 const KU_REF="'Übersicht'!$B$5";
+const FILE_FORMAT=1;
 
 // k = interner Name · h = Überschrift · t = Typ · calc = Formelspalte (wird beim Einlesen ignoriert) · get = Wert · f = Formel je Zeile r
 const INV_COLS=[
@@ -1100,14 +1166,15 @@ const INV_COLS=[
   {k:'overdue',h:'Tage überfällig',w:15,t:'int',calc:true,get:daysOverdue,
     f:(L,r)=>`IF(AND(${L.status}${r}="Offen",${L.due}${r}<>"",${L.due}${r}<TODAY()),TODAY()-${L.due}${r},"")`},
   {k:'payMethod',h:'Zahlungsart',w:14,t:'text'},
+  {k:'customerNo',h:'Kd.-Nr.',w:9,t:'text'},
   {k:'client',h:'Kunde',w:26,t:'text'},
   {k:'clientVat',h:'Kunde USt-IdNr./UID',w:20,t:'text'},
   {k:'street',h:'Kunde Straße und Hausnummer',w:27,t:'text'},
   {k:'zip',h:'Kunde PLZ',w:10,t:'text'},
   {k:'city',h:'Kunde Ort',w:18,t:'text'},
   {k:'clientCountry',h:'Kunde Land',w:14,t:'text'},
-  {k:'desc',h:'Leistung',w:36,t:'text'},
-  {k:'net',h:'Netto (€)',w:13,t:'money'},
+  {k:'desc',h:'Leistung (Kurzfassung)',w:38,t:'text',calc:true,get:i=>invSummary(i)},
+  {k:'net',h:'Netto (€)',w:13,t:'money',calc:true,get:i=>i.net,f:(L,r)=>`SUMIFS(Positionen!$${POS_L.amt}:$${POS_L.amt},Positionen!$${POS_L.nr}:$${POS_L.nr},$${L.nr}${r})`},
   {k:'vat',h:'USt-Satz (%)',w:12,t:'pct',get:effVat},
   {k:'vatAmt',h:'USt-Betrag (€)',w:14,t:'money',calc:true,get:vatAmount,f:(L,r)=>`ROUND(${L.net}${r}*${L.vat}${r}/100,2)`},
   {k:'gross',h:'Brutto (€)',w:13,t:'money',calc:true,get:i=>round2(i.net+vatAmount(i)),f:(L,r)=>`${L.net}${r}+${L.vatAmt}${r}`},
@@ -1130,14 +1197,40 @@ const COST_COLS=[
   {k:'receiptName',h:'Beleg-Datei',w:30,t:'text'},
   {k:'note',h:'Notiz',w:28,t:'text'}
 ];
+const POS_COLS=[
+  {k:'nr',h:'Re.-Nr.',w:12,t:'text'},
+  {k:'pos',h:'Pos.',w:6,t:'int'},
+  {k:'desc',h:'Beschreibung',w:46,t:'text'},
+  {k:'qty',h:'Menge',w:9,t:'num'},
+  {k:'unit',h:'Einheit',w:11,t:'text'},
+  {k:'price',h:'Einzelpreis (€)',w:15,t:'money'},
+  {k:'amt',h:'Betrag (€)',w:14,t:'money',calc:true,get:p=>itemAmt(p),f:(L,r)=>`ROUND(${L.qty}${r}*${L.price}${r},2)`}
+];
+const CUST_COLS=[
+  {k:'no',h:'Kd.-Nr.',w:9,t:'text'},
+  {k:'name',h:'Name / Firma',w:28,t:'text'},
+  {k:'street',h:'Straße und Hausnummer',w:27,t:'text'},
+  {k:'zip',h:'PLZ',w:9,t:'text'},
+  {k:'city',h:'Ort',w:18,t:'text'},
+  {k:'country',h:'Land',w:14,t:'text'},
+  {k:'vatId',h:'USt-IdNr./UID',w:18,t:'text'},
+  {k:'phone',h:'Telefon',w:17,t:'text'},
+  {k:'email',h:'E-Mail',w:26,t:'text'},
+  {k:'termDays',h:'Zahlungsziel (Tage)',w:18,t:'int'},
+  {k:'note',h:'Notiz',w:30,t:'text'},
+  {k:'cnt',h:'Rechnungen (Anzahl)',w:19,t:'int',calc:true,get:c=>custCount(c),f:(L,r)=>`COUNTIFS(Rechnungen!$${INV_L.customerNo}:$${INV_L.customerNo},$${L.no}${r},Rechnungen!$${INV_L.status}:$${INV_L.status},"<>Entwurf")`},
+  {k:'paid',h:'Umsatz bezahlt, netto (€)',w:23,t:'money',calc:true,get:c=>custPaid(c),f:(L,r)=>`SUMIFS(Rechnungen!$${INV_L.net}:$${INV_L.net},Rechnungen!$${INV_L.customerNo}:$${INV_L.customerNo},$${L.no}${r},Rechnungen!$${INV_L.status}:$${INV_L.status},"Bezahlt")`},
+  {k:'open',h:'Offen, brutto (€)',w:18,t:'money',calc:true,get:c=>custOpen(c),f:(L,r)=>`SUMIFS(Rechnungen!$${INV_L.gross}:$${INV_L.gross},Rechnungen!$${INV_L.customerNo}:$${INV_L.customerNo},$${L.no}${r},Rechnungen!$${INV_L.status}:$${INV_L.status},"Offen")`}
+];
 const colMap=cols=>Object.fromEntries(cols.map((c,x)=>[c.k,XLSX.utils.encode_col(x)]));
-const INV_L=colMap(INV_COLS),COST_L=colMap(COST_COLS);
+const INV_L=colMap(INV_COLS),COST_L=colMap(COST_COLS),POS_L=colMap(POS_COLS),CUST_L=colMap(CUST_COLS);
 
 function xlCell(col,val,f){
   let c;
   if(col.t==='date')c=val?{t:'n',v:xlSerial(val),z:DATEF}:null;
   else if(col.t==='money')c={t:'n',v:+val||0,z:MONEY};
   else if(col.t==='pct')c={t:'n',v:+val||0,z:'0" %"'};
+  else if(col.t==='num')c=(val===''||val===undefined||val===null)?null:{t:'n',v:+val};
   else if(col.t==='int')c=(val===''||val===undefined||val===null)?null:{t:'n',v:+val,z:'0'};
   else c=(val===undefined||val===null||val==='')?null:{t:'s',v:String(val)};
   if(f){c=c||{t:'s',v:''};c.f=f;}
@@ -1188,11 +1281,16 @@ const SETTING_HINTS={'Land':'DE (Deutschland) oder AT (Österreich)','Kleinunter
 function buildWorkbook(){
   if(typeof XLSX==='undefined')throw new Error('Die Excel-Bibliothek fehlt.');
   settings['Zuletzt gespeichert']=tsNow();
-  const iRows=sortedInvoices().map((i,x)=>INV_COLS.map(col=>col.k==='status'&&i.state==='draft'?xlCell(col,'Entwurf'):cellOf(INV_COLS,INV_L,i,col,x+2)));
+  const inv=sortedInvoices();
+  const iRows=inv.map((i,x)=>INV_COLS.map(col=>col.k==='status'&&i.state==='draft'?xlCell(col,'Entwurf'):cellOf(INV_COLS,INV_L,i,col,x+2)));
+  const pItems=inv.flatMap(i=>(i.items||[]).map((it,x)=>({nr:i.nr,pos:x+1,...it})));
+  const pRows=pItems.map((p,x)=>POS_COLS.map(col=>cellOf(POS_COLS,POS_L,p,col,x+2)));
+  const custs=customers.slice().sort((a,b)=>a.no.localeCompare(b.no));
+  const kRows=custs.map((c,x)=>CUST_COLS.map(col=>cellOf(CUST_COLS,CUST_L,c,col,x+2)));
   const cRows=sortedCosts().map((c,x)=>COST_COLS.map(col=>cellOf(COST_COLS,COST_L,c,col,x+2)));
   const set=XLSX.utils.aoa_to_sheet([['Einstellung','Wert','Hinweis'],...SK.map(k=>[k,settings[k]||'',SETTING_HINTS[k]||''])]);
   set['!cols']=[32,40,44].map(w=>({wch:w}));
-  const tech=[['Typ','Schlüssel','Drive-ID','Daten'],['Meta','Zuletzt gespeichert','',settings['Zuletzt gespeichert']]];
+  const tech=[['Typ','Schlüssel','Drive-ID','Daten'],['Meta','App-Version','',APP_VERSION],['Meta','Dateiformat','',String(FILE_FORMAT)],['Meta','Zuletzt gespeichert','',settings['Zuletzt gespeichert']]];
   if(settings['Logo'])tech.push(['Logo','','',settings['Logo']]);
   invoices.filter(i=>i.pdfId||i.issuer).forEach(i=>tech.push(['Rechnung',i.nr,i.pdfId||'',i.issuer?JSON.stringify(i.issuer):'']));
   costs.filter(c=>c.receiptId).forEach(c=>tech.push(['Ausgabe',String(c.no),c.receiptId,'']));
@@ -1200,10 +1298,12 @@ function buildWorkbook(){
   const out=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(out,overviewSheet(activeYear),'Übersicht');
   XLSX.utils.book_append_sheet(out,dataSheet(INV_COLS,iRows),'Rechnungen');
+  XLSX.utils.book_append_sheet(out,dataSheet(POS_COLS,pRows),'Positionen');
+  XLSX.utils.book_append_sheet(out,dataSheet(CUST_COLS,kRows),'Kunden');
   XLSX.utils.book_append_sheet(out,dataSheet(COST_COLS,cRows),'Ausgaben');
   XLSX.utils.book_append_sheet(out,set,'Einstellungen');
   XLSX.utils.book_append_sheet(out,tk,'Technik');
-  out.Workbook={Sheets:[{},{},{},{},{Hidden:1}]};     // „Technik“ ist ausgeblendet (technische Daten: PDF-Archiv, Absenderdaten, Logo)
+  out.Workbook={Sheets:[{},{},{},{},{},{},{Hidden:1}]};     // „Technik“ ist ausgeblendet (PDF-Archiv, Absenderdaten, Logo, Version)
   return out;
 }
 const xlsxBytes=()=>XLSX.write(buildWorkbook(),{type:'array',bookType:'xlsx'});
@@ -1217,41 +1317,49 @@ function readCols(ws,cols){
   const use=cols.filter(c=>!c.calc||c.read).map(c=>[c,head.indexOf(c.h.toLowerCase())]);
   return rows.slice(1).filter(r=>r.some(v=>v!=='')).map(r=>{
     const o={};
-    use.forEach(([c,ix])=>{const v=ix>=0?r[ix]:'';o[c.k]=c.t==='date'?toISO(v):(c.t==='money'||c.t==='pct'||c.t==='int')?(v===''?0:num(v)):String(v).trim();});
+    use.forEach(([c,ix])=>{const v=ix>=0?r[ix]:'';o[c.k]=c.t==='date'?toISO(v):(c.t==='money'||c.t==='pct'||c.t==='int'||c.t==='num')?(v===''?0:num(v)):String(v).trim();});
     return o;
   });
 }
 function parseAll(){
-  invoices=[];costs=[];settings={};
-  const tech={rechnung:{},ausgabe:{}};
+  invoices=[];costs=[];customers=[];settings={};
+  const notes=[],tech={rechnung:{},ausgabe:{}};
   (wb.Sheets['Technik']?XLSX.utils.sheet_to_json(wb.Sheets['Technik'],{header:1,raw:true,defval:''}):[]).slice(1).forEach(([typ,key,id,data])=>{
     const t=String(typ).toLowerCase();
     if(t==='meta'||t==='logo')settings[t==='logo'?'Logo':String(key)]=String(data);
     else if(tech[t])tech[t][String(key)]={id:String(id||''),data:String(data||'')};
   });
+  if((parseInt(settings['Dateiformat'])||FILE_FORMAT)>FILE_FORMAT)notes.push('Diese Datei stammt aus einer neueren Version der App. Bitte die App aktualisieren, bevor du speicherst – sonst können Angaben verloren gehen.');
+  delete settings['Dateiformat'];delete settings['App-Version'];
+  const pos={};
+  readCols(wb.Sheets['Positionen'],POS_COLS).forEach(p=>{if(p.nr)(pos[p.nr]=pos[p.nr]||[]).push(p);});
   readCols(wb.Sheets['Rechnungen'],INV_COLS).forEach(r=>{
     const draft=r.status.toLowerCase()==='entwurf';
     if(!r.nr&&!draft)return;
     const t=tech.rechnung[r.nr]||{};
     let issuer=null;try{const j=JSON.parse(t.data);if(j&&typeof j==='object')issuer=j;}catch(e){}
-    invoices.push({...r,_id:nid(),state:draft?'draft':(r.cancelledBy?'cancelled':'issued'),status:r.paymentDate?'bezahlt':'offen',
+    const items=(pos[r.nr]||[]).sort((a,b)=>a.pos-b.pos).map(p=>({desc:p.desc,qty:p.qty,unit:p.unit,price:p.price}));
+    invoices.push({...r,items,net:itemsNet(items),_id:nid(),state:draft?'draft':(r.cancelledBy?'cancelled':'issued'),status:r.paymentDate?'bezahlt':'offen',
       payMethod:['Bar','Karte vor Ort'].includes(r.payMethod)?r.payMethod:'Überweisung',pdfId:t.id||'',issuer});
   });
+  readCols(wb.Sheets['Kunden'],CUST_COLS).forEach(c=>{if(c.name)customers.push({...c,termDays:c.termDays||'',_id:nid()});});
+  let cmax=Math.max(0,...customers.map(c=>parseInt(String(c.no).slice(1))||0));
+  customers.forEach(c=>{if(!c.no)c.no='K'+String(++cmax).padStart(3,'0');});
   readCols(wb.Sheets['Ausgaben'],COST_COLS).forEach(r=>{
     if(!r.date&&!r.desc)return;
     if(!r.net&&r.gross)r.net=round2(r.gross/(1+r.vat/100));
-    const c={...r,_id:nid(),receiptId:''};costs.push(c);
+    costs.push({...r,_id:nid(),receiptId:''});
   });
   let max=Math.max(0,...costs.map(c=>c.no||0));
   costs.forEach(c=>{if(!c.no)c.no=++max;c.receiptId=(tech.ausgabe[String(c.no)]||{}).id||'';});
   (wb.Sheets['Einstellungen']?XLSX.utils.sheet_to_json(wb.Sheets['Einstellungen'],{header:1,raw:true,defval:''}):[]).slice(1)
     .forEach(r=>{if(r[0])settings[r[0]]=r[1]===undefined?'':String(r[1]);});
-  return [];
+  return notes;
 }
 
 // ── RENDER ─────────────────────────────────────────────────
 function renderAll(){
-  renderYearTabs();renderStats();updateKleinInfo();renderCashInfo();renderInvTable();
+  renderYearTabs();renderStats();updateKleinInfo();renderCashInfo();renderInvTable();renderCustTable();
   renderCostStats();populateCatFilter();renderCostTable();renderEUR();renderSettings();renderLogoUI();
 }
 function allYears(){
@@ -1339,7 +1447,7 @@ function renderInvTable(){
     return `<tr>
       <td class="mono">${esc(inv.nr)||'—'}${inv.state!=='draft'&&!inv.pdfId?' <span title="PDF nicht im Drive archiviert">⚠</span>':''}</td>
       <td><strong>${esc(inv.client)}</strong></td>
-      <td style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(inv.desc)}">${esc(inv.desc)}</td>
+      <td style="color:var(--muted);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${esc(invSummary(inv))}">${esc(invSummary(inv))}</td>
       <td data-l="Datum">${fmtDate(inv.date)}</td><td data-l="Fällig">${fmtDate(inv.due)}</td>
       <td class="mono" style="text-align:right">${fmt(inv.net)}</td>
       <td class="mono" style="text-align:right;color:var(--muted)">${v===0?'§19':v+'%'}</td>
@@ -1465,11 +1573,13 @@ window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.return
 // ── INVOICE MODAL ──────────────────────────────────────────
 // Zustände: draft (Entwurf, frei änderbar) → issued (ausgestellt, gesperrt) → cancelled (durch Storno ersetzt)
 const isLocked=i=>i&&i.state!=='draft';
+const isDraftNr=nr=>!nr||/^E\d+$/.test(nr);
 function nextNr(){
   const yr=new Date().getFullYear();
   const nums=invoices.filter(i=>i.nr.startsWith(yr+'-')).map(i=>parseInt(i.nr.split('-')[1])||0);
   return `${yr}-${String((nums.length?Math.max(...nums):0)+1).padStart(3,'0')}`;
 }
+const nextDraftNo=()=>'E'+String(Math.max(0,...invoices.map(i=>/^E(\d+)$/.test(i.nr)?+RegExp.$1:0))+1).padStart(3,'0');
 function applyKleinToForm(){
   const sel=$('i_va');
   if(isKlein()){sel.value='0';sel.disabled=true;}
@@ -1480,37 +1590,82 @@ function handleStatus(){
   h.textContent=$('i_pd').value?'Status: bezahlt – mit ✕ das Datum löschen, dann ist die Rechnung wieder offen.':'Status: offen – mit einem Datum gilt die Rechnung als bezahlt.';
   h.style.color='var(--muted)';
 }
-function upGross(){
-  const n=+$('i_ne').value||0,v=isKlein()?0:(+$('i_va').value||0),el=$('grossPrev');
-  el.textContent=!n?'':(v===0?`Rechnungsbetrag: ${fmt(n)} (keine USt${isKlein()?' – Kleinunternehmer':''})`:`→ Brutto: ${fmt(round2(n*(1+v/100)))}`);
+
+// ── Positionen ──
+const itemAmt=it=>round2((parseFloat(it.qty)||0)*(parseFloat(it.price)||0));
+const itemsNet=items=>round2((items||[]).reduce((s,it)=>s+itemAmt(it),0));
+const newItem=()=>({desc:'',qty:'1',unit:'',price:''});
+const fmtQty=q=>(+q||0).toLocaleString('de-DE',{maximumFractionDigits:2});
+function invSummary(i){
+  const it=(i.items||[]).filter(x=>x.desc);
+  const s=it.length?it[0].desc+(it.length>1?` (+${it.length-1} weitere)`:''):'';
+  return i.cancels?`Storno zu ${i.cancels}: ${s}`:s;
 }
+let posItems=[newItem()],posLocked=false;
+function readItems(){
+  return posItems.filter(it=>String(it.desc).trim()||String(it.price).trim())
+    .map(it=>({desc:String(it.desc).trim(),qty:String(it.qty).trim()===''?1:(parseFloat(it.qty)||0),unit:String(it.unit).trim(),price:parseFloat(it.price)||0}));
+}
+function renderPos(){
+  const dis=posLocked?' disabled':'';
+  $('posList').innerHTML=posItems.map((it,x)=>`<div class="pos" data-x="${x}">
+    <input class="p-desc" data-k="desc" placeholder="Beschreibung der Leistung" aria-label="Beschreibung" value="${esc(it.desc)}"${dis}>
+    <input class="p-qty" data-k="qty" type="number" step="0.01" inputmode="decimal" placeholder="Menge" aria-label="Menge" value="${esc(it.qty)}"${dis}>
+    <input class="p-unit" data-k="unit" list="unitList" placeholder="Einheit" aria-label="Einheit" value="${esc(it.unit)}"${dis}>
+    <input class="p-price" data-k="price" type="number" step="0.01" inputmode="decimal" placeholder="Einzelpreis €" aria-label="Einzelpreis in Euro" value="${esc(it.price)}"${dis}>
+    <span class="p-amt">${fmt(itemAmt(it))}</span>
+    ${posLocked||posItems.length<2?'<span></span>':'<button type="button" class="abtn p-del" title="Position entfernen">✕</button>'}
+  </div>`).join('');
+}
+function upGross(){
+  const n=itemsNet(posItems),v=isKlein()?0:(+$('i_va').value||0),el=$('grossPrev');
+  el.textContent=!n?'':(v===0?`Rechnungsbetrag: ${fmt(n)} (keine USt${isKlein()?' – Kleinunternehmer':''})`:`Netto ${fmt(n)} + USt ${v} % = Brutto ${fmt(round2(n*(1+v/100)))}`);
+}
+$('posList').addEventListener('input',e=>{
+  const row=e.target.closest('.pos');if(!row||!e.target.dataset.k)return;
+  const it=posItems[+row.dataset.x];it[e.target.dataset.k]=e.target.value;
+  row.querySelector('.p-amt').textContent=fmt(itemAmt(it));upGross();
+});
+$('posList').addEventListener('click',e=>{
+  const b=e.target.closest('.p-del');if(!b||posLocked)return;
+  posItems.splice(+b.closest('.pos').dataset.x,1);if(!posItems.length)posItems.push(newItem());renderPos();upGross();
+});
+$('posAdd').addEventListener('click',()=>{
+  if(posLocked)return;
+  posItems.push(newItem());renderPos();upGross();
+  const d=$('posList').querySelectorAll('.p-desc');d[d.length-1].focus();
+});
+
 $('i_pd').addEventListener('input',handleStatus);
 $('i_pdClear').addEventListener('click',()=>{$('i_pd').value='';handleStatus();});
 $('i_leClear').addEventListener('click',()=>{$('i_le').value='';});
-$('i_ne').addEventListener('input',upGross);
 $('i_va').addEventListener('change',upGross);
 $('i_da').addEventListener('change',()=>{
   if(editInvId===null&&$('i_da').value){
-    $('i_du').value=addDaysISO($('i_da').value,parseInt(settings['Standard Zahlungsziel (Tage)'])||14);
+    $('i_du').value=addDaysISO($('i_da').value,invTermDays());
     if(!$('i_ld').value)$('i_ld').value=$('i_da').value;
   }
 });
+let invCustNo='';
+function invTermDays(){const c=customers.find(x=>x.no===invCustNo);return parseInt(c&&c.termDays)||parseInt(settings['Standard Zahlungsziel (Tage)'])||14;}
 
 const futurePayOk=pd=>!pd||pd<=todayISO()||confirm('Das Zahlungsdatum liegt in der Zukunft. Trotzdem als bezahlt speichern?');
-const INV_FIELDS=['i_cl','i_street','i_zip','i_city','i_cv','i_co','i_de','i_da','i_ld','i_le','i_du','i_ne','i_va'];
-// Schaltflächen und gesperrte Felder je nach Zustand
+const INV_FIELDS=['i_cl','i_street','i_zip','i_city','i_cv','i_co','i_da','i_ld','i_le','i_du','i_va'];
 const INV_ALL=[...INV_FIELDS,'i_pd','i_pm','i_no'];
-const invSnap=()=>JSON.stringify(INV_ALL.map(id=>$(id).value));
+const invSnap=()=>JSON.stringify([INV_ALL.map(id=>$(id).value),posItems]);
 let invOpenSnap='';
 function cancelInv(){
   if(invSnap()!==invOpenSnap&&!confirm('Eingaben verwerfen? Nicht gespeicherte Änderungen gehen verloren.'))return;
   closeInv();
 }
+// Schaltflächen und gesperrte Felder je nach Zustand
 function setInvMode(inv){
   const draft=!inv||inv.state==='draft',storno=inv&&(inv.state==='cancelled'||inv.cancels);
   INV_FIELDS.forEach(id=>$(id).disabled=!draft);
+  $('btnPickCust').disabled=!draft;
   ['i_pd','i_pm','i_no','i_pdClear'].forEach(id=>$(id).disabled=!!storno);
   $('i_leClear').disabled=!draft;
+  posLocked=!draft;renderPos();$('posAdd').style.display=draft?'':'none';
   if(draft)applyKleinToForm();
   const show=(id,v)=>$(id).style.display=v?'':'none';
   show('invDelBtn',inv&&draft);show('invPreview',draft);show('invIssue',draft);
@@ -1520,32 +1675,36 @@ function setInvMode(inv){
   $('invSave').classList.toggle('acc',!draft);
   $('invMT').textContent=!inv?'Neue Rechnung':draft?'Entwurf bearbeiten':(inv.cancels?'Stornorechnung ':'Rechnung ')+inv.nr+' 🔒';
   $('lockHint').style.display=draft?'none':'';
-  $('lockHint').textContent=(storno?'Diese Rechnung ist abgeschlossen und kann nicht mehr geändert werden.':'Ausgestellte Rechnungen sind gesperrt. Änderbar sind nur Zahlungsstatus, Zahlungseingang und Notiz. Fehler korrigierst du mit „Stornieren“ und einer neuen Rechnung.')+(inv&&!draft?(inv.pdfId?' Das PDF ist in deinem Google Drive archiviert.':' ⚠ Dieses PDF ist nicht im Drive archiviert – bitte die heruntergeladene PDF-Datei selbst sichern.'):'');
+  $('lockHint').textContent=(storno?'Diese Rechnung ist abgeschlossen und kann nicht mehr geändert werden.':'Ausgestellte Rechnungen sind gesperrt. Änderbar sind nur Zahlungseingang, Zahlungsart und Notiz. Fehler korrigierst du mit „Stornieren“ und einer neuen Rechnung.')+(inv&&!draft?(inv.pdfId?' Das PDF ist in deinem Google Drive archiviert.':' ⚠ Dieses PDF ist nicht im Drive archiviert und kann nicht erneut erzeugt werden – bitte die heruntergeladene PDF-Datei selbst sichern.'):'');
 }
-function openInvModal(){
-  editInvId=null;
+function openInvModal(cust){
+  editInvId=null;invCustNo='';
   $('i_nr').value='wird beim Ausstellen vergeben';
-  ['i_cl','i_street','i_zip','i_city','i_cv','i_co','i_de','i_no','i_pd','i_ne','i_le'].forEach(id=>$(id).value='');$('i_pm').value='Überweisung';
-  const t=todayISO(),days=parseInt(settings['Standard Zahlungsziel (Tage)'])||14;
-  $('i_da').value=t;$('i_ld').value=t;$('i_du').value=addDaysISO(t,days);
+  ['i_cl','i_street','i_zip','i_city','i_cv','i_co','i_no','i_pd','i_le'].forEach(id=>$(id).value='');$('i_pm').value='Überweisung';
+  posItems=[newItem()];
+  const t=todayISO();
+  $('i_da').value=t;$('i_ld').value=t;
+  if(cust)fillCustomer(cust,true);
+  $('i_du').value=addDaysISO(t,invTermDays());
   setInvMode(null);handleStatus();upGross();invOpenSnap=invSnap();$('invOv').classList.add('open');
 }
 function editInv(id){
   const inv=invoices.find(i=>i._id===id);if(!inv)return;
-  editInvId=id;
-  $('i_nr').value=inv.nr||'wird beim Ausstellen vergeben';
+  editInvId=id;invCustNo=inv.customerNo||'';
+  $('i_nr').value=isDraftNr(inv.nr)?'wird beim Ausstellen vergeben'+(inv.nr?` (Entwurf ${inv.nr})`:''):inv.nr;
   $('i_cv').value=inv.clientVat||'';$('i_co').value=inv.clientCountry||'';$('i_pm').value=inv.payMethod||'Überweisung';$('i_cl').value=inv.client;$('i_street').value=inv.street;$('i_zip').value=inv.zip;$('i_city').value=inv.city;
-  $('i_de').value=inv.desc;$('i_da').value=inv.date;$('i_ld').value=inv.serviceDate;$('i_le').value=inv.serviceEnd||'';$('i_du').value=inv.due;$('i_pd').value=inv.paymentDate;
-  $('i_ne').value=inv.net;$('i_no').value=inv.note;
+  $('i_da').value=inv.date;$('i_ld').value=inv.serviceDate;$('i_le').value=inv.serviceEnd||'';$('i_du').value=inv.due;$('i_pd').value=inv.paymentDate;
+  $('i_no').value=inv.note;
+  posItems=(inv.items&&inv.items.length?inv.items:[{desc:'',qty:1,unit:'',price:0}]).map(it=>({desc:it.desc,qty:String(it.qty),unit:it.unit||'',price:String(it.price)}));
   ensureOpt($('i_va'),inv.vat||0);
   setInvMode(inv);handleStatus();upGross();invOpenSnap=invSnap();$('invOv').classList.add('open');
 }
 const closeInv=()=>$('invOv').classList.remove('open');
 function getInvForm(){
-  const cur=editInvId!==null?invoices.find(i=>i._id===editInvId):null;
-  return{nr:cur?cur.nr:'',state:'draft',client:$('i_cl').value.trim(),street:$('i_street').value.trim(),zip:$('i_zip').value.trim(),city:$('i_city').value.trim(),
-    clientVat:$('i_cv').value.trim(),clientCountry:$('i_co').value.trim(),payMethod:$('i_pm').value,desc:$('i_de').value.trim(),date:$('i_da').value,serviceDate:$('i_ld').value,serviceEnd:$('i_le').value,due:$('i_du').value,paymentDate:$('i_pd').value,
-    net:round2(+$('i_ne').value),vat:isKlein()?0:(+$('i_va').value||0),status:$('i_pd').value?'bezahlt':'offen',note:$('i_no').value.trim(),cancels:'',cancelledBy:''};
+  const cur=editInvId!==null?invoices.find(i=>i._id===editInvId):null,items=readItems();
+  return{nr:cur?cur.nr:'',state:'draft',customerNo:invCustNo,client:$('i_cl').value.trim(),street:$('i_street').value.trim(),zip:$('i_zip').value.trim(),city:$('i_city').value.trim(),
+    clientVat:$('i_cv').value.trim(),clientCountry:$('i_co').value.trim(),payMethod:$('i_pm').value,items,date:$('i_da').value,serviceDate:$('i_ld').value,serviceEnd:$('i_le').value,due:$('i_du').value,paymentDate:$('i_pd').value,
+    net:itemsNet(items),vat:isKlein()?0:(+$('i_va').value||0),status:$('i_pd').value?'bezahlt':'offen',note:$('i_no').value.trim(),cancels:'',cancelledBy:''};
 }
 // Pflichtangaben nach § 14 Abs. 4 UStG (vollständiger Satz, gilt auch für Rechnungen > 250 €)
 function missingForIssue(f){
@@ -1555,13 +1714,17 @@ function missingForIssue(f){
   if(country()==='AT'){if(!isKlein()&&!s['USt-IdNr.'])m.push('Deine UID-Nummer (⚙ Profil)');}
   else if(!(s['Steuernummer']||s['USt-IdNr.']))m.push('Deine Steuernummer oder USt-IdNr. (⚙ Profil)');
   if(!f.client)m.push('Name des Kunden');
-  if(!f.street||!f.zip||!f.city)m.push('Anschrift des Kunden (Straße, PLZ, Stadt)');
-  if(!f.desc)m.push('Leistungsbeschreibung (Art und Umfang der Leistung)');
+  if(!f.street||!f.zip||!f.city)m.push('Anschrift des Kunden (Straße, PLZ, Ort)');
+  if(!f.items.length)m.push('Mindestens eine Position');
+  else{
+    if(f.items.some(it=>!it.desc))m.push('Jede Position braucht eine Beschreibung');
+    if(f.items.some(it=>!(it.qty>0)))m.push('Jede Position braucht eine Menge größer als 0');
+  }
   if(!f.date)m.push('Rechnungsdatum');
   if(!f.serviceDate)m.push('Leistungsdatum');
   else if(f.serviceEnd&&f.serviceEnd<f.serviceDate)m.push('Das Ende des Leistungszeitraums liegt vor dem Beginn');
   if(!f.due)m.push('Fälligkeitsdatum');else if(f.date&&f.due<f.date)m.push('Das Fälligkeitsdatum liegt vor dem Rechnungsdatum');
-  if(!(f.net>0))m.push('Nettobetrag größer als 0');
+  if(!(f.net>0))m.push('Gesamtbetrag (netto) größer als 0');
   return m;
 }
 function saveInv(){
@@ -1576,13 +1739,15 @@ function saveInv(){
   if(!f.client){alert('Bitte den Kunden eintragen.');$('i_cl').focus();return;}
   if(!f.date){alert('Bitte das Rechnungsdatum eintragen.');return;}
   if(!futurePayOk(f.paymentDate))return;
+  if(!f.nr)f.nr=nextDraftNo();
+  f.customerNo=ensureCustomer(f);
   if(cur){f._id=cur._id;invoices[invoices.indexOf(cur)]=f;}else{f._id=nid();invoices.push(f);}
   closeInv();markChanged();
 }
 // Ausstellen: Nummer vergeben, PDF erzeugen und ablegen (Drive bzw. Download), dann sperren
 async function commitIssue(f,orig){
   const nr=nextNr(),inv={...f,nr,state:'issued',issuer:issuerSnapshot(),pdfId:''};
-  inv.status=inv.paymentDate?'bezahlt':'offen';
+  inv.net=itemsNet(inv.items);inv.status=inv.paymentDate?'bezahlt':'offen';
   try{
     if(drive.linked){
       if(!driveGuard())return;
@@ -1591,6 +1756,7 @@ async function commitIssue(f,orig){
     }else downloadBlob(new Blob([makeInvoicePDF(inv)],{type:'application/pdf'}),`Rechnung_${nr}.pdf`);
   }catch(e){alert('Die Rechnung wurde NICHT ausgestellt, weil das PDF nicht erstellt bzw. gespeichert werden konnte:\n'+e.message);return;}
   finally{if(drive.linked)setBusy(false);}
+  inv.customerNo=ensureCustomer(inv);
   const ix=f._id?invoices.findIndex(i=>i._id===f._id):-1;
   if(ix>=0)invoices[ix]=inv;else{inv._id=nid();invoices.push(inv);}
   if(orig){orig.state='cancelled';orig.cancelledBy=nr;}
@@ -1615,8 +1781,9 @@ function stornoInv(){
   const o=invoices.find(i=>i._id===editInvId);if(!o)return;
   if(o.status==='bezahlt'){alert('Bezahlte Rechnungen lassen sich hier nicht stornieren. Bitte kläre Rückzahlung bzw. Gutschrift mit deiner Steuerberatung.');return;}
   if(!confirm(`Rechnung ${o.nr} stornieren?\n\nDafür wird eine Stornorechnung mit eigener Nummer erstellt (PDF). Danach kannst du eine neue, korrigierte Rechnung ausstellen.`))return;
-  const t=todayISO();
-  commitIssue({client:o.client,street:o.street,zip:o.zip,city:o.city,clientVat:o.clientVat||'',clientCountry:o.clientCountry||'',payMethod:'Überweisung',desc:`Stornierung der Rechnung ${o.nr}: ${o.desc}`,date:t,serviceDate:o.serviceDate,serviceEnd:o.serviceEnd,due:t,paymentDate:'',net:-o.net,vat:o.vat,status:'offen',note:'',cancels:o.nr,cancelledBy:''},o);
+  const t=todayISO(),items=o.items.map(it=>({...it,price:-it.price}));
+  commitIssue({customerNo:o.customerNo||'',client:o.client,street:o.street,zip:o.zip,city:o.city,clientVat:o.clientVat||'',clientCountry:o.clientCountry||'',payMethod:'Überweisung',items,net:itemsNet(items),
+    date:t,serviceDate:o.serviceDate,serviceEnd:o.serviceEnd,due:t,paymentDate:'',vat:o.vat,status:'offen',note:'',cancels:o.nr,cancelledBy:''},o);
 }
 function deleteInv(){
   const cur=invoices.find(i=>i._id===editInvId);
@@ -1624,7 +1791,7 @@ function deleteInv(){
   if(!confirm('Entwurf wirklich löschen?'))return;
   invoices=invoices.filter(i=>i._id!==editInvId);closeInv();markChanged();
 }
-$('btnNewInv').addEventListener('click',openInvModal);
+$('btnNewInv').addEventListener('click',()=>openInvModal());
 $('invCancel').addEventListener('click',cancelInv);
 $('invSave').addEventListener('click',saveInv);
 $('invIssue').addEventListener('click',issueInv);
@@ -1632,11 +1799,102 @@ $('invStorno').addEventListener('click',stornoInv);
 $('invDelBtn').addEventListener('click',deleteInv);
 $('invPreview').addEventListener('click',()=>{
   const f=getInvForm();
-  if(!f.client||!(f.net>0)){alert('Bitte zuerst Kunden und Betrag ausfüllen.');return;}
+  if(!f.client||!(f.net>0)){alert('Bitte zuerst Kunden und mindestens eine Position mit Betrag ausfüllen.');return;}
   previewPDF(f);
 });
 $('invPdfDl').addEventListener('click',()=>{const o=invoices.find(i=>i._id===editInvId);if(o)downloadPDF(o);});
 $('invPdf').addEventListener('click',()=>{const o=invoices.find(i=>i._id===editInvId);if(o)sharePDF(o);});
+
+// ── KUNDEN ─────────────────────────────────────────────────
+const nextCustNo=()=>'K'+String(Math.max(0,...customers.map(c=>parseInt(String(c.no).slice(1))||0))+1).padStart(3,'0');
+const custKey=(name,zip)=>String(name||'').trim().toLowerCase()+'|'+String(zip||'').trim();
+// Legt den Kunden automatisch an, wenn es ihn noch nicht gibt (gleicher Name + PLZ). Liefert die Kundennummer.
+function ensureCustomer(f){
+  if(!f.client)return f.customerNo||'';
+  if(f.customerNo&&customers.some(c=>c.no===f.customerNo))return f.customerNo;
+  const ex=customers.find(c=>custKey(c.name,c.zip)===custKey(f.client,f.zip));
+  if(ex)return ex.no;
+  const c={_id:nid(),no:nextCustNo(),name:f.client,street:f.street,zip:f.zip,city:f.city,country:f.clientCountry||'',vatId:f.clientVat||'',phone:'',email:'',termDays:'',note:''};
+  customers.push(c);toast(`Kunde ${c.no} (${c.name}) wurde zur Kundenliste hinzugefügt.`,true,3500);
+  return c.no;
+}
+const custInvoices=c=>invoices.filter(i=>i.customerNo===c.no&&i.state!=='draft');
+const custCount=c=>custInvoices(c).length;
+const custPaid=c=>round2(custInvoices(c).filter(i=>statusText(i)==='Bezahlt').reduce((s,i)=>s+i.net,0));
+const custOpen=c=>round2(custInvoices(c).filter(i=>statusText(i)==='Offen').reduce((s,i)=>s+round2(i.net+vatAmount(i)),0));
+
+function renderCustTable(){
+  const q=$('cuSearch').value.toLowerCase().trim();
+  let list=customers.slice().sort((a,b)=>a.name.localeCompare(b.name,'de'));
+  if(q)list=list.filter(c=>[c.no,c.name,c.city,c.zip,c.street,c.phone,c.email].join(' ').toLowerCase().includes(q));
+  const em=$('custEmpty');
+  if(!list.length){$('custTb').innerHTML='';em.style.display='';em.textContent=customers.length?'Kein Kunde gefunden.':'Noch keine Kunden. Sie werden beim Speichern einer Rechnung automatisch angelegt – oder mit „+ Neuer Kunde“.';return;}
+  em.style.display='none';
+  $('custTb').innerHTML=list.map(c=>`<tr>
+    <td class="mono" style="color:var(--muted)">${esc(c.no)}</td>
+    <td><strong>${esc(c.name)}</strong></td>
+    <td style="color:var(--muted)">${esc([c.street,[c.zip,c.city].filter(Boolean).join(' '),c.country].filter(Boolean).join(', '))}</td>
+    <td style="color:var(--muted);font-size:12px">${esc([c.phone,c.email].filter(Boolean).join(' · '))}</td>
+    <td class="mono" data-l="Rechnungen" style="text-align:right">${custCount(c)}</td>
+    <td class="mono" data-l="Umsatz bezahlt" style="text-align:right">${fmt(custPaid(c))}</td>
+    <td><button class="abtn" data-edit-cust="${c._id}" title="Bearbeiten">✏</button><button class="abtn" data-inv-cust="${c._id}" title="Neue Rechnung für diesen Kunden">🧾</button></td>
+  </tr>`).join('');
+}
+$('cuSearch').addEventListener('input',renderCustTable);
+
+// Kunden-Dialog (anlegen / bearbeiten)
+let editCustId=null,custOpenSnap='';
+const CU_IDS=['cu_name','cu_street','cu_zip','cu_city','cu_country','cu_vat','cu_phone','cu_email','cu_days','cu_note'];
+const custSnap=()=>JSON.stringify(CU_IDS.map(id=>$(id).value));
+function openCustModal(id){
+  const c=id?customers.find(x=>x._id===id):null;editCustId=c?c._id:null;
+  $('cuMT').textContent=c?'Kunde bearbeiten':'Neuer Kunde';$('cu_no').value=c?c.no:'wird automatisch vergeben';
+  $('cuDel').style.display=c?'':'none';
+  const v=c||{};
+  $('cu_name').value=v.name||'';$('cu_street').value=v.street||'';$('cu_zip').value=v.zip||'';$('cu_city').value=v.city||'';$('cu_country').value=v.country||'';
+  $('cu_vat').value=v.vatId||'';$('cu_phone').value=v.phone||'';$('cu_email').value=v.email||'';$('cu_days').value=v.termDays||'';$('cu_note').value=v.note||'';
+  custOpenSnap=custSnap();$('custOv').classList.add('open');
+}
+const closeCust=()=>$('custOv').classList.remove('open');
+function saveCust(){
+  const c={name:$('cu_name').value.trim(),street:$('cu_street').value.trim(),zip:$('cu_zip').value.trim(),city:$('cu_city').value.trim(),country:$('cu_country').value.trim(),
+    vatId:$('cu_vat').value.trim(),phone:$('cu_phone').value.trim(),email:$('cu_email').value.trim(),termDays:$('cu_days').value.trim(),note:$('cu_note').value.trim()};
+  if(!c.name||!c.street||!c.zip||!c.city){alert('Bitte Name, Straße, PLZ und Ort ausfüllen.');return;}
+  const dup=customers.find(x=>x._id!==editCustId&&custKey(x.name,x.zip)===custKey(c.name,c.zip));
+  if(dup&&!confirm(`Einen Kunden „${dup.name}“ mit dieser PLZ gibt es schon (${dup.no}). Trotzdem zusätzlich anlegen?`))return;
+  if(editCustId){Object.assign(customers.find(x=>x._id===editCustId),c);}
+  else customers.push({_id:nid(),no:nextCustNo(),...c});
+  closeCust();markChanged();
+}
+function deleteCust(){
+  const c=customers.find(x=>x._id===editCustId);if(!c)return;
+  if(!confirm(`Kunde ${c.no} (${c.name}) aus der Liste löschen?\n\nBereits erstellte Rechnungen behalten ihre Kundendaten.`))return;
+  customers=customers.filter(x=>x._id!==editCustId);closeCust();markChanged();
+}
+$('btnNewCust').addEventListener('click',()=>openCustModal());
+$('cuSave').addEventListener('click',saveCust);
+$('cuDel').addEventListener('click',deleteCust);
+$('cuCancel').addEventListener('click',()=>{if(custSnap()!==custOpenSnap&&!confirm('Eingaben verwerfen? Nicht gespeicherte Änderungen gehen verloren.'))return;closeCust();});
+
+// Kundenauswahl im Rechnungsformular
+function fillCustomer(c,quiet){
+  $('i_cl').value=c.name;$('i_street').value=c.street;$('i_zip').value=c.zip;$('i_city').value=c.city;$('i_co').value=c.country||'';$('i_cv').value=c.vatId||'';
+  invCustNo=c.no;
+  if(!quiet&&$('i_da').value)$('i_du').value=addDaysISO($('i_da').value,invTermDays());
+}
+function renderPicker(){
+  const q=$('pk_q').value.toLowerCase().trim();
+  const list=customers.slice().sort((a,b)=>a.name.localeCompare(b.name,'de')).filter(c=>!q||[c.no,c.name,c.city,c.zip,c.street].join(' ').toLowerCase().includes(q));
+  $('pk_list').innerHTML=list.length?list.map(c=>`<button type="button" class="pick" data-pick="${c._id}"><strong>${esc(c.name)}</strong><span>${esc([c.zip,c.city].filter(Boolean).join(' '))} · ${esc(c.no)}</span></button>`).join('')
+    :`<div class="empty">${customers.length?'Kein Kunde gefunden.':'Noch keine Kunden. Sie werden beim Speichern einer Rechnung automatisch angelegt.'}</div>`;
+}
+$('btnPickCust').addEventListener('click',()=>{$('pk_q').value='';renderPicker();$('pickOv').classList.add('open');$('pk_q').focus();});
+$('pk_q').addEventListener('input',renderPicker);
+$('pkClose').addEventListener('click',()=>$('pickOv').classList.remove('open'));
+$('pk_list').addEventListener('click',e=>{
+  const b=e.target.closest('[data-pick]');if(!b)return;
+  const c=customers.find(x=>x._id===+b.dataset.pick);if(c){fillCustomer(c);$('pickOv').classList.remove('open');}
+});
 
 // ── COST MODAL ─────────────────────────────────────────────
 function calcCostNet(){
@@ -1750,6 +2008,8 @@ $('costDelBtn').addEventListener('click',deleteCost);
 document.addEventListener('click',e=>{
   const a=e.target.closest('[data-edit-inv]');if(a)return editInv(+a.dataset.editInv);
   const b=e.target.closest('[data-pdf-inv]');if(b){const inv=invoices.find(i=>i._id===+b.dataset.pdfInv);if(inv)(inv.state==='draft'?previewPDF(inv):downloadPDF(inv));return;}
+  const ec=e.target.closest('[data-edit-cust]');if(ec)return openCustModal(+ec.dataset.editCust);
+  const ic=e.target.closest('[data-inv-cust]');if(ic){const cu=customers.find(x=>x._id===+ic.dataset.invCust);if(cu)openInvModal(cu);return;}
   const c=e.target.closest('[data-edit-cost]');if(c)return editCost(+c.dataset.editCost);
   const v=e.target.closest('[data-view-cost]');if(v){const x=costs.find(k=>k._id===+v.dataset.viewCost);if(x){if(!drive.linked)alert('Bitte zuerst mit Google Drive verbinden (⚙ Profil).');else viewReceipt(x.receiptId,x.receiptName);}return;}
 });
@@ -1776,7 +2036,9 @@ function issuerSnapshot(){
 function makeInvoicePDF(inv){
   const I=inv.issuer||issuerSnapshot(),CC=COUNTRIES[I.land]||C(),klein=!!I.klein;
   const doc=new window.jspdf.jsPDF({unit:'mm',format:'a4'}),L=20,R=190,X=126,NAVY=[26,26,46];
-  const rate=klein?0:(+inv.vat||0),net=inv.net||0,vatAmt=round2(net*rate/100),gross=round2(net+vatAmt);
+  const items=inv.items&&inv.items.length?inv.items:[{desc:'',qty:1,unit:'',price:0}];
+  const rate=klein?0:(+inv.vat||0),net=itemsNet(items),vatAmt=round2(net*rate/100),gross=round2(net+vatAmt);
+  const nrShown=isDraftNr(inv.nr)?'':inv.nr,storno=!!inv.cancels;
   const eur=n=>(+n||0).toLocaleString('de-DE',{minimumFractionDigits:2,maximumFractionDigits:2})+' \u20AC';
   const T=(t,x,y,o)=>doc.text(String(t),x,y,o);
   const font=(st,sz,c)=>{doc.setFont('helvetica',st);doc.setFontSize(sz);const k=c===undefined?30:c;Array.isArray(k)?doc.setTextColor(k[0],k[1],k[2]):doc.setTextColor(k);};
@@ -1792,7 +2054,7 @@ function makeInvoicePDF(inv){
   font('normal',7.5,140);T('ABSENDER',X,12);
   let y=16;
   rb.forEach(([k,v])=>{if(k==='gap'){y+=2.5;return;}if(k==='b')font('bold',10.5,NAVY);else if(k==='g')font('normal',8.5,120);else font('normal',9,60);T(v,X,y);y+=4.5;});
-  // 2) Empfänger links (eigene Zone mit Absenderzeile), Rechnungsdaten rechts
+  // 2) Empfänger links, Rechnungsdaten rechts
   font('normal',7.5,140);T('RECHNUNGSEMPFÄNGER',L,57);T('RECHNUNGSDATEN',X,57);
   doc.setDrawColor(210);doc.line(L,58.6,L+85,58.6);doc.line(X,58.6,R,58.6);
   font('bold',11);T(inv.client||'',L,65);font('normal',10.5);
@@ -1800,19 +2062,36 @@ function makeInvoicePDF(inv){
   [inv.street,[inv.zip,inv.city].filter(Boolean).join(' '),inv.clientCountry].filter(Boolean).forEach(l=>{T(l,L,ry);ry+=5;});
   if(inv.clientVat){font('normal',9,110);T(CC.vatId+': '+inv.clientVat,L,ry+0.5);}
   const period=inv.serviceEnd&&inv.serviceEnd!==inv.serviceDate?`${fmtDate(inv.serviceDate)} – ${fmtDate(inv.serviceEnd)}`:fmtDate(inv.serviceDate);
-  [['Rechnungsnummer',inv.nr||'–'],['Rechnungsdatum',fmtDate(inv.date)],[period.includes('–')?'Zeitraum':'Leistungsdatum',period],['Fällig am',fmtDate(inv.due)]]
+  [['Rechnungsnummer',nrShown||'–'],['Rechnungsdatum',fmtDate(inv.date)],[period.includes('–')?'Zeitraum':'Leistungsdatum',period],['Fällig am',fmtDate(inv.due)]]
     .forEach(([l,v],i)=>{const yy=64+i*6.2;font('normal',8.5,120);T(l,X,yy);font('bold',9,30);T(v,R,yy,{align:'right'});});
-  // 3) Titel + Leistungstabelle
-  const storno=!!inv.cancels;
-  font('bold',18,NAVY);T(storno?'Stornorechnung':(inv.nr?'Rechnung':'Rechnung (Entwurf)'),L,110);
+  // 3) Titel + Positionen (mit Seitenumbruch)
+  font('bold',18,NAVY);T(storno?'Stornorechnung':(nrShown?'Rechnung':'Rechnung (Entwurf)'),L,110);
   y=118;
   if(storno){font('normal',10,60);T(`Storno zu Rechnung Nr. ${inv.cancels}`,L,y);y+=7;}
-  doc.setFillColor(243,243,240);doc.rect(L,y,R-L,8,'F');
-  font('bold',9.5,NAVY);T('Leistungsbeschreibung',L+3,y+5.4);T('Betrag',R-3,y+5.4,{align:'right'});
-  y+=15;font('normal',10.5);
-  const lines=doc.splitTextToSize(inv.desc||'',118);
-  lines.forEach((l,i)=>T(l,L+3,y+i*5));T(eur(net),R-3,y,{align:'right'});
-  y+=lines.length*5+3;doc.setDrawColor(215);doc.line(L,y,R,y);y+=8;
+  const tableHead=yy=>{doc.setFillColor(243,243,240);doc.rect(L,yy,R-L,8,'F');font('bold',9,NAVY);
+    T('Pos.',L+3,yy+5.4);T('Beschreibung',L+12,yy+5.4);T('Menge',129,yy+5.4,{align:'right'});T('Einheit',131.5,yy+5.4);T('Einzelpreis',166,yy+5.4,{align:'right'});T('Betrag',R-3,yy+5.4,{align:'right'});};
+  const nextPage=withHead=>{doc.addPage();font('normal',8.5,120);T(`Rechnung ${nrShown||'(Entwurf)'} – Fortsetzung`,L,15);if(withHead){tableHead(20);return 33;}return 24;};
+  // Zahlungsbox + Fußnote vorab berechnen (für den Platzbedarf der letzten Seite)
+  const pm=inv.payMethod||'Überweisung';
+  const payRows=pm!=='Überweisung'?[]:[I.iban?'IBAN: '+I.iban:'',I.bic?'BIC: '+I.bic+(I.bank?' · '+I.bank:''):''].filter(Boolean);
+  font('normal',9.5);
+  const payLines=doc.splitTextToSize(pm==='Überweisung'?`Bitte überweisen Sie den Betrag bis zum ${fmtDate(inv.due)} unter Angabe der Rechnungsnummer ${nrShown}.`:`Zahlungsart: ${pm==='Bar'?'Barzahlung':'Kartenzahlung vor Ort'}.`,R-L-8);
+  const payH=10+payRows.length*5+payLines.length*4.6;
+  const custom=I.footer,note=klein?[CC.kuText,custom&&!CC.kuRe.test(custom)?custom:''].filter(Boolean).join(' '):(CC.kuRe.test(custom)?'':custom);
+  font('normal',8.5);const noteLines=note?doc.splitTextToSize(note,R-L):[];
+  tableHead(y);y+=13;
+  items.forEach((it,x)=>{
+    font('normal',10);
+    const lines=doc.splitTextToSize(it.desc||'',74),h=Math.max(lines.length,1)*4.8+3.4;
+    if(y+h>270)y=nextPage(true);
+    font('normal',10,120);T(String(x+1),L+3,y);font('normal',10,30);
+    lines.forEach((l,i)=>T(l,L+12,y+i*4.8));
+    T(fmtQty(it.qty),129,y,{align:'right'});T(it.unit||'',131.5,y);T(eur(it.price),166,y,{align:'right'});T(eur(itemAmt(it)),R-3,y,{align:'right'});
+    y+=h;doc.setDrawColor(228);doc.line(L,y-3.2,R,y-3.2);
+  });
+  const need=32+(storno?0:payH+10)+(noteLines.length?noteLines.length*3.8+8:0);
+  if(y+need>285)y=nextPage(false);
+  y+=4;font('normal',10.5);
   T('Nettobetrag',X,y);T(eur(net),R-3,y,{align:'right'});
   if(!klein){y+=6;T(`Umsatzsteuer ${rate} %`,X,y);T(eur(vatAmt),R-3,y,{align:'right'});}
   y+=3;doc.setDrawColor(26,26,46);doc.line(X,y,R,y);y+=6.5;
@@ -1820,41 +2099,53 @@ function makeInvoicePDF(inv){
   y+=14;
   // 4) Zahlung
   if(!storno){
-    const pm=inv.payMethod||'Überweisung';
-    const rows=pm!=='Überweisung'?[]:[I.iban?'IBAN: '+I.iban:'',I.bic?'BIC: '+I.bic+(I.bank?' · '+I.bank:''):''].filter(Boolean);
-    const pay=doc.splitTextToSize(pm==='Überweisung'?`Bitte überweisen Sie den Betrag bis zum ${fmtDate(inv.due)} unter Angabe der Rechnungsnummer ${inv.nr||''}.`:`Zahlungsart: ${pm==='Bar'?'Barzahlung':'Kartenzahlung vor Ort'}.`,R-L-8);
-    const h=10+rows.length*5+pay.length*4.6;
-    doc.setFillColor(244,243,239);doc.roundedRect(L,y,R-L,h,2,2,'F');
+    doc.setFillColor(244,243,239);doc.roundedRect(L,y,R-L,payH,2,2,'F');
     font('bold',10,NAVY);T('Zahlungsinformationen',L+4,y+6);font('normal',10,40);
-    rows.forEach((r,i)=>T(r,L+4,y+11.5+i*5));
-    font('normal',9.5,90);pay.forEach((l,i)=>T(l,L+4,y+11.5+rows.length*5+i*4.6));
-    y+=h+10;
+    payRows.forEach((r,i)=>T(r,L+4,y+11.5+i*5));
+    font('normal',9.5,90);payLines.forEach((l,i)=>T(l,L+4,y+11.5+payRows.length*5+i*4.6));
+    y+=payH+10;
   }
   // 5) Fußnote (Kleinunternehmer-Hinweis fest, nicht entfernbar)
-  const custom=I.footer;
-  const note=klein?[CC.kuText,custom&&!CC.kuRe.test(custom)?custom:''].filter(Boolean).join(' '):(CC.kuRe.test(custom)?'':custom);
-  if(note){font('normal',8.5,120);const nl=doc.splitTextToSize(note,R-L),fy=Math.max(y,262-nl.length*3.8);doc.setDrawColor(210);doc.line(L,fy-4,R,fy-4);nl.forEach((l,i)=>T(l,L,fy+i*3.8));}
+  if(noteLines.length){font('normal',8.5,120);const fy=Math.max(y,263-noteLines.length*3.8);doc.setDrawColor(210);doc.line(L,fy-4,R,fy-4);noteLines.forEach((l,i)=>T(l,L,fy+i*3.8));}
+  const pages=doc.getNumberOfPages();
+  if(pages>1)for(let p=1;p<=pages;p++){doc.setPage(p);font('normal',8,150);T(`Seite ${p} von ${pages}`,R,291,{align:'right'});}
   return doc.output('arraybuffer');
 }
 function previewPDF(inv){
   const blob=new Blob([makeInvoicePDF(inv)],{type:'application/pdf'});
   if(!window.open(URL.createObjectURL(blob),'_blank'))downloadBlob(blob,`Rechnung_${inv.nr||'Entwurf'}.pdf`);
 }
+// Ausgestellte Rechnungen werden NIE neu erzeugt: Download und Teilen liefern immer das im Drive archivierte Original-PDF.
+// (Nur Entwürfe haben noch kein PDF – dort wird eine Vorschau erzeugt.)
+const pdfCache=new Map();
 async function invoiceBytes(inv){
-  if(inv.state!=='draft'&&inv.pdfId&&drive.linked){try{await ensureToken();return await driveDownload(inv.pdfId);}catch(e){}}   // archiviertes Original bevorzugen
-  return makeInvoicePDF(inv);                                                                                                      // sonst identisch aus den gespeicherten Aussteller-Daten
+  if(inv.state==='draft')return makeInvoicePDF(inv);
+  if(!drive.linked)throw new Error('Das Original-PDF liegt in deinem Google Drive. Bitte zuerst mit Google Drive verbinden (⚙ Profil).');
+  await ensureToken();
+  let id=inv.pdfId;
+  if(!id){try{id=(await listArchivedPdfs())[`Rechnung_${inv.nr}.pdf`];}catch(e){}}
+  if(!id)throw new Error(`Für Rechnung ${inv.nr} gibt es kein archiviertes PDF im Drive. Sie wurde ohne Drive ausgestellt; das PDF wurde damals nur auf dein Gerät heruntergeladen und wird nicht neu erzeugt.`);
+  if(pdfCache.has(id))return pdfCache.get(id);
+  const bytes=await driveDownload(id);pdfCache.set(id,bytes);return bytes;
 }
 const pdfName=inv=>`Rechnung_${inv.nr||'Entwurf'}.pdf`;
 async function downloadPDF(inv){
-  downloadBlob(new Blob([await invoiceBytes(inv)],{type:'application/pdf'}),pdfName(inv));
+  try{downloadBlob(new Blob([await invoiceBytes(inv)],{type:'application/pdf'}),pdfName(inv));}
+  catch(e){alert(e.message);}
 }
 async function sharePDF(inv){
-  const bytes=await invoiceBytes(inv),name=pdfName(inv);
+  const name=pdfName(inv),cached=inv.pdfId&&pdfCache.get(inv.pdfId);
+  let bytes;
+  try{bytes=cached||await invoiceBytes(inv);}catch(e){alert(e.message);return;}
   try{
     const file=new File([bytes],name,{type:'application/pdf'});
     if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],title:name});return;}
-  }catch(e){if(e&&e.name==='AbortError')return;}
-  downloadBlob(new Blob([bytes],{type:'application/pdf'}),name);
+    downloadBlob(new Blob([bytes],{type:'application/pdf'}),name);
+  }catch(e){
+    if(e&&e.name==='AbortError')return;
+    if(e&&e.name==='NotAllowedError'){toast('PDF geladen – bitte „Teilen“ noch einmal tippen.',true,5000);return;}   // beim 2. Tippen ist es zwischengespeichert
+    downloadBlob(new Blob([bytes],{type:'application/pdf'}),name);
+  }
 }
 
 // ── SPEICHERN ──────────────────────────────────────────────
@@ -1885,7 +2176,7 @@ $('btnSave').addEventListener('click',onSave);
 
 // ── GOOGLE DRIVE ───────────────────────────────────────────
 // Berechtigung „drive.file“: Die App sieht nur Dateien, die sie selbst angelegt hat – nicht dein restliches Drive.
-const GOOGLE_CLIENT_ID='37267156022-rf3schbrt9g3479ukr468klsitdvv35p.apps.googleusercontent.com';   // optional hier eintragen; sonst fragt die App beim ersten Verbinden danach
+const GOOGLE_CLIENT_ID='37267156022-rf3schbrt9g3479ukr468klsitdvv35p.apps.googleusercontent.com';
 const SCOPE='https://www.googleapis.com/auth/drive.file';
 const DRIVE_FILE='rechnungen.xlsx',DRIVE_FOLDER='FreelanceManager';
 const XLSX_MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
@@ -2129,7 +2420,7 @@ $('btnPrintYear').addEventListener('click',()=>{
   <tr><td>Rechnungen gesamt</td><td>${yr.length}</td></tr></table>
   <h2>Einzelrechnungen</h2>
   <table><tr><th>Nr.</th><th>Kunde</th><th>Leistung</th><th>Datum</th><th>Leistungsdatum</th><th>Netto</th><th>Status</th></tr>
-  ${yr.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(i=>`<tr><td>${esc(i.nr)}</td><td>${esc(i.client)}</td><td>${esc(i.desc)}</td><td>${fmtDate(i.date)}</td><td>${fmtDate(i.serviceDate)}</td><td>${fmt(i.net)}</td><td>${effStatus(i)}</td></tr>`).join('')}</table>`;
+  ${yr.slice().sort((a,b)=>a.date.localeCompare(b.date)).map(i=>`<tr><td>${esc(i.nr)}</td><td>${esc(i.client)}</td><td>${esc(invSummary(i))}</td><td>${fmtDate(i.date)}</td><td>${fmtDate(i.serviceDate)}</td><td>${fmt(i.net)}</td><td>${effStatus(i)}</td></tr>`).join('')}</table>`;
   printWindow('Übersicht '+activeYear,body,PRINT_CSS);
 });
 $('btnPrintEur').addEventListener('click',()=>{
@@ -2199,6 +2490,8 @@ async function exportZip(){
     const EIK=['nr','status','date','serviceDate','serviceEnd','due','paymentDate','payMethod','client','clientVat','desc','net','vat','vatAmt','gross','cancels','cancelledBy'].map(k=>INV_COLS.find(c=>c.k===k));
     const ei=[EIK.map(c=>c.h)];invs.forEach(i=>ei.push(EIK.map(c=>csvVal(c,i))));
     const ea=[COST_COLS.map(c=>c.h)];cs.forEach(c=>ea.push(COST_COLS.map(col=>col.k==='receiptName'?(rf.get(c._id)||''):csvVal(col,c))));
+    const pi=invs.flatMap(i=>(i.items||[]).map((it,x)=>({nr:i.nr,pos:x+1,...it})));
+    zip.file(`Positionen_${label}.csv`,csvText([POS_COLS.map(c=>c.h),...pi.map(p=>POS_COLS.map(c=>csvVal(c,p)))]));
     zip.file(`Einnahmen_${label}.csv`,csvText(ei));
     zip.file(`Ausgaben_${label}.csv`,csvText(ea));
     // Zusammenfassung + Hinweise
@@ -2208,8 +2501,9 @@ async function exportZip(){
     zip.file('LIESMICH.txt',[
       `Export für die Steuerberatung – ${title}`,
       `${settings['Firmenname']||settings['Ihr Name']||''}${settings['Steuernummer']?' · Steuernummer '+settings['Steuernummer']:''}`,
-      `Erstellt am ${fmtDate(todayISO())} mit Freelance Manager`,'',
+      `Erstellt am ${fmtDate(todayISO())} mit Freelance Manager ${APP_VERSION}`,'',
       'INHALT',
+      `• Positionen_${label}.csv – die einzelnen Rechnungspositionen`,
       `• Einnahmen_${label}.csv – ${invs.length} Rechnungen (inkl. Stornos), die im Zeitraum ausgestellt ODER bezahlt wurden`,
       `• Ausgaben_${label}.csv – Ausgaben nach Belegdatum (Anzahl: ${cs.length})`,
       '• Rechnungen/ – die im Google Drive archivierten Original-PDFs (es werden keine PDFs neu erzeugt)','• Belege/ – Fotos bzw. PDFs der Ausgaben','',
@@ -2269,6 +2563,7 @@ $('logoFile').addEventListener('change',async e=>{
 $('logoDel').addEventListener('click',()=>{if(confirm('Logo entfernen? Bereits ausgestellte Rechnungen bleiben unverändert.')){delete settings['Logo'];markChanged();renderLogoUI();}});
 
 $('riskInfo').addEventListener('click',e=>{e.preventDefault();$('infoOv').classList.add('open');});
+document.querySelectorAll('.ver').forEach(e=>e.textContent=APP_VERSION);
 </script>
 </body>
 </html>
