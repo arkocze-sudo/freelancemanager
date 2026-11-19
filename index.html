@@ -228,44 +228,44 @@ header .lang-select option{color:#1a1a1a}
 
   /* Tabellen → Karten */
   .tw{background:none;border:none;overflow:visible}
-  table,thead,tbody,tr,td{display:block;min-width:0!important;width:100%}
+  .tw table,.tw thead,.tw tbody,.tw tr,.tw td{display:block;min-width:0!important;width:100%}
   thead{display:none}
   tbody tr{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
   tbody tr:hover{background:var(--surface)}
-  tbody td{padding:0;border:none;text-align:left!important;max-width:none!important;white-space:normal!important;overflow:visible!important;width:auto}
+  .tw tbody td{padding:0;border:none;text-align:left!important;max-width:none!important;white-space:normal!important;overflow:visible!important;width:auto}
   tbody td:empty{display:none}
   td[data-l]::before{content:attr(data-l) ": ";color:var(--muted);font-size:12px}
   .mono{font-size:13px}
 
   /* Rechnungs-Karte */
-  #invTb td:nth-child(1){grid-row:3;grid-column:1}
-  #invTb td:nth-child(2){grid-row:1;grid-column:1;font-size:16px}
-  #invTb td:nth-child(3){grid-row:2;grid-column:1/3;color:var(--muted);font-size:13px}
-  #invTb td:nth-child(4){grid-row:4;grid-column:1;font-size:13px}
-  #invTb td:nth-child(5){grid-row:4;grid-column:2;font-size:13px;text-align:right!important}
-  #invTb td:nth-child(6),#invTb td:nth-child(7){display:none}
-  #invTb td:nth-child(8){grid-row:1;grid-column:2;font-size:16px;align-self:start}
-  #invTb td:nth-child(9){grid-row:3;grid-column:2;text-align:right!important}
-  #invTb td:nth-child(10){grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
+  #invTb .inv-nr{grid-row:3;grid-column:1}
+  #invTb .inv-client{grid-row:1;grid-column:1;font-size:16px}
+  #invTb .inv-summary{grid-row:2;grid-column:1/3;color:var(--muted);font-size:13px}
+  #invTb .inv-date{grid-row:4;grid-column:1;font-size:13px}
+  #invTb .inv-due{grid-row:4;grid-column:2;font-size:13px;text-align:right!important}
+  #invTb .inv-net,#invTb .inv-vat{display:none}
+  #invTb .inv-gross{grid-row:1;grid-column:2;font-size:16px;align-self:start}
+  #invTb .inv-status{grid-row:3;grid-column:2;text-align:right!important}
+  #invTb .inv-actions{grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
 
   /* Kunden-Karte */
-  #custTb td:nth-child(1){grid-row:1;grid-column:2;text-align:right!important;font-size:12px}
-  #custTb td:nth-child(2){grid-row:1;grid-column:1;font-size:16px}
-  #custTb td:nth-child(3){grid-row:2;grid-column:1/3;font-size:13px}
-  #custTb td:nth-child(4){grid-row:3;grid-column:1/3}
-  #custTb td:nth-child(5){grid-row:4;grid-column:1;font-size:13px}
-  #custTb td:nth-child(6){grid-row:4;grid-column:2;font-size:13px;text-align:right!important}
-  #custTb td:nth-child(7){grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
+  #custTb .cust-no{grid-row:1;grid-column:2;text-align:right!important;font-size:12px}
+  #custTb .cust-name{grid-row:1;grid-column:1;font-size:16px}
+  #custTb .cust-address{grid-row:2;grid-column:1/3;font-size:13px}
+  #custTb .cust-contact{grid-row:3;grid-column:1/3}
+  #custTb .cust-count{grid-row:4;grid-column:1;font-size:13px}
+  #custTb .cust-revenue{grid-row:4;grid-column:2;font-size:13px;text-align:right!important}
+  #custTb .cust-actions{grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
   /* Ausgaben-Karte */
-  #costTb td:nth-child(1){grid-row:2;grid-column:2;font-size:13px;color:var(--muted);text-align:right!important}
-  #costTb td:nth-child(2){grid-row:2;grid-column:1}
-  #costTb td:nth-child(3){grid-row:1;grid-column:1;font-size:16px;font-weight:600}
-  #costTb td:nth-child(4){grid-row:3;grid-column:1;font-size:13px}
-  #costTb td:nth-child(5){grid-row:3;grid-column:2;font-size:13px;text-align:right!important}
-  #costTb td:nth-child(6),#costTb td:nth-child(7),#costTb td:nth-child(8){display:none}
-  #costTb td:nth-child(9){grid-row:1;grid-column:2;font-size:16px;align-self:start}
-  #costTb td:nth-child(10){grid-row:4;grid-column:1/3;font-size:12px}
-  #costTb td:nth-child(11){grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
+  #costTb .cost-date{grid-row:2;grid-column:2;font-size:13px;color:var(--muted);text-align:right!important}
+  #costTb .cost-category{grid-row:2;grid-column:1}
+  #costTb .cost-desc{grid-row:1;grid-column:1;font-size:16px;font-weight:600}
+  #costTb .cost-supplier{grid-row:3;grid-column:1;font-size:13px}
+  #costTb .cost-receipt{grid-row:3;grid-column:2;font-size:13px;text-align:right!important}
+  #costTb .cost-gross,#costTb .cost-vat,#costTb .cost-net{display:none}
+  #costTb .cost-applied{grid-row:1;grid-column:2;font-size:16px;align-self:start}
+  #costTb .cost-note{grid-row:4;grid-column:1/3;font-size:12px}
+  #costTb .cost-actions{grid-row:5;grid-column:1/3;display:flex;gap:8px;margin-top:6px}
   .abtn{flex:1;padding:10px 12px;font-size:15px;margin:0;text-align:center}
   .empty{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:2rem 1rem}
 
@@ -1368,31 +1368,42 @@ function overviewSheet(year){
   return ws;
 }
 const SETTING_HINTS={'Land':'DE (Deutschland) oder AT (Österreich)','Kleinunternehmer (ja/nein)':'ja oder nein','Standard Zahlungsziel (Tage)':'Anzahl Tage','Rechnungstext Fußzeile':'zusätzlicher Text unten auf der Rechnung'};
+// Rows for a data sheet: one array of cells per record (row 1 is the heading, data starts in row 2)
+const sheetRows=(cols,letters,records)=>records.map((record,x)=>cols.map(col=>cellOf(cols,letters,record,col,x+2)));
+
+// Sheet "Einstellungen": profile settings with hints
+function settingsSheet(){
+  const sheet=XLSX.utils.aoa_to_sheet([['Einstellung','Wert','Hinweis'],...SETTINGS_KEYS.map(k=>[k,settings[k]||'',SETTING_HINTS[k]||''])]);
+  sheet['!cols']=[32,40,44].map(w=>({wch:w}));
+  return sheet;
+}
+
+// Hidden sheet "Technik": version info, logo, issuer snapshot + archived PDF id per invoice, receipt id per expense
+function techSheet(){
+  const rows=[['Typ','Schlüssel','Drive-ID','Daten'],['Meta','App-Version','',APP_VERSION],['Meta','Dateiformat','',String(FILE_FORMAT)],['Meta','Zuletzt gespeichert','',settings['Zuletzt gespeichert']]];
+  if(settings['Logo'])rows.push(['Logo','','',settings['Logo']]);
+  invoices.filter(i=>i.pdfId||i.issuer).forEach(i=>rows.push(['Rechnung',i.nr,i.pdfId||'',i.issuer?JSON.stringify(i.issuer):'']));
+  costs.filter(c=>c.receiptId).forEach(c=>rows.push(['Ausgabe',String(c.no),c.receiptId,'']));
+  const sheet=XLSX.utils.aoa_to_sheet(rows);
+  sheet['!cols']=[12,20,36,60].map(w=>({wch:w}));
+  return sheet;
+}
+
 function buildWorkbook(){
   if(typeof XLSX==='undefined')throw new Error(t('theExcelLibraryIs'));
   settings['Zuletzt gespeichert']=nowTimestamp();
-  const inv=sortedInvoices();
-  const iRows=inv.map((i,x)=>INV_COLS.map(col=>col.k==='status'&&i.state==='draft'?xlCell(col,'Entwurf'):cellOf(INV_COLS,INV_L,i,col,x+2)));
-  const pItems=inv.flatMap(i=>(i.items||[]).map((it,x)=>({nr:i.nr,pos:x+1,...it})));
-  const pRows=pItems.map((p,x)=>POS_COLS.map(col=>cellOf(POS_COLS,POS_L,p,col,x+2)));
-  const custs=customers.slice().sort((a,b)=>a.no.localeCompare(b.no));
-  const kRows=custs.map((c,x)=>CUST_COLS.map(col=>cellOf(CUST_COLS,CUST_L,c,col,x+2)));
-  const cRows=sortedCosts().map((c,x)=>COST_COLS.map(col=>cellOf(COST_COLS,COST_L,c,col,x+2)));
-  const set=XLSX.utils.aoa_to_sheet([['Einstellung','Wert','Hinweis'],...SETTINGS_KEYS.map(k=>[k,settings[k]||'',SETTING_HINTS[k]||''])]);
-  set['!cols']=[32,40,44].map(w=>({wch:w}));
-  const tech=[['Typ','Schlüssel','Drive-ID','Daten'],['Meta','App-Version','',APP_VERSION],['Meta','Dateiformat','',String(FILE_FORMAT)],['Meta','Zuletzt gespeichert','',settings['Zuletzt gespeichert']]];
-  if(settings['Logo'])tech.push(['Logo','','',settings['Logo']]);
-  invoices.filter(i=>i.pdfId||i.issuer).forEach(i=>tech.push(['Rechnung',i.nr,i.pdfId||'',i.issuer?JSON.stringify(i.issuer):'']));
-  costs.filter(c=>c.receiptId).forEach(c=>tech.push(['Ausgabe',String(c.no),c.receiptId,'']));
-  const tk=XLSX.utils.aoa_to_sheet(tech);tk['!cols']=[12,20,36,60].map(w=>({wch:w}));
+  const sorted=sortedInvoices();
+  const invoiceRows=sorted.map((inv,x)=>INV_COLS.map(col=>col.k==='status'&&inv.state==='draft'?xlCell(col,'Entwurf'):cellOf(INV_COLS,INV_L,inv,col,x+2)));
+  const positions=sorted.flatMap(inv=>(inv.items||[]).map((item,x)=>({nr:inv.nr,pos:x+1,...item})));
+  const sortedCustomers=customers.slice().sort((a,b)=>a.no.localeCompare(b.no));
   const out=XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(out,overviewSheet(activeYear),'Übersicht');
-  XLSX.utils.book_append_sheet(out,dataSheet(INV_COLS,iRows),'Rechnungen');
-  XLSX.utils.book_append_sheet(out,dataSheet(POS_COLS,pRows),'Positionen');
-  XLSX.utils.book_append_sheet(out,dataSheet(CUST_COLS,kRows),'Kunden');
-  XLSX.utils.book_append_sheet(out,dataSheet(COST_COLS,cRows),'Ausgaben');
-  XLSX.utils.book_append_sheet(out,set,'Einstellungen');
-  XLSX.utils.book_append_sheet(out,tk,'Technik');
+  [['Übersicht',overviewSheet(activeYear)],
+   ['Rechnungen',dataSheet(INV_COLS,invoiceRows)],
+   ['Positionen',dataSheet(POS_COLS,sheetRows(POS_COLS,POS_L,positions))],
+   ['Kunden',dataSheet(CUST_COLS,sheetRows(CUST_COLS,CUST_L,sortedCustomers))],
+   ['Ausgaben',dataSheet(COST_COLS,sheetRows(COST_COLS,COST_L,sortedCosts()))],
+   ['Einstellungen',settingsSheet()],
+   ['Technik',techSheet()]].forEach(([name,sheet])=>XLSX.utils.book_append_sheet(out,sheet,name));
   out.Workbook={Sheets:[{},{},{},{},{},{},{Hidden:1}]};     // "Technik" is hidden (PDF archive, issuer data, logo, version)
   return out;
 }
@@ -1411,39 +1422,68 @@ function readCols(ws,cols){
     return o;
   });
 }
+// Hidden sheet "Technik": meta/logo → settings; returns archive info per invoice and per expense
+function readTechSheet(){
+  const archive={invoices:{},expenses:{}};
+  const rows=workbook.Sheets['Technik']?XLSX.utils.sheet_to_json(workbook.Sheets['Technik'],{header:1,raw:true,defval:''}):[];
+  rows.slice(1).forEach(([type,key,id,data])=>{
+    const kind=String(type).toLowerCase();
+    if(kind==='meta'||kind==='logo')settings[kind==='logo'?'Logo':String(key)]=String(data);
+    else if(kind==='rechnung')archive.invoices[String(key)]={id:String(id||''),data:String(data||'')};
+    else if(kind==='ausgabe')archive.expenses[String(key)]={id:String(id||''),data:String(data||'')};
+  });
+  return archive;
+}
+
+// Invoices with their line items, issuer snapshot and archived PDF id
+function readInvoices(archive){
+  const positionsByInvoice={};
+  readCols(workbook.Sheets['Positionen'],POS_COLS).forEach(p=>{if(p.nr)(positionsByInvoice[p.nr]=positionsByInvoice[p.nr]||[]).push(p);});
+  readCols(workbook.Sheets['Rechnungen'],INV_COLS).forEach(row=>{
+    const draft=row.status.toLowerCase()==='entwurf';delete row.status;   // the Status column is derived, never stored
+    if(!row.nr&&!draft)return;
+    const archived=archive.invoices[row.nr]||{};
+    let issuer=null;try{const parsed=JSON.parse(archived.data);if(parsed&&typeof parsed==='object')issuer=parsed;}catch(e){}
+    const items=(positionsByInvoice[row.nr]||[]).sort((a,b)=>a.pos-b.pos).map(p=>({desc:p.desc,qty:p.qty,unit:p.unit,price:p.price}));
+    invoices.push({...row,items,net:itemsNet(items),_id:newId(),state:draft?'draft':(row.cancelledBy?'cancelled':'issued'),
+      payMethod:['Bar','Karte vor Ort'].includes(row.payMethod)?row.payMethod:'Überweisung',pdfId:archived.id||'',issuer});
+  });
+}
+
+// Customers; missing customer numbers are assigned continuously (K001, K002, …)
+function readCustomers(){
+  readCols(workbook.Sheets['Kunden'],CUST_COLS).forEach(c=>{if(c.name)customers.push({...c,termDays:c.termDays||'',_id:newId()});});
+  let maxNumber=Math.max(0,...customers.map(c=>parseInt(String(c.no).slice(1))||0));
+  customers.forEach(c=>{if(!c.no)c.no='K'+String(++maxNumber).padStart(3,'0');});
+}
+
+// Expenses; missing numbers are assigned continuously, receipt ids come from the "Technik" sheet
+function readExpenses(archive){
+  readCols(workbook.Sheets['Ausgaben'],COST_COLS).forEach(row=>{
+    if(!row.date&&!row.desc)return;
+    if(!row.net&&row.gross)row.net=round2(row.gross/(1+row.vat/100));
+    costs.push({...row,_id:newId(),receiptId:''});
+  });
+  let maxNumber=Math.max(0,...costs.map(c=>c.no||0));
+  costs.forEach(c=>{if(!c.no)c.no=++maxNumber;c.receiptId=(archive.expenses[String(c.no)]||{}).id||'';});
+}
+
+// Profile settings
+function readSettingsSheet(){
+  const rows=workbook.Sheets['Einstellungen']?XLSX.utils.sheet_to_json(workbook.Sheets['Einstellungen'],{header:1,raw:true,defval:''}):[];
+  rows.slice(1).forEach(r=>{if(r[0])settings[r[0]]=r[1]===undefined?'':String(r[1]);});
+}
+
+// Reads the loaded workbook into the app state; returns notes to show the user
 function parseAll(){
   invoices=[];costs=[];customers=[];settings={};
-  const notes=[],tech={rechnung:{},ausgabe:{}};
-  (workbook.Sheets['Technik']?XLSX.utils.sheet_to_json(workbook.Sheets['Technik'],{header:1,raw:true,defval:''}):[]).slice(1).forEach(([typ,key,id,data])=>{
-    const t=String(typ).toLowerCase();
-    if(t==='meta'||t==='logo')settings[t==='logo'?'Logo':String(key)]=String(data);
-    else if(tech[t])tech[t][String(key)]={id:String(id||''),data:String(data||'')};
-  });
+  const notes=[],archive=readTechSheet();
   if((parseInt(settings['Dateiformat'])||FILE_FORMAT)>FILE_FORMAT)notes.push(t('thisFileComesFrom'));
   delete settings['Dateiformat'];delete settings['App-Version'];
-  const pos={};
-  readCols(workbook.Sheets['Positionen'],POS_COLS).forEach(p=>{if(p.nr)(pos[p.nr]=pos[p.nr]||[]).push(p);});
-  readCols(workbook.Sheets['Rechnungen'],INV_COLS).forEach(r=>{
-    const draft=r.status.toLowerCase()==='entwurf';delete r.status;   // the Status column is derived, never stored
-    if(!r.nr&&!draft)return;
-    const t=tech.rechnung[r.nr]||{};
-    let issuer=null;try{const j=JSON.parse(t.data);if(j&&typeof j==='object')issuer=j;}catch(e){}
-    const items=(pos[r.nr]||[]).sort((a,b)=>a.pos-b.pos).map(p=>({desc:p.desc,qty:p.qty,unit:p.unit,price:p.price}));
-    invoices.push({...r,items,net:itemsNet(items),_id:newId(),state:draft?'draft':(r.cancelledBy?'cancelled':'issued'),
-      payMethod:['Bar','Karte vor Ort'].includes(r.payMethod)?r.payMethod:'Überweisung',pdfId:t.id||'',issuer});
-  });
-  readCols(workbook.Sheets['Kunden'],CUST_COLS).forEach(c=>{if(c.name)customers.push({...c,termDays:c.termDays||'',_id:newId()});});
-  let cmax=Math.max(0,...customers.map(c=>parseInt(String(c.no).slice(1))||0));
-  customers.forEach(c=>{if(!c.no)c.no='K'+String(++cmax).padStart(3,'0');});
-  readCols(workbook.Sheets['Ausgaben'],COST_COLS).forEach(r=>{
-    if(!r.date&&!r.desc)return;
-    if(!r.net&&r.gross)r.net=round2(r.gross/(1+r.vat/100));
-    costs.push({...r,_id:newId(),receiptId:''});
-  });
-  let max=Math.max(0,...costs.map(c=>c.no||0));
-  costs.forEach(c=>{if(!c.no)c.no=++max;c.receiptId=(tech.ausgabe[String(c.no)]||{}).id||'';});
-  (workbook.Sheets['Einstellungen']?XLSX.utils.sheet_to_json(workbook.Sheets['Einstellungen'],{header:1,raw:true,defval:''}):[]).slice(1)
-    .forEach(r=>{if(r[0])settings[r[0]]=r[1]===undefined?'':String(r[1]);});
+  readInvoices(archive);
+  readCustomers();
+  readExpenses(archive);
+  readSettingsSheet();
   return notes;
 }
 
@@ -1535,15 +1575,15 @@ function renderInvTable(){
   byId('invTb').innerHTML=list.map(inv=>{
     const v=effectiveVat(inv),s=rowStatus(inv);
     return `<tr>
-      <td class="mono">${escapeHtml(inv.nr)||'—'}${inv.state!=='draft'&&!inv.pdfId?' <span title="PDF nicht im Drive archiviert">⚠</span>':''}</td>
-      <td><strong>${escapeHtml(inv.client)}</strong></td>
-      <td class="color-muted maxw-200 overflow-hidden ellipsis-ellipsis ws-nowrap" title="${escapeHtml(invSummary(inv))}">${escapeHtml(invSummary(inv))}</td>
-      <td data-l="Datum">${fmtDate(inv.date)}</td><td data-l="Fällig">${fmtDate(inv.due)}</td>
-      <td class="text-right mono" >${formatMoney(inv.net)}</td>
-      <td class="text-right color-muted mono" >${v===0?'§19':v+'%'}</td>
-      <td class="text-right fw-700 mono" >${formatMoney(grossOf(inv))}</td>
-      <td><span class="badge ${s}">${t('badge_'+s)}</span></td>
-      <td><button class="abtn" data-edit-inv="${inv._id}" title="Bearbeiten">✏</button>
+      <td class="inv-nr mono">${escapeHtml(inv.nr)||'—'}${inv.state!=='draft'&&!inv.pdfId?' <span title="PDF nicht im Drive archiviert">⚠</span>':''}</td>
+      <td class="inv-client"><strong>${escapeHtml(inv.client)}</strong></td>
+      <td class="inv-summary color-muted maxw-200 overflow-hidden ellipsis-ellipsis ws-nowrap" title="${escapeHtml(invSummary(inv))}">${escapeHtml(invSummary(inv))}</td>
+      <td class="inv-date" data-l="Datum">${fmtDate(inv.date)}</td><td class="inv-due" data-l="Fällig">${fmtDate(inv.due)}</td>
+      <td class="inv-net text-right mono" >${formatMoney(inv.net)}</td>
+      <td class="inv-vat text-right color-muted mono" >${v===0?'§19':v+'%'}</td>
+      <td class="inv-gross text-right fw-700 mono" >${formatMoney(grossOf(inv))}</td>
+      <td class="inv-status"><span class="badge ${s}">${t('badge_'+s)}</span></td>
+      <td class="inv-actions"><button class="abtn" data-edit-inv="${inv._id}" title="Bearbeiten">✏</button>
           <button class="abtn" data-pdf-inv="${inv._id}" title="PDF herunterladen">📄</button></td>
     </tr>`;
   }).join('');
@@ -1574,17 +1614,17 @@ function renderCostTable(){
   if(!list.length){byId('costTb').innerHTML='';em.style.display='';return;}
   em.style.display='none';
   byId('costTb').innerHTML=list.map(c=>`<tr>
-      <td>${fmtDate(c.date)}</td>
-      <td><span class="cat-badge">${escapeHtml(c.cat)}</span></td>
-      <td class="maxw-180 overflow-hidden ellipsis-ellipsis ws-nowrap" title="${escapeHtml(c.desc)}">${escapeHtml(c.desc)}</td>
-      <td class="color-muted">${escapeHtml(c.supplier)}</td>
-      <td class="color-muted mono" data-l="Beleg" >${escapeHtml(c.receipt)}</td>
-      <td class="text-right mono" >${formatMoney(c.gross)}</td>
-      <td class="text-right color-muted mono" >${c.vat}%</td>
-      <td class="text-right mono" >${formatMoney(c.net)}</td>
-      <td class="text-right fw-700 mono" >${formatMoney(costAmt(c))}</td>
-      <td class="color-muted fs-12">${escapeHtml(c.note)}</td>
-      <td><button class="abtn" data-edit-cost="${c._id}">✏</button>${c.receiptId?`<button class="abtn" data-view-cost="${c._id}" title="Beleg ansehen">📎</button>`:''}</td>
+      <td class="cost-date">${fmtDate(c.date)}</td>
+      <td class="cost-category"><span class="cat-badge">${escapeHtml(c.cat)}</span></td>
+      <td class="cost-desc maxw-180 overflow-hidden ellipsis-ellipsis ws-nowrap" title="${escapeHtml(c.desc)}">${escapeHtml(c.desc)}</td>
+      <td class="cost-supplier color-muted">${escapeHtml(c.supplier)}</td>
+      <td class="cost-receipt color-muted mono" data-l="Beleg" >${escapeHtml(c.receipt)}</td>
+      <td class="cost-gross text-right mono" >${formatMoney(c.gross)}</td>
+      <td class="cost-vat text-right color-muted mono" >${c.vat}%</td>
+      <td class="cost-net text-right mono" >${formatMoney(c.net)}</td>
+      <td class="cost-applied text-right fw-700 mono" >${formatMoney(costAmt(c))}</td>
+      <td class="cost-note color-muted fs-12">${escapeHtml(c.note)}</td>
+      <td class="cost-actions"><button class="abtn" data-edit-cost="${c._id}">✏</button>${c.receiptId?`<button class="abtn" data-view-cost="${c._id}" title="Beleg ansehen">📎</button>`:''}</td>
     </tr>`).join('');
 }
 
@@ -1928,13 +1968,13 @@ function renderCustTable(){
   if(!list.length){byId('custTb').innerHTML='';em.style.display='';em.textContent=customers.length?t('noCustomerFound'):t('noCustomersYetThey');return;}
   em.style.display='none';
   byId('custTb').innerHTML=list.map(c=>`<tr>
-    <td class="color-muted mono" >${escapeHtml(c.no)}</td>
-    <td><strong>${escapeHtml(c.name)}</strong></td>
-    <td class="color-muted">${escapeHtml([c.street,[c.zip,c.city].filter(Boolean).join(' '),c.country].filter(Boolean).join(', '))}</td>
-    <td class="color-muted fs-12">${escapeHtml([c.phone,c.email].filter(Boolean).join(' · '))}</td>
-    <td class="text-right mono" data-l="Rechnungen" >${custCount(c)}</td>
-    <td class="text-right mono" data-l="Umsatz bezahlt" >${formatMoney(custPaid(c))}</td>
-    <td><button class="abtn" data-edit-cust="${c._id}" title="Bearbeiten">✏</button><button class="abtn" data-inv-cust="${c._id}" title="Neue Rechnung für diesen Kunden">🧾</button></td>
+    <td class="cust-no color-muted mono" >${escapeHtml(c.no)}</td>
+    <td class="cust-name"><strong>${escapeHtml(c.name)}</strong></td>
+    <td class="cust-address color-muted">${escapeHtml([c.street,[c.zip,c.city].filter(Boolean).join(' '),c.country].filter(Boolean).join(', '))}</td>
+    <td class="cust-contact color-muted fs-12">${escapeHtml([c.phone,c.email].filter(Boolean).join(' · '))}</td>
+    <td class="cust-count text-right mono" data-l="Rechnungen" >${custCount(c)}</td>
+    <td class="cust-revenue text-right mono" data-l="Umsatz bezahlt" >${formatMoney(custPaid(c))}</td>
+    <td class="cust-actions"><button class="abtn" data-edit-cust="${c._id}" title="Bearbeiten">✏</button><button class="abtn" data-inv-cust="${c._id}" title="Neue Rechnung für diesen Kunden">🧾</button></td>
   </tr>`).join('');
 }
 byId('cuSearch').addEventListener('input',renderCustTable);
