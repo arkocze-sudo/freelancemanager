@@ -104,7 +104,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 .eur-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--row);font-size:13px}
 .eur-row:last-child{border-bottom:none}
 .eur-row.total{font-weight:700;font-size:14px;padding-top:12px}
-.eur-row.profit.pos{color:var(--green)}.eur-row.profit.neg{color:var(--red)}
+.eur-row.profit-pos{color:var(--green)}.eur-row.profit-neg{color:var(--red)}
 .info-box{background:var(--abg);border:1px solid var(--amber-line);border-radius:var(--r);padding:12px 14px;font-size:12px;color:var(--amber);margin-bottom:1rem}
 
 /* empty */
@@ -191,6 +191,9 @@ html{-webkit-text-size-adjust:100%}
 .text-right{text-align:right!important}
 .ws-nowrap{white-space:nowrap!important}
 
+/* Dialog container receives focus programmatically (Escape / focus return): no visible focus ring */
+.modal:focus,.modal:focus-visible{outline:none}
+
 /* LANGUAGE SWITCH */
 .lang-select{width:auto;min-height:0;padding:5px 8px;font-size:13px;border-radius:6px;cursor:pointer}
 header .lang-select{background:rgba(255,255,255,.13);color:#fff;border:none}
@@ -228,7 +231,8 @@ header .lang-select option{color:#1a1a1a}
 
   /* Tabellen → Karten */
   .tw{background:none;border:none;overflow:visible}
-  .tw table,.tw thead,.tw tbody,.tw tr,.tw td{display:block;min-width:0!important;width:100%}
+  table,thead,tbody,tr,td{display:block;width:100%}
+  .tw table,.tw td{min-width:0!important}   /* beats the .minw-* utility classes; kept separate so it does not override the display rules below */
   thead{display:none}
   tbody tr{display:grid;grid-template-columns:1fr auto;column-gap:10px;row-gap:5px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:12px 14px;margin-bottom:10px}
   tbody tr:hover{background:var(--surface)}
@@ -318,13 +322,13 @@ header .lang-select option{color:#1a1a1a}
   <header>
     <h1>🧾 <span class="ht">Freelance Manager</span></h1>
     <span class="fn" id="fn"></span>
-    <span class="cloud" id="cloudDot" title="Mit Google Drive verbunden">☁</span>
+    <span class="cloud" id="cloudDot" title="Mit Google Drive verbunden" data-i18n-title="tipConnectedToGoogleDrive">☁</span>
     <span class="dirty" id="dirty">●<span class="bl" data-i18n="unsaved"> ungespeichert</span></span>
     <span class="fs-11 op-p55 ws-nowrap" id="lastSavedLabel"></span>
     <select class="lang-select" aria-label="Language"></select>
     <button class="hbtn" id="btnProfile" aria-label="Profil">⚙<span class="bl" data-i18n="profile"> Profil</span></button>
-    <button class="hbtn save" id="btnSave" aria-label="Speichern" title="Speichern (Google Drive, falls verbunden – sonst Download)">💾<span class="bl" data-i18n="save"> Speichern</span></button>
-    <button class="hbtn" id="btnOpen" aria-label="Andere Datei öffnen" title="Andere Datei öffnen">📂</button>
+    <button class="hbtn save" id="btnSave" aria-label="Speichern" title="Speichern (Google Drive, falls verbunden – sonst Download)" data-i18n-title="tipSaveGoogleDriveIf">💾<span class="bl" data-i18n="save"> Speichern</span></button>
+    <button class="hbtn" id="btnOpen" aria-label="Andere Datei öffnen" title="Andere Datei öffnen" data-i18n-title="tipOpenAnotherFile">📂</button>
   </header>
 
   <div class="nav">
@@ -493,14 +497,14 @@ header .lang-select option{color:#1a1a1a}
       <div class="fr"><label data-i18n="customerVatIdUid" for="i_cv">USt-IdNr. / UID des Kunden</label><input id="i_cv"></div>
       <div class="fr s2" id="posBox"><label><span data-i18n="lineItems">Positionen</span> <span class="req">*</span></label>
         <div id="posList"></div>
-        <button type="button" class="posadd" id="posAdd" title="Weitere Position hinzufügen" data-i18n="addLineItem">＋ Weitere Position</button>
+        <button type="button" class="posadd" id="posAdd" title="Weitere Position hinzufügen" data-i18n-title="tipAddAnotherLineItem" data-i18n="addLineItem">＋ Weitere Position</button>
         <datalist id="unitList"><option value="Stück"><option value="Std"><option value="Tag"><option value="pauschal"><option value="km"></datalist>
       </div>
       <div class="fr"><label for="i_da"><span data-i18n="invoiceDate">Rechnungsdatum</span> <span class="req">*</span></label><input type="date" id="i_da"></div>
       <div class="fr"><label for="i_ld"><span data-i18n="serviceDateOrStart">Leistungsdatum (bzw. Beginn)</span> <span class="req">*</span></label><input type="date" id="i_ld"></div>
-      <div class="fr"><label data-i18n="servicePeriodUntil">Leistungszeitraum bis</label><div style="display:flex;gap:6px"><input type="date" id="i_le" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_leClear" title="Datum löschen" >✕</button></div></div>
+      <div class="fr"><label data-i18n="servicePeriodUntil">Leistungszeitraum bis</label><div style="display:flex;gap:6px"><input type="date" id="i_le" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_leClear" title="Datum löschen" data-i18n-title="tipClearDate" >✕</button></div></div>
       <div class="fr"><label for="i_du"><span data-i18n="dueOn">Fällig am</span> <span class="req">*</span></label><input type="date" id="i_du"></div>
-      <div class="fr"><label data-i18n="paymentReceivedDate">Zahlungseingang (Datum)</label><div style="display:flex;gap:6px"><input type="date" id="i_pd" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_pdClear" title="Datum löschen" >✕</button></div><small id="pdHint" class="hint"></small></div>
+      <div class="fr"><label data-i18n="paymentReceivedDate">Zahlungseingang (Datum)</label><div style="display:flex;gap:6px"><input type="date" id="i_pd" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_pdClear" title="Datum löschen" data-i18n-title="tipClearDate" >✕</button></div><small id="pdHint" class="hint"></small></div>
       <div class="fr"><label data-i18n="paymentMethod" for="i_pm">Zahlungsart</label><select id="i_pm"><option value="Überweisung" data-i18n="bankTransfer">Überweisung</option><option value="Bar" data-i18n="cash">Bar</option><option value="Karte vor Ort" data-i18n="cardOnSite">Karte vor Ort</option></select></div>
             <div class="fr"><label data-i18n="vat_" for="i_va">Umsatzsteuer</label>
         <select id="i_va"></select>
@@ -1014,7 +1018,10 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 // Invoice PDF, Excel file, CSV and ZIP always stay in the business-country language (not affected by this setting).
 const LANG_NAMES={de:'Deutsch',en:'English'};
 const I18N={
-  de:{"theFileIsToo_":"(Für eine Kopie in Drive ist die Datei zu groß.)","additionallySavedInDrive":"Zusätzlich in Drive im Ordner „Steuerberater“ gespeichert.","copyInDriveNot":"(Kopie in Drive nicht möglich.)","downloadedInvoicesExpenses":"📦 {name} heruntergeladen ({invoices} Rechnungen, {expenses} Ausgaben).",
+  de:{"descriptionOfTheService":"Beschreibung der Leistung","costHintSmallBusiness":"Kleinunternehmer: Für die EÜR zählt der Bruttobetrag (Vorsteuer ist nicht abziehbar).","costHintRegular":"Für die EÜR zählt der Nettobetrag (Vorsteuer wird separat mit dem Finanzamt verrechnet).",
+    "zeroSmallBusiness":"0 % – Kleinunternehmer ({p0})","standardRate":"Regelsteuersatz","reducedRate":"ermäßigt","noVatShown":"0 % (kein Ausweis)","eurOverview":"Übersicht",
+    "tipOpenAnotherFile":"Andere Datei öffnen","tipEdit":"Bearbeiten","tipViewReceipt":"Beleg ansehen","tipClearDate":"Datum löschen","tipConnectedToGoogleDrive":"Mit Google Drive verbunden","tipNewInvoiceForThis":"Neue Rechnung für diesen Kunden","tipDownloadPdf":"PDF herunterladen","tipPdfNotArchivedIn":"PDF nicht im Drive archiviert","tipRemoveLineItem":"Position entfernen","tipSaveGoogleDriveIf":"Speichern (Google Drive, falls verbunden – sonst Download)","tipAddAnotherLineItem":"Weitere Position hinzufügen",
+    "theFileIsToo_":"(Für eine Kopie in Drive ist die Datei zu groß.)","additionallySavedInDrive":"Zusätzlich in Drive im Ordner „Steuerberater“ gespeichert.","copyInDriveNot":"(Kopie in Drive nicht möglich.)","downloadedInvoicesExpenses":"📦 {name} heruntergeladen ({invoices} Rechnungen, {expenses} Ausgaben).",
     "totalAmountNetGreater":"Gesamtbetrag (netto) größer als 0","theDueDateIs":"Das Fälligkeitsdatum liegt vor dem Rechnungsdatum","dueDate":"Fälligkeitsdatum","theEndOfThe":"Das Ende des Leistungszeitraums liegt vor dem Beginn","serviceDate":"Leistungsdatum","everyLineItemNeeds":"Jede Position braucht eine Menge größer als 0","everyLineItemNeeds_":"Jede Position braucht eine Beschreibung","atLeastOneLine":"Mindestens eine Position","customerAddressStreetPostcode":"Anschrift des Kunden (Straße, PLZ, Ort)","customerName":"Name des Kunden","yourTaxNumberOr":"Deine Steuernummer oder USt-IdNr. (⚙ Profil)","yourUidNumberProfile":"Deine UID-Nummer (⚙ Profil)","yourAddressStreetPostcode":"Deine Anschrift: Straße, PLZ, Ort (⚙ Profil)","yourNameProfile":"Dein Name (⚙ Profil)","yourRevenueForIs":"Dein Umsatz {p0} liegt bei {p1} und damit über {p2}: Für {p3} entfällt dann die Kleinunternehmerregelung (laufendes Jahr bleibt bis {p4} möglich).","yourRevenueForIs_":"Dein Umsatz {p0} liegt bei {p1} – nahe an der Grenze von {p2}.","yourRevenueForIs__":"Dein Umsatz {p0} beträgt {p1} und überschreitet {p2}: Ab dem Umsatz, der die Grenze übersteigt, ist Umsatzsteuer fällig.","yourRevenueForWas":"Dein Umsatz {p0} lag bei {p1} und damit über {p2}. Die Kleinunternehmerregelung gilt für {p3} dann nicht mehr.","yourRevenueForIs___":"Dein Umsatz {p0} beträgt {p1} und liegt über {p2}. Die einmalige Toleranz (bis {p3}) kann gelten – ab dem Folgejahr ist dann Umsatzsteuer fällig. Bitte klären.","yourRevenueForIs____":"Dein Umsatz {p0} beträgt {p1} und liegt über {p2} (Grenze {p3} plus einmalige 10 % Toleranz). Die Kleinunternehmerregelung entfällt – bitte umgehend mit einer Steuerberatung klären.","limitsUnder61":"Grenzen nach § 6 Abs. 1 Z 27 UStG (ab 2025)","limitsUnder19Ustg":"Grenzen nach § 19 UStG (ab 2025)","roughGuidancePleaseClarify":"grobe Orientierung – bitte mit der Steuerberatung klären.","cashAndOnSite":"Bar- und Kartenzahlungen vor Ort {year}: {cash} (Gesamtumsatz {total}). Eine Registrierkasse ist nötig, wenn der Jahresumsatz über 15.000 € <b>und</b> die Barumsätze über 7.500 € liegen (jeweils netto).","bothLimitsAreExceeded":"Beide Grenzen sind überschritten – bitte umgehend mit einer Steuerberatung klären.","youAreApproachingThe":"Du näherst dich der Grenze.","aReceiptMustBe":"Für jede Barzahlung ist ein Beleg auszustellen (Belegerteilungspflicht ab dem ersten Euro). Diese App ersetzt keine Registrierkasse.","asOf":"Stand","operatingIncome":"💰 Betriebseinnahmen","grossForInformation":"Brutto (zur Info)","totalOperatingExpenses":"📦 Betriebsausgaben gesamt","profitLoss":"= Gewinn / Verlust","incomeCountsWhenPayment":"Einnahmen zählen nach tatsächlichem Zahlungseingang (Zuflussprinzip), Ausgaben nach Belegdatum. Nicht bezahlte Rechnungen sind nicht enthalten.","asASmallBusiness":"Als Kleinunternehmer ist die Vorsteuer nicht abziehbar, deshalb werden Ausgaben mit dem Bruttobetrag angesetzt.","smallBusinessWithoutVat":"Kleinunternehmer (ohne Umsatzsteuer)?","yes":"Ja","no":"Nein","lastSaved":"Zuletzt gespeichert","thisInvoiceIsClosed":"Diese Rechnung ist abgeschlossen und kann nicht mehr geändert werden.","issuedInvoicesAreLocked":"Ausgestellte Rechnungen sind gesperrt. Änderbar sind nur Zahlungseingang, Zahlungsart und Notiz. Fehler korrigierst du mit „Stornieren“ und einer neuen Rechnung.","thePdfIsArchived":"Das PDF ist in deinem Google Drive archiviert.","thisPdfIsNot":"⚠ Dieses PDF ist nicht im Drive archiviert und kann nicht erneut erzeugt werden – bitte die heruntergeladene PDF-Datei selbst sichern.","noCustomerFound":"Kein Kunde gefunden.","noCustomersYetThey":"Noch keine Kunden. Sie werden beim Speichern einer Rechnung automatisch angelegt – oder mit „+ Neuer Kunde“.","noCustomersYetThey_":"Noch keine Kunden. Sie werden beim Speichern einer Rechnung automatisch angelegt.","theSignInWindow":"Das Anmeldefenster wurde blockiert. Bitte Popups für diese Seite erlauben und noch einmal tippen.","signInWasCancelled":"Die Anmeldung wurde abgebrochen.","driveIsOnlyAvailable":"Drive ist nur verfügbar, wenn die App über eine https-Adresse (z. B. GitHub Pages) geöffnet wird – nicht als lokale Datei.","connectedSavesDirectlyTo":"✔ Verbunden. 💾 speichert direkt in Drive: Ordner „{folder}“, Datei „{file}“.","saveToDriveNow":"☁ Jetzt in Drive speichern","reloadFromDrive":"↻ Aus Drive neu laden","downloadLocally":"⬇ Lokal herunterladen","disconnect":"Trennen","notConnectedAfterConnecting":"Nicht verbunden. Nach dem Verbinden wird die Datenbank in deinem Google Drive gespeichert und lässt sich auf Handy und PC öffnen.","connectToGoogleDrive":"☁ Mit Google Drive verbinden","clientId":"Client-ID","notEnteredYet":"noch nicht eingetragen","change":"ändern","setting:Ihr Name":"Ihr Name","setting:Berufsbezeichnung":"Berufsbezeichnung","setting:Firmenname":"Firmenname","setting:Straße":"Straße und Hausnummer","setting:PLZ":"PLZ","setting:Ort":"Ort","setting:Land (Anschrift)":"Land","setting:Steuernummer":"Steuernummer","setting:USt-IdNr.":"USt-IdNr.","setting:UID":"UID-Nummer","setting:IBAN":"IBAN","setting:BIC":"BIC","setting:Bank":"Bank","setting:Standard Zahlungsziel (Tage)":"Standard Zahlungsziel (Tage)","setting:Rechnungstext Fußzeile":"Rechnungstext Fußzeile","htmlProfileIntro":"Mit * markierte Felder werden für Rechnungen benötigt. Änderungen gelten sofort im Programm. Klicke danach oben auf <strong>💾 Speichern</strong>, um sie in die xlsx-Datei zu schreiben.","htmlInfoDrive":"Deine Rechnungen und Ausgaben liegen <strong>nur in deinem eigenen Google Drive</strong> (Ordner „FreelanceManager“). Wir sehen und speichern deine Daten nicht.","htmlInfoRisk":"<strong>Nutzung auf eigenes Risiko:</strong> Die App ersetzt keine Steuer- oder Rechtsberatung. Für die Richtigkeit, Vollständigkeit und steuerliche Zulässigkeit der erzeugten Rechnungen und Auswertungen wird keine Haftung übernommen. Wichtige Fragen kläre bitte mit einer Steuerberatung.","riskLoad":"Nutzung auf eigenes Risiko. Keine Steuer- oder Rechtsberatung.","riskFooter":"Nutzung auf eigenes Risiko – keine Steuer- oder Rechtsberatung.",
     "removeTheLogoInvoices":"Logo entfernen? Bereits ausgestellte Rechnungen bleiben unverändert.","logoAppliedAppearsOn":"✔ Logo übernommen – erscheint auf neuen Rechnungen. Bitte speichern.","theLogoIsToo":"Das Logo ist zu detailreich. Bitte eine einfachere oder kleinere Datei wählen.","theImageCouldNot":"Das Bild konnte nicht gelesen werden.","theExportFailed":"Der Export ist fehlgeschlagen:\n","theExportWasCreated":"Der Export wurde erstellt. Bitte beachten:\n\n• ","receiptCouldNotBe":"Beleg konnte nicht geladen werden: {p0} {p1}","noArchivedPdfFound":"Kein archiviertes PDF gefunden – bitte selbst ergänzen: Rechnung {p0}","creatingExport":"📦 Export wird erstellt …","thereAreNoInvoices":"Im Zeitraum {p0} gibt es keine Rechnungen oder Ausgaben.","theZipFunctionIs":"Die ZIP-Funktion fehlt.","googleDriveOnlyWorks":"Google Drive funktioniert nur über eine https-Adresse (z. B. GitHub Pages).","disconnected":"Verbindung getrennt.","disconnectFromGoogleDrive":"Verbindung zu Google Drive trennen?\n\nDie Datei in Drive bleibt erhalten. Danach lädt 💾 wieder eine Datei auf dieses Gerät herunter.","savingToGoogleDrive":"Speichern in Google Drive fehlgeschlagen:\n","savedToGoogleDrive":"☁ In Google Drive gespeichert ({p0}/{p1}).","googleDriveHoldsA":"In Google Drive liegt eine andere Version von „{p0}“ (geändert {p1}) als die, mit der du gerade arbeitest – zum Beispiel weil du sie auf einem anderen Gerät gespeichert hast.\n\nOK = Drive-Version überschreiben\nAbbrechen = nicht speichern (Tipp: im Profil „Lokal herunterladen“ sichert deine aktuellen Daten)","alreadyExistsInDrive":"In Drive liegt bereits „{p0}“ (geändert {p1}).\n\nOK = verbinden und diese Datei mit den Daten aus der App ÜBERSCHREIBEN.\nAbbrechen = nichts ändern (um mit der Drive-Datei weiterzuarbeiten, auf der Startseite „Aus Google Drive laden“ wählen).","noteWhileReadingThe":"Hinweis beim Einlesen:\n\n• ","thereIsNoDatabase":"In deinem Google Drive gibt es noch keine Datenbank.\n\nNeu anlegen? Sie wird beim ersten Speichern im Ordner „{p0}“ erstellt.","thereAreUnsavedChanges_":"Es gibt ungespeicherte Änderungen. Trotzdem die Drive-Version laden?","googleDriveOnlyWorks_":"Google Drive funktioniert nur, wenn die App über eine https-Adresse (z. B. GitHub Pages) geöffnet wird – nicht als lokale Datei.","thatDoesNotLook":"Das sieht nicht wie eine Client-ID aus. Sie endet auf „.apps.googleusercontent.com“.","pasteTheGoogleClient":"Google-Client-ID einfügen (endet auf .apps.googleusercontent.com):","googleDriveError":"Google Drive Fehler {p0}{p1}","theGoogleSessionHas":"Die Google-Sitzung ist abgelaufen. Bitte noch einmal tippen.","permissionForGoogleDrive":"Die Berechtigung für Google Drive wurde nicht erteilt. Bitte die Anmeldung wiederholen und den Zugriff zulassen.","signInFailed":"Anmeldung fehlgeschlagen: ","googleSignInCould":"Die Google-Anmeldung konnte nicht geladen werden. Bitte Internetverbindung prüfen.","downloadedReplaceTheOld":"💾 „{p0}“ heruntergeladen – ersetze die alte Datei im FreelanceManager-Ordner.","backupCopyDownloadedDrive":"⬇ Sicherungskopie „{p0}“ heruntergeladen. Drive wurde dadurch nicht aktualisiert.","pdfLoadedPleaseTap":"PDF geladen – bitte „Teilen“ noch einmal tippen.","thereIsNoArchived":"Für Rechnung {p0} gibt es kein archiviertes PDF im Drive. Sie wurde ohne Drive ausgestellt; das PDF wurde damals nur auf dein Gerät heruntergeladen und wird nicht neu erzeugt.","theOriginalPdfIs":"Das Original-PDF liegt in deinem Google Drive. Bitte zuerst mit Google Drive verbinden (⚙ Profil).","thePopupWasBlocked":"Das Popup wurde blockiert. Bitte den Popup-Blocker für diese Seite deaktivieren.","pleaseConnectToGoogle":"Bitte zuerst mit Google Drive verbinden (⚙ Profil).","reallyDeleteThisExpense":"Ausgabe wirklich löschen? (Ein angehängter Beleg bleibt in deinem Drive erhalten.)","theReceiptCouldNot":"Der Beleg konnte nicht hochgeladen werden:\n","theFileIsToo":"Die Datei ist zu groß (max. 4,5 MB). Bitte ein kleineres Foto oder PDF wählen.","receiptPhotosAreStored":"Beleg-Fotos werden in deinem Google Drive abgelegt. Bitte zuerst mit Google Drive verbinden (⚙ Profil) – oder ohne Foto speichern.","removeTheLinkTo":"Verknüpfung zum Beleg entfernen? Die Datei bleibt in deinem Google Drive erhalten.","conversionFailed":"Umwandlung fehlgeschlagen","imageNotReadable":"Bild nicht lesbar","theFileCouldNot":"Datei konnte nicht gelesen werden.","deleteCustomerFromThe":"Kunde {p0} ({p1}) aus der Liste löschen?\n\nBereits erstellte Rechnungen behalten ihre Kundendaten.","aCustomerWithThis":"Einen Kunden „{p0}“ mit dieser PLZ gibt es schon ({p1}). Trotzdem zusätzlich anlegen?","customerWasAddedTo":"Kunde {p0} ({p1}) wurde zur Kundenliste hinzugefügt.","pleaseFirstFillIn":"Bitte zuerst Kunden und mindestens eine Position mit Betrag ausfüllen.","cancelInvoiceACancellation":"Rechnung {p0} stornieren?\n\nDafür wird eine Stornorechnung mit eigener Nummer erstellt (PDF). Danach kannst du eine neue, korrigierte Rechnung ausstellen.","paidInvoicesCannotBe":"Bezahlte Rechnungen lassen sich hier nicht stornieren. Bitte kläre Rückzahlung bzw. Gutschrift mit deiner Steuerberatung.","issueTheInvoiceNow":"Rechnung jetzt ausstellen?\n\nSie erhält die nächste Rechnungsnummer und kann danach nicht mehr geändert oder gelöscht werden. Fehler korrigierst du später mit einer Stornorechnung.","theInvoiceExceeds10":"Die Rechnung liegt über 10.000 € brutto. Für Rechnungen an Unternehmen ist in Österreich dann die UID des Kunden anzugeben.\n\nTrotzdem ohne Kunden-UID ausstellen?","theCustomerAppearsTo":"Der Kunde sitzt offenbar in einem anderen Land als du.\n\nRechnungen ins Ausland (z. B. Reverse Charge innerhalb der EU) werden von dieser App noch nicht gesondert behandelt. Bitte kläre die steuerliche Behandlung vorab mit einer Steuerberatung.\n\nTrotzdem ausstellen?","pleaseCompleteTheFollowing":"Bitte vervollständigen, bevor die Rechnung ausgestellt wird:\n\n• ","invoiceIssuedPdfDownloaded":"Rechnung {p0} ausgestellt, PDF heruntergeladen. ⚠ Nicht im Drive archiviert – bitte die PDF-Datei selbst sichern und oben auf 💾 speichern.","theInvoiceWasNot":"Die Rechnung wurde NICHT ausgestellt, weil das PDF nicht erstellt bzw. gespeichert werden konnte:\n","thePaymentDateIs":"Das Zahlungsdatum liegt in der Zukunft. Trotzdem als bezahlt speichern?","profileAppliedClickSave":"✔ Profil übernommen – oben auf 💾 Speichern klicken, um es in die Datei zu schreiben.","thisFileComesFrom":"Diese Datei stammt aus einer neueren Version der App. Bitte die App aktualisieren, bevor du speicherst – sonst können Angaben verloren gehen.","theExcelLibraryIs":"Die Excel-Bibliothek fehlt.","theFileCouldNot_":"Die Datei konnte nicht gelesen werden.","errorReadingTheFile":"Fehler beim Lesen der Datei. Bitte eine gültige .xlsx-Datei wählen.\n\n","draftRestoredPleaseClick":"Entwurf wiederhergestellt – bitte oben auf 💾 speichern.",
     "pleaseEnterYourName":"Bitte trage deinen Namen oder Firmennamen ein.","pleaseEnterStreetPostcode":"Bitte Straße, PLZ und Ort eintragen – diese Angaben sind auf jeder Rechnung Pflicht. Oder wähle „Später“.","doneCreateYourFirst":"✔ Fertig! Lege jetzt mit „+ Neue Rechnung“ deine erste Rechnung an.","netRevenueYear":"Umsatz Netto {year}","grossYear":"Brutto {year}","received":"Eingegangen","outstanding":"Ausstehend","nInv":"{n} Rg.","expensesYearBasis":"Ausgaben {year} ({basis})","gross_":"brutto","net_":"netto","numberOfReceipts":"Anzahl Belege","largestCategory":"Größte Kategorie","thereAreUnsavedChanges":"Es gibt ungespeicherte Änderungen. Trotzdem eine andere Datei öffnen?","statusPaidClearThe":"Status: bezahlt – mit ✕ das Datum löschen, dann ist die Rechnung wieder offen.","statusOpenEnteringA":"Status: offen – mit einem Datum gilt die Rechnung als bezahlt.","discardYourInputUnsaved":"Eingaben verwerfen? Nicht gespeicherte Änderungen gehen verloren.","saveDraft":"Entwurf speichern","newInvoice_":"Neue Rechnung","editDraft":"Entwurf bearbeiten","cancellationInvoiceNr":"Stornorechnung {nr} 🔒","invoiceNr":"Rechnung {nr} 🔒","assignedWhenIssued":"wird beim Ausstellen vergeben","pleaseEnterTheCustomer":"Bitte den Kunden eintragen.","pleaseEnterTheInvoice":"Bitte das Rechnungsdatum eintragen.","reallyDeleteThisDraft":"Entwurf wirklich löschen?","editCustomer":"Kunde bearbeiten","newCustomer_":"Neuer Kunde","assignedAutomatically":"wird automatisch vergeben","pleaseFillInName":"Bitte Name, Straße, PLZ und Ort ausfüllen.","noReceiptAttachedYet":"Noch kein Beleg angehängt.","newExpense_":"Neue Ausgabe","editExpense":"Ausgabe bearbeiten","pleaseFillInDate":"Bitte Datum und Beschreibung ausfüllen.","pleaseEnterAnAmount":"Bitte einen Betrag eingeben.","badge_entwurf":"Entwurf","badge_storniert":"Storniert","badge_storno":"Storno","badge_bezahlt":"Bezahlt","badge_offen":"Offen","badge_überfällig":"Überfällig",
@@ -1025,7 +1032,10 @@ const I18N={
     statusAll:'Alle Status',statusDraft:'Entwurf',statusPaid:'Bezahlt',statusOpen:'Offen',statusOverdue:'Überfällig',
     searchInvoices:'Suche Kunde / Nr…',searchCustomers:'Suche nach Name, Ort, Nr. …',searchGeneric:'Suche…',
     newInvoice:'+ Neue Rechnung',newCustomer:'+ Neuer Kunde',newExpense:'+ Neue Ausgabe',allCategories:'Alle Kategorien'},
-  en:{"theFileIsToo_":"(The file is too large for a copy in Drive.)","additionallySavedInDrive":"Additionally saved in Drive in the folder “Steuerberater”.","copyInDriveNot":"(Copy in Drive not possible.)","downloadedInvoicesExpenses":"📦 {name} downloaded ({invoices} invoices, {expenses} expenses).",
+  en:{"descriptionOfTheService":"Description of the service","costHintSmallBusiness":"Small business: for the EÜR the gross amount counts (input VAT is not deductible).","costHintRegular":"For the EÜR the net amount counts (input VAT is settled separately with the tax office).","cat:Material & Waren":"Materials & goods","cat:Arbeitsmittel & Equipment":"Tools & equipment","cat:Software & Abos":"Software & subscriptions","cat:Fahrtkosten":"Transport costs","cat:Reisekosten":"Travel expenses","cat:Homeoffice":"Home office","cat:Telefon & Internet":"Phone & internet","cat:Weiterbildung":"Training & education","cat:Fachbücher & Literatur":"Books & literature","cat:Versicherungen":"Insurance","cat:Sozialversicherung":"Social security","cat:Steuerberatung & Buchführung":"Tax advice & bookkeeping","cat:Bankgebühren":"Bank fees","cat:Werbung & Marketing":"Advertising & marketing","cat:Miete (Büro/Atelier/Raum)":"Rent (office/studio/room)","cat:Sonstiges":"Other",
+    "zeroSmallBusiness":"0 % – small business ({p0})","standardRate":"standard rate","reducedRate":"reduced rate","noVatShown":"0 % (no VAT shown)","eurOverview":"overview",
+    "tipOpenAnotherFile":"Open another file","tipEdit":"Edit","tipViewReceipt":"View receipt","tipClearDate":"Clear date","tipConnectedToGoogleDrive":"Connected to Google Drive","tipNewInvoiceForThis":"New invoice for this customer","tipDownloadPdf":"Download PDF","tipPdfNotArchivedIn":"PDF not archived in Drive","tipRemoveLineItem":"Remove line item","tipSaveGoogleDriveIf":"Save (Google Drive if connected – otherwise download)","tipAddAnotherLineItem":"Add another line item",
+    "theFileIsToo_":"(The file is too large for a copy in Drive.)","additionallySavedInDrive":"Additionally saved in Drive in the folder “Steuerberater”.","copyInDriveNot":"(Copy in Drive not possible.)","downloadedInvoicesExpenses":"📦 {name} downloaded ({invoices} invoices, {expenses} expenses).",
     "totalAmountNetGreater":"Total amount (net) greater than 0","theDueDateIs":"The due date is before the invoice date","dueDate":"Due date","theEndOfThe":"The end of the service period is before its start","serviceDate":"Service date","everyLineItemNeeds":"Every line item needs a quantity greater than 0","everyLineItemNeeds_":"Every line item needs a description","atLeastOneLine":"At least one line item","customerAddressStreetPostcode":"Customer address (street, postcode, city)","customerName":"Customer name","yourTaxNumberOr":"Your tax number or VAT ID (⚙ Profile)","yourUidNumberProfile":"Your UID number (⚙ Profile)","yourAddressStreetPostcode":"Your address: street, postcode, city (⚙ Profile)","yourNameProfile":"Your name (⚙ Profile)","yourRevenueForIs":"Your revenue for {p0} is {p1} and therefore above {p2}: the small-business scheme will then no longer apply for {p3} (the current year remains possible up to {p4}).","yourRevenueForIs_":"Your revenue for {p0} is {p1} – close to the limit of {p2}.","yourRevenueForIs__":"Your revenue for {p0} is {p1} and exceeds {p2}: VAT is due on the revenue above the limit.","yourRevenueForWas":"Your revenue for {p0} was {p1} and therefore above {p2}. The small-business scheme then no longer applies for {p3}.","yourRevenueForIs___":"Your revenue for {p0} is {p1} and exceeds {p2}. The one-time tolerance (up to {p3}) may apply – from the following year VAT is then due. Please clarify.","yourRevenueForIs____":"Your revenue for {p0} is {p1} and exceeds {p2} (limit {p3} plus a one-time 10% tolerance). The small-business scheme no longer applies – please clarify with a tax advisor immediately.","limitsUnder61":"Limits under § 6 (1) no. 27 UStG (from 2025)","limitsUnder19Ustg":"Limits under § 19 UStG (from 2025)","roughGuidancePleaseClarify":"rough guidance – please clarify with your tax advisor.","cashAndOnSite":"Cash and on-site card payments {year}: {cash} (total revenue {total}). A cash register is required if annual revenue exceeds €15,000 <b>and</b> cash revenue exceeds €7,500 (both net).","bothLimitsAreExceeded":"Both limits are exceeded – please clarify with a tax advisor immediately.","youAreApproachingThe":"You are approaching the limit.","aReceiptMustBe":"A receipt must be issued for every cash payment (receipt obligation from the first euro). This app does not replace a cash register.","asOf":"As of","operatingIncome":"💰 Operating income","grossForInformation":"Gross (for information)","totalOperatingExpenses":"📦 Total operating expenses","profitLoss":"= Profit / loss","incomeCountsWhenPayment":"Income counts when payment is actually received (cash basis), expenses by receipt date. Unpaid invoices are not included.","asASmallBusiness":"As a small business the input VAT is not deductible, so expenses are applied at the gross amount.","smallBusinessWithoutVat":"Small business (without VAT)?","yes":"Yes","no":"No","lastSaved":"Last saved","thisInvoiceIsClosed":"This invoice is closed and can no longer be changed.","issuedInvoicesAreLocked":"Issued invoices are locked. Only payment received, payment method and note can be changed. Correct mistakes with “Cancel invoice” and a new invoice.","thePdfIsArchived":"The PDF is archived in your Google Drive.","thisPdfIsNot":"⚠ This PDF is not archived in Drive and cannot be generated again – please keep the downloaded PDF file yourself.","noCustomerFound":"No customer found.","noCustomersYetThey":"No customers yet. They are created automatically when you save an invoice – or with “+ New customer”.","noCustomersYetThey_":"No customers yet. They are created automatically when you save an invoice.","theSignInWindow":"The sign-in window was blocked. Please allow popups for this site and tap again.","signInWasCancelled":"Sign-in was cancelled.","driveIsOnlyAvailable":"Drive is only available when the app is opened via an https address (e.g. GitHub Pages) – not as a local file.","connectedSavesDirectlyTo":"✔ Connected. 💾 saves directly to Drive: folder “{folder}”, file “{file}”.","saveToDriveNow":"☁ Save to Drive now","reloadFromDrive":"↻ Reload from Drive","downloadLocally":"⬇ Download locally","disconnect":"Disconnect","notConnectedAfterConnecting":"Not connected. After connecting, the database is stored in your Google Drive and can be opened on phone and PC.","connectToGoogleDrive":"☁ Connect to Google Drive","clientId":"Client ID","notEnteredYet":"not entered yet","change":"change","setting:Ihr Name":"Your name","setting:Berufsbezeichnung":"Job title","setting:Firmenname":"Company name","setting:Straße":"Street and house number","setting:PLZ":"Postcode","setting:Ort":"City","setting:Land (Anschrift)":"Country","setting:Steuernummer":"Tax number","setting:USt-IdNr.":"VAT ID","setting:UID":"UID number","setting:IBAN":"IBAN","setting:BIC":"BIC","setting:Bank":"Bank","setting:Standard Zahlungsziel (Tage)":"Default payment terms (days)","setting:Rechnungstext Fußzeile":"Invoice footer text","htmlProfileIntro":"Fields marked with * are required for invoices. Changes apply immediately in the app. Then click <strong>💾 Save</strong> at the top to write them to the xlsx file.","htmlInfoDrive":"Your invoices and expenses are stored <strong>only in your own Google Drive</strong> (folder “FreelanceManager”). We do not see or store your data.","htmlInfoRisk":"<strong>Use at your own risk:</strong> The app does not replace tax or legal advice. No liability is accepted for the correctness, completeness or tax admissibility of the invoices and reports produced. Please clarify important questions with a tax advisor.","riskLoad":"Use at your own risk. No tax or legal advice.","riskFooter":"Use at your own risk – no tax or legal advice.",
     "removeTheLogoInvoices":"Remove the logo? Invoices already issued stay unchanged.","logoAppliedAppearsOn":"✔ Logo applied – appears on new invoices. Please save.","theLogoIsToo":"The logo is too detailed. Please choose a simpler or smaller file.","theImageCouldNot":"The image could not be read.","theExportFailed":"The export failed:\n","theExportWasCreated":"The export was created. Please note:\n\n• ","receiptCouldNotBe":"Receipt could not be loaded: {p0} {p1}","noArchivedPdfFound":"No archived PDF found – please add it yourself: invoice {p0}","creatingExport":"📦 Creating export …","thereAreNoInvoices":"There are no invoices or expenses in the period {p0}.","theZipFunctionIs":"The ZIP function is missing.","googleDriveOnlyWorks":"Google Drive only works via an https address (e.g. GitHub Pages).","disconnected":"Disconnected.","disconnectFromGoogleDrive":"Disconnect from Google Drive?\n\nThe file in Drive is kept. Afterwards 💾 downloads a file to this device again.","savingToGoogleDrive":"Saving to Google Drive failed:\n","savedToGoogleDrive":"☁ Saved to Google Drive ({p0}/{p1}).","googleDriveHoldsA":"Google Drive holds a different version of “{p0}” (modified {p1}) than the one you are working with – for example because you saved it on another device.\n\nOK = overwrite the Drive version\nCancel = do not save (tip: “Download locally” in the profile backs up your current data)","alreadyExistsInDrive":"“{p0}” already exists in Drive (modified {p1}).\n\nOK = connect and OVERWRITE that file with the data from the app.\nCancel = change nothing (to keep working with the Drive file, choose “Load from Google Drive” on the start page).","noteWhileReadingThe":"Note while reading the file:\n\n• ","thereIsNoDatabase":"There is no database in your Google Drive yet.\n\nCreate a new one? It will be created in the folder “{p0}” on first save.","thereAreUnsavedChanges_":"There are unsaved changes. Load the Drive version anyway?","googleDriveOnlyWorks_":"Google Drive only works when the app is opened via an https address (e.g. GitHub Pages) – not as a local file.","thatDoesNotLook":"That does not look like a client ID. It ends with “.apps.googleusercontent.com”.","pasteTheGoogleClient":"Paste the Google client ID (ends with .apps.googleusercontent.com):","googleDriveError":"Google Drive error {p0}{p1}","theGoogleSessionHas":"The Google session has expired. Please tap again.","permissionForGoogleDrive":"Permission for Google Drive was not granted. Please repeat the sign-in and allow access.","signInFailed":"Sign-in failed: ","googleSignInCould":"Google sign-in could not be loaded. Please check your internet connection.","downloadedReplaceTheOld":"💾 “{p0}” downloaded – replace the old file in the FreelanceManager folder.","backupCopyDownloadedDrive":"⬇ Backup copy “{p0}” downloaded. Drive was not updated by this.","pdfLoadedPleaseTap":"PDF loaded – please tap “Share” once more.","thereIsNoArchived":"There is no archived PDF in Drive for invoice {p0}. It was issued without Drive; the PDF was only downloaded to your device at that time and will not be regenerated.","theOriginalPdfIs":"The original PDF is stored in your Google Drive. Please connect to Google Drive first (⚙ Profile).","thePopupWasBlocked":"The popup was blocked. Please disable the popup blocker for this site.","pleaseConnectToGoogle":"Please connect to Google Drive first (⚙ Profile).","reallyDeleteThisExpense":"Really delete this expense? (An attached receipt stays in your Drive.)","theReceiptCouldNot":"The receipt could not be uploaded:\n","theFileIsToo":"The file is too large (max. 4.5 MB). Please choose a smaller photo or PDF.","receiptPhotosAreStored":"Receipt photos are stored in your Google Drive. Please connect to Google Drive first (⚙ Profile) – or save without a photo.","removeTheLinkTo":"Remove the link to the receipt? The file stays in your Google Drive.","conversionFailed":"Conversion failed","imageNotReadable":"Image not readable","theFileCouldNot":"The file could not be read.","deleteCustomerFromThe":"Delete customer {p0} ({p1}) from the list?\n\nInvoices already created keep their customer data.","aCustomerWithThis":"A customer “{p0}” with this postcode already exists ({p1}). Create an additional one anyway?","customerWasAddedTo":"Customer {p0} ({p1}) was added to the customer list.","pleaseFirstFillIn":"Please first fill in a customer and at least one line item with an amount.","cancelInvoiceACancellation":"Cancel invoice {p0}?\n\nA cancellation invoice with its own number will be created (PDF). Afterwards you can issue a new, corrected invoice.","paidInvoicesCannotBe":"Paid invoices cannot be cancelled here. Please clarify refund or credit note with your tax advisor.","issueTheInvoiceNow":"Issue the invoice now?\n\nIt receives the next invoice number and can no longer be changed or deleted afterwards. You can correct mistakes later with a cancellation invoice.","theInvoiceExceeds10":"The invoice exceeds €10,000 gross. In Austria, invoices to businesses then require the customer's UID.\n\nIssue without customer UID anyway?","theCustomerAppearsTo":"The customer appears to be in a different country than you.\n\nInvoices abroad (e.g. reverse charge within the EU) are not handled separately by this app yet. Please clarify the tax treatment with a tax advisor beforehand.\n\nIssue anyway?","pleaseCompleteTheFollowing":"Please complete the following before issuing the invoice:\n\n• ","invoiceIssuedPdfDownloaded":"Invoice {p0} issued, PDF downloaded. ⚠ Not archived in Drive – please keep the PDF file yourself and click 💾 Save at the top.","theInvoiceWasNot":"The invoice was NOT issued because the PDF could not be created or saved:\n","thePaymentDateIs":"The payment date is in the future. Save as paid anyway?","profileAppliedClickSave":"✔ Profile applied – click 💾 Save at the top to write it to the file.","thisFileComesFrom":"This file comes from a newer version of the app. Please update the app before saving – otherwise data may be lost.","theExcelLibraryIs":"The Excel library is missing.","theFileCouldNot_":"The file could not be read.","errorReadingTheFile":"Error reading the file. Please choose a valid .xlsx file.\n\n","draftRestoredPleaseClick":"Draft restored – please click 💾 Save at the top.",
     "pleaseEnterYourName":"Please enter your name or company name.","pleaseEnterStreetPostcode":"Please enter street, postcode and city – they are mandatory on every invoice. Or choose “Later”.","doneCreateYourFirst":"✔ Done! Create your first invoice now with “+ New invoice”.","netRevenueYear":"Net revenue {year}","grossYear":"Gross {year}","received":"Received","outstanding":"Outstanding","nInv":"{n} inv.","expensesYearBasis":"Expenses {year} ({basis})","gross_":"gross","net_":"net","numberOfReceipts":"Number of receipts","largestCategory":"Largest category","thereAreUnsavedChanges":"There are unsaved changes. Open another file anyway?","statusPaidClearThe":"Status: paid – clear the date with ✕ to make the invoice open again.","statusOpenEnteringA":"Status: open – entering a date marks the invoice as paid.","discardYourInputUnsaved":"Discard your input? Unsaved changes will be lost.","saveDraft":"Save draft","newInvoice_":"New invoice","editDraft":"Edit draft","cancellationInvoiceNr":"Cancellation invoice {nr} 🔒","invoiceNr":"Invoice {nr} 🔒","assignedWhenIssued":"assigned when issued","pleaseEnterTheCustomer":"Please enter the customer.","pleaseEnterTheInvoice":"Please enter the invoice date.","reallyDeleteThisDraft":"Really delete this draft?","editCustomer":"Edit customer","newCustomer_":"New customer","assignedAutomatically":"assigned automatically","pleaseFillInName":"Please fill in name, street, postcode and city.","noReceiptAttachedYet":"No receipt attached yet.","newExpense_":"New expense","editExpense":"Edit expense","pleaseFillInDate":"Please fill in date and description.","pleaseEnterAnAmount":"Please enter an amount.","badge_entwurf":"Draft","badge_storniert":"Cancelled","badge_storno":"Cancellation","badge_bezahlt":"Paid","badge_offen":"Open","badge_überfällig":"Overdue",
@@ -1043,6 +1053,7 @@ const t=(key,vars)=>String(((I18N[uiLang]||{})[key]??I18N.en[key]??I18N.de[key])
 function applyStaticTranslations(){
   document.querySelectorAll('[data-i18n]').forEach(el=>{el.textContent=t(el.dataset.i18n);});
   document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{el.placeholder=t(el.dataset.i18nPlaceholder);});
+  document.querySelectorAll('[data-i18n-title]').forEach(el=>{el.title=t(el.dataset.i18nTitle);});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml);});
   document.querySelectorAll('.ver').forEach(el=>{el.textContent=APP_VERSION;});
 }
@@ -1052,6 +1063,9 @@ function setLanguage(lang){
   document.documentElement.lang=uiLang;
   document.querySelectorAll('.lang-select').forEach(sel=>{sel.value=uiLang;});
   applyStaticTranslations();renderDrivePanel();
+  const keptSelections=['i_va','c_va','c_cat'].map(id=>[id,byId(id).value]);
+  applyCountry();   // rebuilds the VAT / category dropdowns and the EÜR tab label in the new language
+  keptSelections.forEach(([id,value])=>{byId(id).value=value;});
   if(byId('app').style.display==='block')renderAll();
 }
 function initLanguage(){
@@ -1087,7 +1101,9 @@ const country=()=>String(settings['Land']||'DE').toUpperCase()==='AT'?'AT':'DE';
 const countryCfg=()=>COUNTRIES[country()];
 const kuText=()=>countryCfg().kuText;
 const COSTCATS=[['Material & Waren','📦'],['Arbeitsmittel & Equipment','🔧'],['Software & Abos','💻'],['Fahrtkosten','🚗'],['Reisekosten','✈'],['Homeoffice','🏠'],['Telefon & Internet','📱'],['Weiterbildung','📚'],['Fachbücher & Literatur','📖'],['Versicherungen','🛡'],['Sozialversicherung','🏥'],['Steuerberatung & Buchführung','📋'],['Bankgebühren','🏦'],['Werbung & Marketing','📣'],['Miete (Büro/Atelier/Raum)','🏢'],['Sonstiges','📎']];
-function catLabel(v){const c=countryCfg(),e=(COSTCATS.find(x=>x[0]===v)||[])[1]||'📎';return e+' '+({'Fahrtkosten':c.km,'Homeoffice':c.home,'Sozialversicherung':c.social}[v]||v);}
+// Display name of an expense category; the stored value (German, as in the Excel file) never changes
+const catName=v=>(I18N[uiLang]||{})['cat:'+v]||v;
+function catLabel(v){const c=countryCfg(),e=(COSTCATS.find(x=>x[0]===v)||[])[1]||'📎';return e+' '+((I18N[uiLang]||{})['cat:'+v]||{'Fahrtkosten':c.km,'Homeoffice':c.home,'Sozialversicherung':c.social}[v]||v);}
 function fillSel(sel,pairs,def){
   const cur=sel.value;sel.innerHTML=pairs.map(([v,l])=>`<option value="${escapeHtml(v)}">${escapeHtml(l)}</option>`).join('');
   sel.value=cur;if(!cur||sel.value!==String(cur))sel.value=String(def);
@@ -1097,10 +1113,10 @@ function ensureOpt(sel,v){
 }
 function applyCountry(){
   const c=countryCfg();
-  fillSel(byId('i_va'),[0,...c.rates].map(r=>[r,r===0?`0 % – Kleinunternehmer (${c.kuLabel})`:`${r} %`+(r===c.defRate?' – Regelsteuersatz':' – ermäßigt')]),c.defRate);
-  fillSel(byId('c_va'),[0,...c.costRates].map(r=>[r,r===0?'0 % (kein Ausweis)':`${r} %`]),0);
+  fillSel(byId('i_va'),[0,...c.rates].map(r=>[r,r===0?t('zeroSmallBusiness',{p0:c.kuLabel}):`${r} %`+' – '+t(r===c.defRate?'standardRate':'reducedRate')]),c.defRate);
+  fillSel(byId('c_va'),[0,...c.costRates].map(r=>[r,r===0?t('noVatShown'):`${r} %`]),0);
   fillSel(byId('c_cat'),COSTCATS.map(x=>[x[0],catLabel(x[0])]),COSTCATS[0][0]);
-  byId('navEur').textContent='📊 '+c.eur+' Übersicht';
+  byId('navEur').textContent='📊 '+c.eur+' '+t('eurOverview');
 }
 
 // ── HELPERS ────────────────────────────────────────────────
@@ -1575,7 +1591,7 @@ function renderInvTable(){
   byId('invTb').innerHTML=list.map(inv=>{
     const v=effectiveVat(inv),s=rowStatus(inv);
     return `<tr>
-      <td class="inv-nr mono">${escapeHtml(inv.nr)||'—'}${inv.state!=='draft'&&!inv.pdfId?' <span title="PDF nicht im Drive archiviert">⚠</span>':''}</td>
+      <td class="inv-nr mono">${escapeHtml(inv.nr)||'—'}${inv.state!=='draft'&&!inv.pdfId?' <span title="'+t('tipPdfNotArchivedIn')+'">⚠</span>':''}</td>
       <td class="inv-client"><strong>${escapeHtml(inv.client)}</strong></td>
       <td class="inv-summary color-muted maxw-200 overflow-hidden ellipsis-ellipsis ws-nowrap" title="${escapeHtml(invSummary(inv))}">${escapeHtml(invSummary(inv))}</td>
       <td class="inv-date" data-l="Datum">${fmtDate(inv.date)}</td><td class="inv-due" data-l="Fällig">${fmtDate(inv.due)}</td>
@@ -1583,8 +1599,8 @@ function renderInvTable(){
       <td class="inv-vat text-right color-muted mono" >${v===0?'§19':v+'%'}</td>
       <td class="inv-gross text-right fw-700 mono" >${formatMoney(grossOf(inv))}</td>
       <td class="inv-status"><span class="badge ${s}">${t('badge_'+s)}</span></td>
-      <td class="inv-actions"><button class="abtn" data-edit-inv="${inv._id}" title="Bearbeiten">✏</button>
-          <button class="abtn" data-pdf-inv="${inv._id}" title="PDF herunterladen">📄</button></td>
+      <td class="inv-actions"><button class="abtn" data-edit-inv="${inv._id}" title="${t('tipEdit')}">✏</button>
+          <button class="abtn" data-pdf-inv="${inv._id}" title="${t('tipDownloadPdf')}">📄</button></td>
     </tr>`;
   }).join('');
 }
@@ -1602,7 +1618,7 @@ function renderCostStats(){
 function populateCatFilter(){
   const sel=byId('cf'),val=sel.value;
   const cats=[...new Set(costs.map(c=>c.cat))].filter(Boolean).sort();
-  sel.innerHTML=`<option value="">${escapeHtml(t('allCategories'))}</option>`+cats.map(c=>`<option value="${escapeHtml(c)}"${c===val?' selected':''}>${escapeHtml(c)}</option>`).join('');
+  sel.innerHTML=`<option value="">${escapeHtml(t('allCategories'))}</option>`+cats.map(c=>`<option value="${escapeHtml(c)}"${c===val?' selected':''}>${escapeHtml(catName(c))}</option>`).join('');
 }
 function renderCostTable(){
   const cf=byId('cf').value,tx=byId('cft').value.toLowerCase().trim();
@@ -1615,7 +1631,7 @@ function renderCostTable(){
   em.style.display='none';
   byId('costTb').innerHTML=list.map(c=>`<tr>
       <td class="cost-date">${fmtDate(c.date)}</td>
-      <td class="cost-category"><span class="cat-badge">${escapeHtml(c.cat)}</span></td>
+      <td class="cost-category"><span class="cat-badge">${escapeHtml(catName(c.cat))}</span></td>
       <td class="cost-desc maxw-180 overflow-hidden ellipsis-ellipsis ws-nowrap" title="${escapeHtml(c.desc)}">${escapeHtml(c.desc)}</td>
       <td class="cost-supplier color-muted">${escapeHtml(c.supplier)}</td>
       <td class="cost-receipt color-muted mono" data-l="Beleg" >${escapeHtml(c.receipt)}</td>
@@ -1624,7 +1640,7 @@ function renderCostTable(){
       <td class="cost-net text-right mono" >${formatMoney(c.net)}</td>
       <td class="cost-applied text-right fw-700 mono" >${formatMoney(costAmt(c))}</td>
       <td class="cost-note color-muted fs-12">${escapeHtml(c.note)}</td>
-      <td class="cost-actions"><button class="abtn" data-edit-cost="${c._id}">✏</button>${c.receiptId?`<button class="abtn" data-view-cost="${c._id}" title="Beleg ansehen">📎</button>`:''}</td>
+      <td class="cost-actions"><button class="abtn" data-edit-cost="${c._id}">✏</button>${c.receiptId?`<button class="abtn" data-view-cost="${c._id}" title="${t('tipViewReceipt')}">📎</button>`:''}</td>
     </tr>`).join('');
 }
 
@@ -1640,7 +1656,7 @@ function eurData(){
 }
 function renderEUR(){
   const d=eurData(),klein=isSmallBusiness();
-  const catRows=Object.entries(d.bycat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="eur-row"><span class="pl-16 color-muted">${escapeHtml(k)}</span><span>${formatMoney(v)}</span></div>`).join('');
+  const catRows=Object.entries(d.bycat).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div class="eur-row"><span class="pl-16 color-muted">${escapeHtml(catName(k))}</span><span>${formatMoney(v)}</span></div>`).join('');
   const ts=settings['Zuletzt gespeichert'];
   byId('eurBox').innerHTML=`
     <h3>📊 ${countryCfg().eur} – ${countryCfg().eurLong} ${activeYear} <span class="fs-11 fw-400 color-muted">${ts?'· '+t('asOf')+': '+tsDisplay(ts):''}</span></h3>
@@ -1648,7 +1664,7 @@ function renderEUR(){
     ${klein?'':`<div class="color-muted fs-12 eur-row" ><span class="pl-16">${t('grossForInformation')}</span><span>${formatMoney(d.incGross)}</span></div>`}
     <div class="mt-8 eur-row" ><span>${t('totalOperatingExpenses')} (${klein?t('gross'):t('net')})</span><span class="fw-600 color-red">${formatMoney(d.costSum)}</span></div>
     ${catRows}
-    <div class="eur-row total profit ${d.profit>=0?'pos':'neg'}"><span>${t('profitLoss')}</span><span>${formatMoney(d.profit)}</span></div>
+    <div class="eur-row total profit-${d.profit>=0?'pos':'neg'}"><span>${t('profitLoss')}</span><span>${formatMoney(d.profit)}</span></div>
     <div class="mt-12 fs-12 color-muted">${t('incomeCountsWhenPayment')}${klein?' '+t('asASmallBusiness'):''}</div>`;
 }
 
@@ -1739,12 +1755,12 @@ function readItems(){
 function renderPos(){
   const dis=posLocked?' disabled':'';
   byId('posList').innerHTML=posItems.map((it,x)=>`<div class="pos" data-x="${x}">
-    <input class="p-desc" data-k="desc" placeholder="Beschreibung der Leistung" aria-label="Beschreibung" value="${escapeHtml(it.desc)}"${dis}>
+    <input class="p-desc" data-k="desc" placeholder="${t('descriptionOfTheService')}" aria-label="${t('description')}" value="${escapeHtml(it.desc)}"${dis}>
     <input class="p-qty" data-k="qty" type="number" step="0.01" inputmode="decimal" placeholder="Menge" aria-label="Menge" value="${escapeHtml(it.qty)}"${dis}>
     <input class="p-unit" data-k="unit" list="unitList" placeholder="Einheit" aria-label="Einheit" value="${escapeHtml(it.unit)}"${dis}>
     <input class="p-price" data-k="price" type="number" step="0.01" inputmode="decimal" placeholder="Einzelpreis €" aria-label="Einzelpreis in Euro" value="${escapeHtml(it.price)}"${dis}>
     <span class="p-amt">${formatMoney(itemAmt(it))}</span>
-    ${posLocked||posItems.length<2?'<span></span>':'<button type="button" class="abtn p-del" title="Position entfernen">✕</button>'}
+    ${posLocked||posItems.length<2?'<span></span>':'<button type="button" class="abtn p-del" title="'+t('tipRemoveLineItem')+'">✕</button>'}
   </div>`).join('');
 }
 function upGross(){
@@ -1789,6 +1805,44 @@ function makeDialog(overlayId,snapshot){
     close,
     cancel(){if(snapshot()!==openSnapshot&&!confirm(t('discardYourInputUnsaved')))return;close();}
   };
+}
+// Dialog behaviour: Escape closes the top dialog, Tab stays inside it, focus returns to the element that opened it
+function initDialogBehaviour(){
+  const overlays=[...document.querySelectorAll('.ov')];
+  const closeActions={invOv:cancelInv,custOv:custDialog.cancel,costOv:cancelCost,
+    pickOv:()=>byId('pkClose').click(),infoOv:()=>byId('infoClose').click(),welcomeOv:()=>byId('wSkip').click()};
+  const topOverlay=()=>overlays.filter(o=>o.classList.contains('open')).pop();
+  const openers=new Map();
+  let lastFocusOutside=null;   // last element focused outside the dialogs; it becomes the opener
+  document.addEventListener('focusin',e=>{if(!e.target.closest('.ov.open'))lastFocusOutside=e.target;});
+  overlays.forEach(overlay=>{
+    let wasOpen=overlay.classList.contains('open');
+    new MutationObserver(()=>{
+      const isOpen=overlay.classList.contains('open');
+      if(isOpen===wasOpen)return;
+      wasOpen=isOpen;
+      if(isOpen){
+        openers.set(overlay,lastFocusOutside);
+        if(!overlay.contains(document.activeElement)){   // keep focus the dialog already set itself (e.g. the picker's search field)
+          const modal=overlay.querySelector('.modal')||overlay;
+          modal.setAttribute('tabindex','-1');modal.focus({preventScroll:true});   // not an input: avoids popping up the phone keyboard
+        }
+      }else{
+        const opener=openers.get(overlay);openers.delete(overlay);
+        if(opener&&opener.matches('button,a')&&document.body.contains(opener))opener.focus({preventScroll:true});   // never refocus an input (would open the phone keyboard)
+      }
+    }).observe(overlay,{attributes:true,attributeFilter:['class']});
+  });
+  document.addEventListener('keydown',e=>{
+    const overlay=topOverlay();if(!overlay)return;
+    if(e.key==='Escape'){const close=closeActions[overlay.id];if(close){e.preventDefault();close();}return;}
+    if(e.key!=='Tab')return;
+    const focusable=[...overlay.querySelectorAll('a[href],button:not([disabled]),input:not([disabled]):not([type=hidden]),select:not([disabled]),textarea:not([disabled])')].filter(el=>el.offsetParent!==null);
+    if(!focusable.length)return;
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(e.shiftKey&&(document.activeElement===first||!overlay.contains(document.activeElement))){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  });
 }
 const INV_FIELDS=['i_cl','i_street','i_zip','i_city','i_cv','i_co','i_da','i_ld','i_le','i_du','i_va'];
 const INV_ALL=[...INV_FIELDS,'i_pd','i_pm','i_no'];
@@ -1974,7 +2028,7 @@ function renderCustTable(){
     <td class="cust-contact color-muted fs-12">${escapeHtml([c.phone,c.email].filter(Boolean).join(' · '))}</td>
     <td class="cust-count text-right mono" data-l="Rechnungen" >${custCount(c)}</td>
     <td class="cust-revenue text-right mono" data-l="Umsatz bezahlt" >${formatMoney(custPaid(c))}</td>
-    <td class="cust-actions"><button class="abtn" data-edit-cust="${c._id}" title="Bearbeiten">✏</button><button class="abtn" data-inv-cust="${c._id}" title="Neue Rechnung für diesen Kunden">🧾</button></td>
+    <td class="cust-actions"><button class="abtn" data-edit-cust="${c._id}" title="${t('tipEdit')}">✏</button><button class="abtn" data-inv-cust="${c._id}" title="${t('tipNewInvoiceForThis')}">🧾</button></td>
   </tr>`).join('');
 }
 byId('cuSearch').addEventListener('input',renderCustTable);
@@ -2041,7 +2095,7 @@ function calcCostNet(){
   costHint();
 }
 function costHint(){
-  byId('costHint').textContent=isSmallBusiness()?'Kleinunternehmer: Für die EÜR zählt der Bruttobetrag (Vorsteuer ist nicht abziehbar).':'Für die EÜR zählt der Nettobetrag (Vorsteuer wird separat mit dem Finanzamt verrechnet).';
+  byId('costHint').textContent=t(isSmallBusiness()?'costHintSmallBusiness':'costHintRegular');
 }
 byId('c_gr').addEventListener('input',calcCostNet);
 byId('c_va').addEventListener('change',calcCostNet);
@@ -2791,6 +2845,7 @@ byId('logoDel').addEventListener('click',()=>{if(confirm(t('removeTheLogoInvoice
 
 byId('riskInfo').addEventListener('click',e=>{e.preventDefault();byId('infoOv').classList.add('open');});
 document.querySelectorAll('.ver').forEach(e=>e.textContent=APP_VERSION);
+initDialogBehaviour();
 initLanguage();
 </script>
 </body>
