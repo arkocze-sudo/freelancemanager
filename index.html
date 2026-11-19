@@ -15,7 +15,7 @@ body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14
 
 /* LOAD */
 #loadScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
-#app{display:none}
+
 .lcard{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:2.5rem 3rem;text-align:center;max-width:430px;width:95%}
 .lcard h1{font-size:22px;font-weight:700;margin-bottom:6px}
 .lcard p{color:var(--muted);font-size:13px;margin-bottom:1.5rem;line-height:1.6}
@@ -94,7 +94,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 .dbtn:hover{background:var(--rbg)}
 
 /* SETTINGS */
-#sPanel{display:none;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem}
+#sPanel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:1.5rem;margin-bottom:1.5rem}
 #sPanel h3{font-size:14px;font-weight:700;margin-bottom:1rem}
 .sg{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 
@@ -123,7 +123,7 @@ input:focus,select:focus,textarea:focus{outline:2px solid var(--accent);border-c
 .btn-drive{display:block;width:100%;padding:11px;margin-bottom:12px;background:var(--blue);color:#fff;border:none;border-radius:var(--r);cursor:pointer;font-size:14px;font-weight:600}
 .btn-drive:hover{opacity:.9}
 .lnk{font-size:11px;color:#aaa;margin-top:2px}.lnk a{color:#888}
-.cloud{font-size:15px;display:none}
+.cloud{font-size:15px}
 #drivePanel{border:1px solid var(--border);background:#f8f8fc;border-radius:var(--r);padding:12px 14px;margin-bottom:14px;font-size:13px;line-height:1.55}
 #drivePanel h4{font-size:13px;margin-bottom:6px}
 #drivePanel .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
@@ -147,7 +147,7 @@ button:disabled{opacity:.5;cursor:wait}
 .info ul{margin:0 0 6px 18px;font-size:14px;line-height:1.7}
 
 html{-webkit-text-size-adjust:100%}
-#btnDraft{display:none;margin-top:10px;width:100%;padding:11px;background:var(--abg);color:var(--amber);border:1px solid var(--amber-line);border-radius:var(--r);cursor:pointer;font-size:14px;font-weight:600}
+#btnDraft{margin-top:10px;width:100%;padding:11px;background:var(--abg);color:var(--amber);border:1px solid var(--amber-line);border-radius:var(--r);cursor:pointer;font-size:14px;font-weight:600}
 
 /* UTILITIES (single-purpose helpers; replace former inline styles) */
 .bg-f4f3ef{background:#f4f3ef!important}
@@ -194,14 +194,28 @@ html{-webkit-text-size-adjust:100%}
 /* Dialog container receives focus programmatically (Escape / focus return): no visible focus ring */
 .modal:focus,.modal:focus-visible{outline:none}
 
+/* Layout helpers that replaced inline styles */
+.logo-row{display:flex;gap:12px;align-items:center;margin-top:6px}
+.flex-gap-8-top{margin-top:1rem;display:flex;gap:8px}
+.flex-wrap-gap-8{display:flex;gap:8px;flex-wrap:wrap}
+.flex-gap-6{display:flex;gap:6px}
+.flex-gap-10{display:flex;gap:10px}
+.logo-preview{max-height:48px;max-width:170px;border:1px solid var(--border);border-radius:6px;background:#fff}
+.m-8_0{margin:8px 0}
+
 /* LANGUAGE SWITCH */
 .lang-select{width:auto;min-height:0;padding:5px 8px;font-size:13px;border-radius:6px;cursor:pointer}
 header .lang-select{background:rgba(255,255,255,.13);color:#fff;border:none}
 header .lang-select option{color:#1a1a1a}
 .lang-corner{position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px}
 
+[hidden]{display:none!important}   /* visibility is toggled with the hidden attribute, never with inline styles */
+
 /* ===== MOBILE ===== */
 @media (max-width:700px){
+  /* Line-item row on phones: description on top; quantity, unit and a flexible price field below; amount at the right */
+  .pos{grid-template-columns:64px minmax(0,1fr) minmax(0,1.3fr) auto;grid-template-areas:"d d d x" "q u p a"}
+  .pos .p-del,.pos>span:last-child{justify-self:end}
   body{font-size:15px;padding-bottom:calc(150px + env(safe-area-inset-bottom))}
   #loadScreen{min-height:100dvh}
   .lcard{padding:1.8rem 1.4rem}
@@ -304,13 +318,13 @@ header .lang-select option{color:#1a1a1a}
     <h1>Freelance Manager</h1>
     <p class="sub" data-i18n="loadSub">Rechnungen und Ausgaben für Selbstständige und Freelancer – einfach, übersichtlich und in deinem eigenen Google Drive gespeichert.</p>
     <button class="btn-drive" id="btnDriveLoad" data-i18n="startDrive">Mit Google Drive starten</button>
-    <button id="btnDraft"></button>
+    <button id="btnDraft" hidden></button>
     <div class="alt">
       <button class="linkbtn" id="dzLink" data-i18n="openFile">Datei von diesem Gerät öffnen</button>
       <button class="linkbtn" id="btnNew" data-i18n="tryOffline">Ohne Drive ausprobieren</button>
     </div>
     <p class="risk">Freelance Manager <span class="ver"></span> · <span data-i18n="riskLoad">Nutzung auf eigenes Risiko. Keine Steuer- oder Rechtsberatung.</span></p>
-    <div class="dz" id="dz" style="display:none"><input type="file" id="fi" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
+    <div class="dz" id="dz" hidden><input type="file" id="fi" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"></div>
   </div>
   <div class="fs-12 color-aaa text-center" data-i18n="yourDataStaysOnly">Deine Daten liegen nur auf deinem Gerät bzw. in deinem eigenen Google Drive.</div>
   <div class="lnk"><a href="#" id="btnInfo" data-i18n="howItWorks">So funktioniert's &amp; Datenschutz</a></div>
@@ -318,11 +332,11 @@ header .lang-select option{color:#1a1a1a}
 </div>
 
 <!-- APP -->
-<div id="app">
+<div id="app" hidden>
   <header>
     <h1>🧾 <span class="ht">Freelance Manager</span></h1>
     <span class="fn" id="fn"></span>
-    <span class="cloud" id="cloudDot" title="Mit Google Drive verbunden" data-i18n-title="tipConnectedToGoogleDrive">☁</span>
+    <span class="cloud" id="cloudDot" hidden title="Mit Google Drive verbunden" data-i18n-title="tipConnectedToGoogleDrive">☁</span>
     <span class="dirty" id="dirty">●<span class="bl" data-i18n="unsaved"> ungespeichert</span></span>
     <span class="fs-11 op-p55 ws-nowrap" id="lastSavedLabel"></span>
     <select class="lang-select" aria-label="Language"></select>
@@ -340,16 +354,16 @@ header .lang-select option{color:#1a1a1a}
 
   <main>
     <!-- PROFILE -->
-    <div id="sPanel">
+    <div id="sPanel" hidden>
       <h3 data-i18n="myProfile">Mein Profil</h3>
       <p data-i18n-html="htmlProfileIntro" class="fs-12 color-muted mb-12">Mit * markierte Felder werden für Rechnungen benötigt. Änderungen gelten sofort im Programm. Klicke danach oben auf <strong>💾 Speichern</strong>, um sie in die xlsx-Datei zu schreiben.</p>
       <div id="drivePanel"></div>
       <div class="sg" id="sg"></div>
       <div class="mt-14 fr" id="logoBox" ><label data-i18n="logoAppearsTopLeft" for="logoFile">Logo (erscheint oben links auf neuen Rechnungen)</label>
         <input type="file" id="logoFile" accept="image/png,image/jpeg,image/webp">
-        <div style="display:flex;gap:12px;align-items:center;margin-top:6px"><img id="logoPrev" alt="Logo" style="max-height:48px;max-width:170px;display:none;border:1px solid var(--border);border-radius:6px;background:#fff"><button type="button" class="linkbtn" id="logoDel" style="display:none" data-i18n="remove">Entfernen</button></div>
+        <div class="logo-row"><img id="logoPrev" alt="Logo" class="logo-preview" hidden><button type="button" class="linkbtn" id="logoDel" hidden data-i18n="remove">Entfernen</button></div>
         <div class="hint" data-i18n="resizedAndSavedWith">Wird verkleinert und mit deinen Daten gespeichert. Bereits ausgestellte Rechnungen ändern sich nicht.</div></div>
-      <div style="margin-top:1rem;display:flex;gap:8px">
+      <div class="flex-gap-8-top">
         <button class="btn acc" id="btnSettingsOk" data-i18n="apply">✔ Übernehmen</button>
         <button class="btn" id="btnSettingsClose" data-i18n="close">Schließen</button>
       </div>
@@ -359,8 +373,8 @@ header .lang-select option{color:#1a1a1a}
     <div class="page active" id="pgInv">
       <div class="stats" id="stats"></div>
       <div class="ytabs" id="ytabs"></div>
-      <div class="info-box" id="kleinInfo" style="display:none"></div>
-      <div class="info-box" id="cashInfo" style="display:none"></div>
+      <div class="info-box" id="kleinInfo" hidden></div>
+      <div class="info-box" id="cashInfo" hidden></div>
       <div class="controls">
         <select id="fs">
           <option value="" data-i18n="statusAll">Alle Status</option>
@@ -383,7 +397,7 @@ header .lang-select option{color:#1a1a1a}
           </tr></thead>
           <tbody id="invTb"></tbody>
         </table>
-        <div id="invEmpty" class="empty" style="display:none" data-i18n="noInvoicesFoundUse">Keine Rechnungen gefunden. Mit „+ Neue Rechnung“ legst du die erste an.</div>
+        <div id="invEmpty" class="empty" hidden data-i18n="noInvoicesFoundUse">Keine Rechnungen gefunden. Mit „+ Neue Rechnung“ legst du die erste an.</div>
       </div>
     </div>
 
@@ -398,7 +412,7 @@ header .lang-select option{color:#1a1a1a}
           <thead><tr><th data-i18n="custNo">Kd.-Nr.</th><th data-i18n="nameCompany">Name / Firma</th><th data-i18n="address">Adresse</th><th data-i18n="contact">Kontakt</th><th class="text-right" data-i18n="invoices">Rechnungen</th><th class="text-right" data-i18n="revenuePaidNet">Umsatz (bezahlt, netto)</th><th></th></tr></thead>
           <tbody id="custTb"></tbody>
         </table>
-        <div id="custEmpty" class="empty" style="display:none"></div>
+        <div id="custEmpty" class="empty" hidden></div>
       </div>
     </div>
 
@@ -421,7 +435,7 @@ header .lang-select option{color:#1a1a1a}
           </tr></thead>
           <tbody id="costTb"></tbody>
         </table>
-        <div id="costEmpty" class="empty" style="display:none" data-i18n="noExpensesFoundUse">Keine Ausgaben gefunden. Mit „+ Neue Ausgabe“ erfasst du den ersten Beleg.</div>
+        <div id="costEmpty" class="empty" hidden data-i18n="noExpensesFoundUse">Keine Ausgaben gefunden. Mit „+ Neue Ausgabe“ erfasst du den ersten Beleg.</div>
       </div>
     </div>
 
@@ -429,7 +443,7 @@ header .lang-select option{color:#1a1a1a}
     <div class="page" id="pgEur">
       <div class="ytabs" id="eurytabs"></div>
       <div class="eur-box" id="eurBox"></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <div class="flex-wrap-gap-8">
         <button class="btn" id="btnPrintEur" data-i18n="printER">🖨 EÜR drucken</button>
         <button class="btn acc" id="btnCsvEur" data-i18n="eRAsCsv">⬇ EÜR als CSV</button>
       </div>
@@ -489,7 +503,7 @@ header .lang-select option{color:#1a1a1a}
     <p class="m-n6_0_10 hint"  data-i18n="requiredToIssue">* Pflichtfeld zum Ausstellen</p>
     <div class="fg">
       <div class="fr s2"><label data-i18n="invoiceNumber" for="i_nr">Rechnungsnummer</label><input id="i_nr" readonly class="bg-f4f3ef color-muted"></div>
-            <div class="fr s2"><label><span data-i18n="companyCustomerName">Firmenname / Name des Kunden</span> <span class="req">*</span></label><div style="display:flex;gap:6px"><input id="i_cl" data-i18n-placeholder="eGExampleLtd" placeholder="z.B. Muster GmbH" style="flex:1;min-width:0"><button type="button" class="ws-nowrap btn" id="btnPickCust"  data-i18n="chooseCustomer">👥 Kunden wählen</button></div></div>
+            <div class="fr s2"><label><span data-i18n="companyCustomerName">Firmenname / Name des Kunden</span> <span class="req">*</span></label><div class="flex-gap-6"><input id="i_cl" data-i18n-placeholder="eGExampleLtd" placeholder="z.B. Muster GmbH" style="flex:1;min-width:0"><button type="button" class="ws-nowrap btn" id="btnPickCust"  data-i18n="chooseCustomer">👥 Kunden wählen</button></div></div>
       <div class="fr s2"><label for="i_street"><span data-i18n="streetAndHouseNumber">Straße und Hausnummer</span> <span class="req">*</span></label><input id="i_street" data-i18n-placeholder="eGExampleStreet" placeholder="z.B. Musterstraße 12"></div>
       <div class="fr"><label for="i_zip"><span data-i18n="postcode">PLZ</span> <span class="req">*</span></label><input id="i_zip" inputmode="numeric" data-i18n-placeholder="eG20095" placeholder="z.B. 20095"></div>
       <div class="fr"><label for="i_city"><span data-i18n="city">Ort</span> <span class="req">*</span></label><input id="i_city" data-i18n-placeholder="eGHamburg" placeholder="z.B. Hamburg"></div>
@@ -502,19 +516,19 @@ header .lang-select option{color:#1a1a1a}
       </div>
       <div class="fr"><label for="i_da"><span data-i18n="invoiceDate">Rechnungsdatum</span> <span class="req">*</span></label><input type="date" id="i_da"></div>
       <div class="fr"><label for="i_ld"><span data-i18n="serviceDateOrStart">Leistungsdatum (bzw. Beginn)</span> <span class="req">*</span></label><input type="date" id="i_ld"></div>
-      <div class="fr"><label data-i18n="servicePeriodUntil">Leistungszeitraum bis</label><div style="display:flex;gap:6px"><input type="date" id="i_le" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_leClear" title="Datum löschen" data-i18n-title="tipClearDate" >✕</button></div></div>
+      <div class="fr"><label data-i18n="servicePeriodUntil">Leistungszeitraum bis</label><div class="flex-gap-6"><input type="date" id="i_le" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_leClear" title="Datum löschen" data-i18n-title="tipClearDate" >✕</button></div></div>
       <div class="fr"><label for="i_du"><span data-i18n="dueOn">Fällig am</span> <span class="req">*</span></label><input type="date" id="i_du"></div>
-      <div class="fr"><label data-i18n="paymentReceivedDate">Zahlungseingang (Datum)</label><div style="display:flex;gap:6px"><input type="date" id="i_pd" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_pdClear" title="Datum löschen" data-i18n-title="tipClearDate" >✕</button></div><small id="pdHint" class="hint"></small></div>
+      <div class="fr"><label data-i18n="paymentReceivedDate">Zahlungseingang (Datum)</label><div class="flex-gap-6"><input type="date" id="i_pd" style="flex:1;min-width:0"><button type="button" class="p-0_14 btn" id="i_pdClear" title="Datum löschen" data-i18n-title="tipClearDate" >✕</button></div><small id="pdHint" class="hint"></small></div>
       <div class="fr"><label data-i18n="paymentMethod" for="i_pm">Zahlungsart</label><select id="i_pm"><option value="Überweisung" data-i18n="bankTransfer">Überweisung</option><option value="Bar" data-i18n="cash">Bar</option><option value="Karte vor Ort" data-i18n="cardOnSite">Karte vor Ort</option></select></div>
             <div class="fr"><label data-i18n="vatField" for="i_va">Umsatzsteuer</label>
         <select id="i_va"></select>
       </div>
       <div class="fr s2"><label data-i18n="noteInternal" for="i_no">Notiz (intern)</label><input id="i_no"></div>
     </div>
-    <div id="lockHint" class="info-box" style="display:none;margin:8px 0"></div>
+    <div id="lockHint" class="info-box m-8_0" hidden></div>
     <div id="grossPrev" class="fs-13 color-muted m-4_0_8 fw-500"></div>
     <div class="ma">
-      <button class="dbtn" id="invDelBtn" style="display:none" data-i18n="delete">🗑 Löschen</button>
+      <button class="dbtn" id="invDelBtn" hidden data-i18n="delete">🗑 Löschen</button>
       <button class="btn" id="invCancel">Abbrechen</button>
       <button class="btn" id="invPreview" data-i18n="preview">👁 Vorschau</button>
       <button class="btn" id="invStorno" data-i18n="cancelInvoice">↩ Stornieren</button>
@@ -543,7 +557,7 @@ header .lang-select option{color:#1a1a1a}
     <div class="fr"><label data-i18n="paymentTermsDays" for="cu_days">Zahlungsziel (Tage)</label><input id="cu_days" type="number" min="0" step="1" inputmode="numeric"></div>
     <div class="fr s2"><label data-i18n="note" for="cu_note">Notiz</label><input id="cu_note"></div>
   </div>
-  <div class="ma"><button class="dbtn" id="cuDel" style="display:none" data-i18n="delete">🗑 Löschen</button><button class="btn" id="cuCancel" data-i18n="cancel">Abbrechen</button><button class="btn acc" id="cuSave" data-i18n="saveButton">Speichern</button></div>
+  <div class="ma"><button class="dbtn" id="cuDel" hidden data-i18n="delete">🗑 Löschen</button><button class="btn" id="cuCancel" data-i18n="cancel">Abbrechen</button><button class="btn acc" id="cuSave" data-i18n="saveButton">Speichern</button></div>
 </div></div>
 
 <!-- KUNDE WÄHLEN -->
@@ -576,12 +590,12 @@ header .lang-select option{color:#1a1a1a}
       <div class="fr s2"><label data-i18n="receiptPhotoOrPdf" for="c_file">Beleg (Foto oder PDF)</label>
         <input type="file" id="c_file" accept="image/*,application/pdf">
         <div class="mt-4 hint" id="c_fileInfo" ></div>
-        <div style="display:flex;gap:10px"><button type="button" class="linkbtn" id="c_fileView" data-i18n="view">Ansehen</button><button type="button" class="linkbtn" id="c_fileDel" data-i18n="remove">Entfernen</button></div>
+        <div class="flex-gap-10"><button type="button" class="linkbtn" id="c_fileView" data-i18n="view">Ansehen</button><button type="button" class="linkbtn" id="c_fileDel" data-i18n="remove">Entfernen</button></div>
         <div class="hint" data-i18n="storedInYourGoogle">Wird in deinem Google Drive abgelegt (Ordner „Belege“).</div></div>
     </div>
     <div id="costHint" class="mb-6 hint" ></div>
     <div class="ma">
-      <button class="dbtn" id="costDelBtn" style="display:none" data-i18n="delete">🗑 Löschen</button>
+      <button class="dbtn" id="costDelBtn" hidden data-i18n="delete">🗑 Löschen</button>
       <button class="btn" id="costCancel" data-i18n="cancel">Abbrechen</button>
       <button class="btn acc" id="costSave" data-i18n="saveButton">Speichern</button>
     </div>
@@ -1018,7 +1032,8 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 // Invoice PDF, Excel file, CSV and ZIP always stay in the business-country language (not affected by this setting).
 const LANG_NAMES={de:'Deutsch',en:'English'};
 const I18N={
-  de:{"customerPickerTitle":"Kunde wählen","howItWorksTitle":"So funktioniert's","vatField":"Umsatzsteuer",
+  de:{"lineQuantity":"Menge","lineUnit":"Einheit","lineUnitPrice":"Preis €","lineUnitPriceLabel":"Einzelpreis in Euro",
+    "customerPickerTitle":"Kunde wählen","howItWorksTitle":"So funktioniert's","vatField":"Umsatzsteuer",
     "descriptionOfTheService":"Beschreibung der Leistung","costHintSmallBusiness":"Kleinunternehmer: Für die EÜR zählt der Bruttobetrag (Vorsteuer ist nicht abziehbar).","costHintRegular":"Für die EÜR zählt der Nettobetrag (Vorsteuer wird separat mit dem Finanzamt verrechnet).",
     "zeroSmallBusiness":"0 % – Kleinunternehmer ({p0})","standardRate":"Regelsteuersatz","reducedRate":"ermäßigt","noVatShown":"0 % (kein Ausweis)","eurOverview":"Übersicht",
     "tipOpenAnotherFile":"Andere Datei öffnen","tipEdit":"Bearbeiten","tipViewReceipt":"Beleg ansehen","tipClearDate":"Datum löschen","tipConnectedToGoogleDrive":"Mit Google Drive verbunden","tipNewInvoiceForThis":"Neue Rechnung für diesen Kunden","tipDownloadPdf":"PDF herunterladen","tipPdfNotArchivedIn":"PDF nicht im Drive archiviert","tipRemoveLineItem":"Position entfernen","tipSaveGoogleDriveIf":"Speichern (Google Drive, falls verbunden – sonst Download)","tipAddAnotherLineItem":"Weitere Position hinzufügen",
@@ -1033,7 +1048,8 @@ const I18N={
     statusAll:'Alle Status',statusDraft:'Entwurf',statusPaid:'Bezahlt',statusOpen:'Offen',statusOverdue:'Überfällig',
     searchInvoices:'Suche Kunde / Nr…',searchCustomers:'Suche nach Name, Ort, Nr. …',searchGeneric:'Suche…',
     newInvoice:'+ Neue Rechnung',newCustomer:'+ Neuer Kunde',newExpense:'+ Neue Ausgabe',allCategories:'Alle Kategorien'},
-  en:{"customerPickerTitle":"Choose customer","howItWorksTitle":"How it works","vatField":"VAT",
+  en:{"lineQuantity":"Quantity","lineUnit":"Unit","lineUnitPrice":"Price €","lineUnitPriceLabel":"Unit price in euros",
+    "customerPickerTitle":"Choose customer","howItWorksTitle":"How it works","vatField":"VAT",
     "descriptionOfTheService":"Description of the service","costHintSmallBusiness":"Small business: for the EÜR the gross amount counts (input VAT is not deductible).","costHintRegular":"For the EÜR the net amount counts (input VAT is settled separately with the tax office).","cat:Material & Waren":"Materials & goods","cat:Arbeitsmittel & Equipment":"Tools & equipment","cat:Software & Abos":"Software & subscriptions","cat:Fahrtkosten":"Transport costs","cat:Reisekosten":"Travel expenses","cat:Homeoffice":"Home office","cat:Telefon & Internet":"Phone & internet","cat:Weiterbildung":"Training & education","cat:Fachbücher & Literatur":"Books & literature","cat:Versicherungen":"Insurance","cat:Sozialversicherung":"Social security","cat:Steuerberatung & Buchführung":"Tax advice & bookkeeping","cat:Bankgebühren":"Bank fees","cat:Werbung & Marketing":"Advertising & marketing","cat:Miete (Büro/Atelier/Raum)":"Rent (office/studio/room)","cat:Sonstiges":"Other",
     "zeroSmallBusiness":"0 % – small business ({p0})","standardRate":"standard rate","reducedRate":"reduced rate","noVatShown":"0 % (no VAT shown)","eurOverview":"overview",
     "tipOpenAnotherFile":"Open another file","tipEdit":"Edit","tipViewReceipt":"View receipt","tipClearDate":"Clear date","tipConnectedToGoogleDrive":"Connected to Google Drive","tipNewInvoiceForThis":"New invoice for this customer","tipDownloadPdf":"Download PDF","tipPdfNotArchivedIn":"PDF not archived in Drive","tipRemoveLineItem":"Remove line item","tipSaveGoogleDriveIf":"Save (Google Drive if connected – otherwise download)","tipAddAnotherLineItem":"Add another line item",
@@ -1068,7 +1084,7 @@ function setLanguage(lang){
   const keptSelections=['i_va','c_va','c_cat'].map(id=>[id,byId(id).value]);
   applyCountry();   // rebuilds the VAT / category dropdowns and the EÜR tab label in the new language
   keptSelections.forEach(([id,value])=>{byId(id).value=value;});
-  if(byId('app').style.display==='block')renderAll();
+  if(!byId('app').hidden)renderAll();
 }
 function initLanguage(){
   document.querySelectorAll('.lang-select').forEach(sel=>{
@@ -1180,7 +1196,7 @@ byId('fi').addEventListener('change',e=>loadFile(e.target.files[0]));
 byId('btnNew').addEventListener('click',createNew);
 (function(){
   const d=readDraft();if(!d||(!d.invoices.length&&!d.costs.length))return;
-  const b=byId('btnDraft');b.style.display='block';
+  const b=byId('btnDraft');b.hidden=false;
   b.textContent=`↩ Nicht gespeicherte Änderungen wiederherstellen (${new Date(d.at).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})})`;
   b.addEventListener('click',()=>{
     invoices=d.invoices;costs=d.costs;customers=d.customers||[];settings=d.settings||{};fname=d.fname||'rechnungen.xlsx';
@@ -1239,7 +1255,7 @@ byId('btnInfo').addEventListener('click',e=>{e.preventDefault();byId('infoOv').c
 byId('infoClose').addEventListener('click',()=>byId('infoOv').classList.remove('open'));
 
 function startApp(){
-  byId('loadScreen').style.display='none';byId('app').style.display='block';
+  byId('loadScreen').hidden=true;byId('app').hidden=false;
   updateCloud();applyCountry();
   const ts=settings['Zuletzt gespeichert'];
   byId('lastSavedLabel').textContent=ts?'gespeichert '+tsDisplay(ts):'';
@@ -1562,26 +1578,26 @@ function smallBusinessWarnings(countryCode,currentYear,revenue,previousRevenue){
 
 function updateSmallBusinessInfo(){
   const box=byId('kleinInfo');
-  if(!isSmallBusiness()){box.style.display='none';return;}
+  if(!isSmallBusiness()){box.hidden=true;return;}
   const revenueOf=y=>invoices.filter(active).filter(i=>year(i.date)===String(y)).reduce((sum,i)=>sum+i.net,0);
   const {source,messages}=smallBusinessWarnings(country(),activeYear,revenueOf(activeYear),revenueOf(activeYear-1));
-  if(!messages.length){box.style.display='none';return;}
-  box.style.display='';
+  if(!messages.length){box.hidden=true;return;}
+  box.hidden=false;
   box.innerHTML='⚠ '+messages.map(escapeHtml).join('<br>⚠ ')+`<br><span class="op-p8">${source}, ${t('roughGuidancePleaseClarify')}</span>`;
 }
 // Austria: cash register obligation from €15,000 annual revenue AND €7,500 cash/card revenue (net, per year)
 function renderCashInfo(){
   const box=byId('cashInfo');
-  if(country()!=='AT'){box.style.display='none';return;}
+  if(country()!=='AT'){box.hidden=true;return;}
   const y=String(activeYear);
   const cash=round2(invoices.filter(i=>active(i)&&isPaid(i)&&(i.payMethod==='Bar'||i.payMethod==='Karte vor Ort')&&year(i.paymentDate)===y).reduce((s,i)=>s+i.net,0));
-  if(!cash){box.style.display='none';return;}
+  if(!cash){box.hidden=true;return;}
   const total=round2(invoices.filter(active).filter(i=>year(i.date)===y).reduce((s,i)=>s+i.net,0));
   let m=t('cashAndOnSite',{year:y,cash:formatMoney(cash),total:formatMoney(total)});
   if(cash>7500&&total>15000)m='⚠ '+m+' <b>'+t('bothLimitsAreExceeded')+'</b>';
   else if(cash>7500*0.85)m='⚠ '+m+' '+t('youAreApproachingThe');
   else m='ℹ '+m;
-  box.style.display='';
+  box.hidden=false;
   box.innerHTML=m+'<br><span class="op-p8">'+t('aReceiptMustBe')+'</span>';
 }
 
@@ -1592,8 +1608,8 @@ function renderInvTable(){
   if(tx)list=list.filter(i=>i.client.toLowerCase().includes(tx)||i.nr.toLowerCase().includes(tx));
   list=list.slice().sort((a,b)=>b.date.localeCompare(a.date)||b.nr.localeCompare(a.nr));
   const em=byId('invEmpty');
-  if(!list.length){byId('invTb').innerHTML='';em.style.display='';return;}
-  em.style.display='none';
+  if(!list.length){byId('invTb').innerHTML='';em.hidden=false;return;}
+  em.hidden=true;
   byId('invTb').innerHTML=list.map(inv=>{
     const v=effectiveVat(inv),s=rowStatus(inv);
     return `<tr>
@@ -1633,8 +1649,8 @@ function renderCostTable(){
   if(tx)list=list.filter(c=>c.desc.toLowerCase().includes(tx)||c.supplier.toLowerCase().includes(tx));
   list=list.slice().sort((a,b)=>b.date.localeCompare(a.date));
   const em=byId('costEmpty');
-  if(!list.length){byId('costTb').innerHTML='';em.style.display='';return;}
-  em.style.display='none';
+  if(!list.length){byId('costTb').innerHTML='';em.hidden=false;return;}
+  em.hidden=true;
   byId('costTb').innerHTML=list.map(c=>`<tr>
       <td class="cost-date">${fmtDate(c.date)}</td>
       <td class="cost-category"><span class="cat-badge">${escapeHtml(catName(c.cat))}</span></td>
@@ -1689,8 +1705,8 @@ function renderSettings(){
     +`<div class="fr"><label>${t('lastSaved')}</label><input readonly class="bg-f4f3ef color-muted" value="${escapeHtml(tsDisplay(settings['Zuletzt gespeichert']||'')||'–')}"></div>`;
 }
 function toggleS(){
-  const p=byId('sPanel'),open=getComputedStyle(p).display==='none';
-  p.style.display=open?'block':'none';
+  const p=byId('sPanel'),open=p.hidden;
+  p.hidden=!open;
   p.dataset.editing=open?'1':'0';
   if(open){p.dataset.editing='0';renderSettings();p.dataset.editing='1';}
 }
@@ -1701,7 +1717,7 @@ byId('btnSettingsOk').addEventListener('click',()=>{
   const k=String(settings['Kleinunternehmer (ja/nein)']||'ja').toLowerCase();
   settings['Kleinunternehmer (ja/nein)']=k==='nein'?'nein':'ja';
   settings['Land']=settings['Land']==='AT'?'AT':'DE';applyCountry();
-  byId('sPanel').style.display='none';byId('sPanel').dataset.editing='0';
+  byId('sPanel').hidden=true;byId('sPanel').dataset.editing='0';
   markChanged();
   toast(t('profileAppliedClickSave'));
 });
@@ -1762,9 +1778,9 @@ function renderPos(){
   const dis=posLocked?' disabled':'';
   byId('posList').innerHTML=posItems.map((it,x)=>`<div class="pos" data-x="${x}">
     <input class="p-desc" data-k="desc" placeholder="${t('descriptionOfTheService')}" aria-label="${t('description')}" value="${escapeHtml(it.desc)}"${dis}>
-    <input class="p-qty" data-k="qty" type="number" step="0.01" inputmode="decimal" placeholder="Menge" aria-label="Menge" value="${escapeHtml(it.qty)}"${dis}>
-    <input class="p-unit" data-k="unit" list="unitList" placeholder="Einheit" aria-label="Einheit" value="${escapeHtml(it.unit)}"${dis}>
-    <input class="p-price" data-k="price" type="number" step="0.01" inputmode="decimal" placeholder="Einzelpreis €" aria-label="Einzelpreis in Euro" value="${escapeHtml(it.price)}"${dis}>
+    <input class="p-qty" data-k="qty" type="number" step="0.01" inputmode="decimal" placeholder="${t('lineQuantity')}" aria-label="${t('lineQuantity')}" value="${escapeHtml(it.qty)}"${dis}>
+    <input class="p-unit" data-k="unit" list="unitList" placeholder="${t('lineUnit')}" aria-label="${t('lineUnit')}" value="${escapeHtml(it.unit)}"${dis}>
+    <input class="p-price" data-k="price" type="number" step="0.01" inputmode="decimal" placeholder="${t('lineUnitPrice')}" aria-label="${t('lineUnitPriceLabel')}" value="${escapeHtml(it.price)}"${dis}>
     <span class="p-amt">${formatMoney(itemAmt(it))}</span>
     ${posLocked||posItems.length<2?'<span></span>':'<button type="button" class="abtn p-del" title="'+t('tipRemoveLineItem')+'">✕</button>'}
   </div>`).join('');
@@ -1862,16 +1878,16 @@ function setInvMode(inv){
   byId('btnPickCust').disabled=!draft;
   ['i_pd','i_pm','i_no','i_pdClear'].forEach(id=>byId(id).disabled=!!storno);
   byId('i_leClear').disabled=!draft;
-  posLocked=!draft;renderPos();byId('posAdd').style.display=draft?'':'none';
+  posLocked=!draft;renderPos();byId('posAdd').hidden=!draft;
   if(draft)applySmallBusinessToForm();
-  const show=(id,v)=>byId(id).style.display=v?'':'none';
+  const show=(id,v)=>{byId(id).hidden=!v;};
   show('invDelBtn',inv&&draft);show('invPreview',draft);show('invIssue',draft);
   show('invPdf',!draft);show('invPdfDl',!draft);show('invStorno',!draft&&!storno);show('invSave',!storno);
   byId('invCancel').textContent=draft?t('cancel'):t('close');
   byId('invSave').textContent=draft?t('saveDraft'):t('saveButton');
   byId('invSave').classList.toggle('acc',!draft);
   byId('invMT').textContent=!inv?t('newInvoiceTitle'):draft?t('editDraft'):inv.cancels?t('cancellationInvoiceNr',{nr:inv.nr}):t('invoiceNr',{nr:inv.nr});
-  byId('lockHint').style.display=draft?'none':'';
+  byId('lockHint').hidden=draft;
   byId('lockHint').textContent=(storno?t('thisInvoiceIsClosed'):t('issuedInvoicesAreLocked'))+(inv&&!draft?(inv.pdfId?' '+t('thePdfIsArchived'):' '+t('thisPdfIsNot')):'');
 }
 function openInvModal(cust){
@@ -2025,8 +2041,8 @@ function renderCustTable(){
   let list=customers.slice().sort((a,b)=>a.name.localeCompare(b.name,'de'));
   if(q)list=list.filter(c=>[c.no,c.name,c.city,c.zip,c.street,c.phone,c.email].join(' ').toLowerCase().includes(q));
   const em=byId('custEmpty');
-  if(!list.length){byId('custTb').innerHTML='';em.style.display='';em.textContent=customers.length?t('noCustomerFound'):t('noCustomersHintWithButton');return;}
-  em.style.display='none';
+  if(!list.length){byId('custTb').innerHTML='';em.hidden=false;em.textContent=customers.length?t('noCustomerFound'):t('noCustomersHintWithButton');return;}
+  em.hidden=true;
   byId('custTb').innerHTML=list.map(c=>`<tr>
     <td class="cust-no color-muted mono" >${escapeHtml(c.no)}</td>
     <td class="cust-name"><strong>${escapeHtml(c.name)}</strong></td>
@@ -2046,7 +2062,7 @@ const custSnap=()=>JSON.stringify(CU_IDS.map(id=>byId(id).value));
 function openCustModal(id){
   const c=id?customers.find(x=>x._id===id):null;editCustId=c?c._id:null;
   byId('cuMT').textContent=c?t('editCustomer'):t('newCustomerTitle');byId('cu_no').value=c?c.no:t('assignedAutomatically');
-  byId('cuDel').style.display=c?'':'none';
+  byId('cuDel').hidden=!c;
   const v=c||{};
   byId('cu_name').value=v.name||'';byId('cu_street').value=v.street||'';byId('cu_zip').value=v.zip||'';byId('cu_city').value=v.city||'';byId('cu_country').value=v.country||'';
   byId('cu_vat').value=v.vatId||'';byId('cu_phone').value=v.phone||'';byId('cu_email').value=v.email||'';byId('cu_days').value=v.termDays||'';byId('cu_note').value=v.note||'';
@@ -2128,7 +2144,7 @@ async function prepareReceipt(file){
 }
 function refreshReceiptUI(){
   byId('c_fileInfo').textContent=pendingReceipt.id?'📎 '+pendingReceipt.name:t('noReceiptAttachedYet');
-  byId('c_fileView').style.display=byId('c_fileDel').style.display=pendingReceipt.id?'':'none';
+  byId('c_fileView').hidden=byId('c_fileDel').hidden=!pendingReceipt.id;
 }
 async function viewReceipt(id,name){
   try{
@@ -2143,7 +2159,7 @@ byId('c_fileDel').addEventListener('click',()=>{if(confirm(t('removeTheLinkTo'))
 
 function openCostModal(){
   editCostId=null;
-  byId('costMT').textContent=t('newExpenseTitle');byId('costDelBtn').style.display='none';
+  byId('costMT').textContent=t('newExpenseTitle');byId('costDelBtn').hidden=true;
   byId('c_da').value=todayISO();
   ['c_de','c_su','c_bn','c_no','c_gr','c_ne'].forEach(id=>byId(id).value='');
   byId('c_va').value='0';byId('c_cat').selectedIndex=0;byId('c_file').value='';pendingReceipt={id:'',name:''};refreshReceiptUI();
@@ -2152,7 +2168,7 @@ function openCostModal(){
 function editCost(id){
   const c=costs.find(x=>x._id===id);if(!c)return;
   editCostId=id;
-  byId('costMT').textContent=t('editExpense');byId('costDelBtn').style.display='';
+  byId('costMT').textContent=t('editExpense');byId('costDelBtn').hidden=false;
   byId('c_da').value=c.date;
   if(![...byId('c_cat').options].some(o=>o.value===c.cat)){const o=document.createElement('option');o.value=o.textContent=c.cat;byId('c_cat').appendChild(o);}
   byId('c_cat').value=c.cat;
@@ -2408,7 +2424,7 @@ async function sharePDF(inv){
 // ── SAVING ──────────────────────────────────────────────
 
 function updateCloud(){
-  byId('cloudDot').style.display=drive.linked?'inline':'none';
+  byId('cloudDot').hidden=!drive.linked;
   byId('fn').textContent=drive.linked?'☁ '+DRIVE_FILE:baseFileName(fname);
 }
 function afterSave(){
@@ -2629,7 +2645,7 @@ byId('drivePanel').addEventListener('click',e=>{
 });
 byId('btnDriveLoad').addEventListener('click',driveLoad);
 byId('btnClientId').addEventListener('click',e=>{e.preventDefault();if(!isHttps()){alert(t('driveNeedsHttps'));return;}askClientId();});
-if(GOOGLE_CLIENT_ID)byId('clientLink').style.display='none';
+if(GOOGLE_CLIENT_ID)byId('clientLink').hidden=true;
 byId('btnDriveLoad').dataset.i18n=drive.linked?'continueDrive':'startDrive';
 renderDrivePanel();
 if(clientId()&&isHttps())loadGIS().catch(()=>{});   // preload so that the sign-in popup opens right on tap
@@ -2838,8 +2854,8 @@ async function processLogo(file){
 }
 function renderLogoUI(){
   const has=!!settings['Logo'];
-  byId('logoPrev').style.display=has?'':'none';if(has)byId('logoPrev').src=settings['Logo'];
-  byId('logoDel').style.display=has?'':'none';
+  byId('logoPrev').hidden=!has;if(has)byId('logoPrev').src=settings['Logo'];
+  byId('logoDel').hidden=!has;
 }
 byId('logoFile').addEventListener('change',async e=>{
   const f=e.target.files[0];if(!f)return;
