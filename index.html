@@ -203,6 +203,14 @@ html{-webkit-text-size-adjust:100%}
 .logo-preview{max-height:48px;max-width:170px;border:1px solid var(--border);border-radius:6px;background:#fff}
 .m-8_0{margin:8px 0}
 
+/* Legal links, terms checkbox */
+.legal-links{display:flex;flex-wrap:wrap;gap:4px 14px;justify-content:center;font-size:12px;margin:8px 0 0}
+.legal-links a{color:var(--muted)}
+.terms-check{display:flex;gap:10px;align-items:flex-start;text-align:left;font-size:12.5px;line-height:1.45;color:var(--muted);margin:0 0 14px;cursor:pointer}
+.terms-check input{width:18px;height:18px;min-height:0;padding:0;margin:2px 0 0;flex:none;cursor:pointer}
+.terms-check a{color:var(--blue)}
+.btn-drive:disabled,.linkbtn:disabled{opacity:.45;cursor:not-allowed}
+
 /* LANGUAGE SWITCH */
 .lang-select{width:auto;min-height:0;padding:5px 8px;font-size:13px;border-radius:6px;cursor:pointer}
 header .lang-select{background:rgba(255,255,255,.13);color:#fff;border:none}
@@ -317,7 +325,8 @@ header .lang-select option{color:#1a1a1a}
     <div class="logo">🧾</div>
     <h1>Freelance Manager</h1>
     <p class="sub" data-i18n="loadSub">Rechnungen und Ausgaben für Selbstständige und Freelancer – einfach, übersichtlich und in deinem eigenen Google Drive gespeichert.</p>
-    <button class="btn-drive" id="btnDriveLoad" data-i18n="startDrive">Mit Google Drive starten</button>
+    <label class="terms-check"><input type="checkbox" id="acceptTerms"><span data-i18n-html="acceptTermsHtml">Ich habe die <a data-legal="nutzungsbedingungen" href="nutzungsbedingungen.html" target="_blank" rel="noopener">Nutzungsbedingungen</a> gelesen und akzeptiere sie. Die <a data-legal="datenschutz" href="datenschutz.html" target="_blank" rel="noopener">Datenschutzerklärung</a> habe ich zur Kenntnis genommen. Ich nutze die App für meine selbstständige Tätigkeit.</span></label>
+<button class="btn-drive" id="btnDriveLoad" data-i18n="startDrive">Mit Google Drive starten</button>
     <button id="btnDraft" hidden></button>
     <div class="alt">
       <button class="linkbtn" id="dzLink" data-i18n="openFile">Datei von diesem Gerät öffnen</button>
@@ -329,6 +338,7 @@ header .lang-select option{color:#1a1a1a}
   <div class="fs-12 color-aaa text-center" data-i18n="yourDataStaysOnly">Deine Daten liegen nur auf deinem Gerät bzw. in deinem eigenen Google Drive.</div>
   <div class="lnk"><a href="#" id="btnInfo" data-i18n="howItWorks">So funktioniert's &amp; Datenschutz</a></div>
   <div class="lnk" id="clientLink"><a href="#" id="btnClientId" data-i18n="googleSetupClientId">Google-Einrichtung (Client-ID)</a></div>
+<nav class="legal-links" aria-label="Legal"><a data-legal="impressum" href="impressum.html" target="_blank" rel="noopener" data-i18n="legalImprint">Impressum</a><a data-legal="datenschutz" href="datenschutz.html" target="_blank" rel="noopener" data-i18n="legalPrivacy">Datenschutz</a><a data-legal="nutzungsbedingungen" href="nutzungsbedingungen.html" target="_blank" rel="noopener" data-i18n="legalTerms">Nutzungsbedingungen</a><a data-legal="lizenzen" href="lizenzen.html" target="_blank" rel="noopener" data-i18n="legalLicenses">Lizenzen</a><a href="#" data-reset-consent data-i18n="resetConsents">Einwilligungen zurücksetzen</a></nav>
 </div>
 
 <!-- APP -->
@@ -457,6 +467,7 @@ header .lang-select option{color:#1a1a1a}
     </div>
   </main>
   <div class="risk">Freelance Manager <span class="ver"></span> · <span data-i18n="riskFooter">Nutzung auf eigenes Risiko – keine Steuer- oder Rechtsberatung.</span> <a href="#" id="riskInfo" data-i18n="more">Mehr</a></div>
+<nav class="legal-links" aria-label="Legal"><a data-legal="impressum" href="impressum.html" target="_blank" rel="noopener" data-i18n="legalImprint">Impressum</a><a data-legal="datenschutz" href="datenschutz.html" target="_blank" rel="noopener" data-i18n="legalPrivacy">Datenschutz</a><a data-legal="nutzungsbedingungen" href="nutzungsbedingungen.html" target="_blank" rel="noopener" data-i18n="legalTerms">Nutzungsbedingungen</a><a data-legal="lizenzen" href="lizenzen.html" target="_blank" rel="noopener" data-i18n="legalLicenses">Lizenzen</a><a href="#" data-reset-consent data-i18n="resetConsents">Einwilligungen zurücksetzen</a></nav>
 </div>
 
 
@@ -1032,7 +1043,8 @@ https://github.com/nodeca/pako/blob/main/LICENSE
 // Invoice PDF, Excel file, CSV and ZIP always stay in the business-country language (not affected by this setting).
 const LANG_NAMES={de:'Deutsch',en:'English'};
 const I18N={
-  de:{"lineQuantity":"Menge","lineUnit":"Einheit","lineUnitPrice":"Preis €","lineUnitPriceLabel":"Einzelpreis in Euro",
+  de:{"acceptTermsHtml":"Ich habe die <a data-legal=\"nutzungsbedingungen\" href=\"nutzungsbedingungen.html\" target=\"_blank\" rel=\"noopener\">Nutzungsbedingungen</a> gelesen und akzeptiere sie. Die <a data-legal=\"datenschutz\" href=\"datenschutz.html\" target=\"_blank\" rel=\"noopener\">Datenschutzerklärung</a> habe ich zur Kenntnis genommen. Ich nutze die App für meine selbstständige Tätigkeit.","legalImprint":"Impressum","legalPrivacy":"Datenschutz","legalTerms":"Nutzungsbedingungen","legalLicenses":"Lizenzen","resetConsents":"Einwilligungen zurücksetzen","resetConsentsConfirm":"Einwilligungen zurücksetzen? Die Seite wird neu geladen; nicht gespeicherte Änderungen gehen verloren.","googleConsentText":"Für die Anmeldung bei Google Drive wird ein Skript von Google (accounts.google.com) geladen. Dabei wird deine IP-Adresse an Google übermittelt.\n\nMöchtest du das erlauben? Du kannst die Einwilligung jederzeit über „Einwilligungen zurücksetzen“ widerrufen. Alternativ kannst du die App ohne Google nutzen (Datei lokal speichern und öffnen).","googleConsentDeclined":"Ohne deine Einwilligung kann die Google-Anmeldung nicht genutzt werden.",
+    "lineQuantity":"Menge","lineUnit":"Einheit","lineUnitPrice":"Preis €","lineUnitPriceLabel":"Einzelpreis in Euro",
     "customerPickerTitle":"Kunde wählen","howItWorksTitle":"So funktioniert's","vatField":"Umsatzsteuer",
     "descriptionOfTheService":"Beschreibung der Leistung","costHintSmallBusiness":"Kleinunternehmer: Für die EÜR zählt der Bruttobetrag (Vorsteuer ist nicht abziehbar).","costHintRegular":"Für die EÜR zählt der Nettobetrag (Vorsteuer wird separat mit dem Finanzamt verrechnet).",
     "zeroSmallBusiness":"0 % – Kleinunternehmer ({p0})","standardRate":"Regelsteuersatz","reducedRate":"ermäßigt","noVatShown":"0 % (kein Ausweis)","eurOverview":"Übersicht",
@@ -1048,7 +1060,8 @@ const I18N={
     statusAll:'Alle Status',statusDraft:'Entwurf',statusPaid:'Bezahlt',statusOpen:'Offen',statusOverdue:'Überfällig',
     searchInvoices:'Suche Kunde / Nr…',searchCustomers:'Suche nach Name, Ort, Nr. …',searchGeneric:'Suche…',
     newInvoice:'+ Neue Rechnung',newCustomer:'+ Neuer Kunde',newExpense:'+ Neue Ausgabe',allCategories:'Alle Kategorien'},
-  en:{"lineQuantity":"Quantity","lineUnit":"Unit","lineUnitPrice":"Price €","lineUnitPriceLabel":"Unit price in euros",
+  en:{"acceptTermsHtml":"I have read and accept the <a data-legal=\"nutzungsbedingungen\" href=\"nutzungsbedingungen.html\" target=\"_blank\" rel=\"noopener\">terms of use</a>. I have taken note of the <a data-legal=\"datenschutz\" href=\"datenschutz.html\" target=\"_blank\" rel=\"noopener\">privacy policy</a>. I use the app for my self-employed business activity.","legalImprint":"Legal notice","legalPrivacy":"Privacy","legalTerms":"Terms of use","legalLicenses":"Licenses","resetConsents":"Reset consents","resetConsentsConfirm":"Reset consents? The page will reload; unsaved changes will be lost.","googleConsentText":"To sign in to Google Drive, a script from Google (accounts.google.com) is loaded. Your IP address is transmitted to Google in the process.\n\nDo you allow this? You can withdraw your consent at any time via “Reset consents”. Alternatively you can use the app without Google (save and open the file locally).","googleConsentDeclined":"Google sign-in cannot be used without your consent.",
+    "lineQuantity":"Quantity","lineUnit":"Unit","lineUnitPrice":"Price €","lineUnitPriceLabel":"Unit price in euros",
     "customerPickerTitle":"Choose customer","howItWorksTitle":"How it works","vatField":"VAT",
     "descriptionOfTheService":"Description of the service","costHintSmallBusiness":"Small business: for the EÜR the gross amount counts (input VAT is not deductible).","costHintRegular":"For the EÜR the net amount counts (input VAT is settled separately with the tax office).","cat:Material & Waren":"Materials & goods","cat:Arbeitsmittel & Equipment":"Tools & equipment","cat:Software & Abos":"Software & subscriptions","cat:Fahrtkosten":"Transport costs","cat:Reisekosten":"Travel expenses","cat:Homeoffice":"Home office","cat:Telefon & Internet":"Phone & internet","cat:Weiterbildung":"Training & education","cat:Fachbücher & Literatur":"Books & literature","cat:Versicherungen":"Insurance","cat:Sozialversicherung":"Social security","cat:Steuerberatung & Buchführung":"Tax advice & bookkeeping","cat:Bankgebühren":"Bank fees","cat:Werbung & Marketing":"Advertising & marketing","cat:Miete (Büro/Atelier/Raum)":"Rent (office/studio/room)","cat:Sonstiges":"Other",
     "zeroSmallBusiness":"0 % – small business ({p0})","standardRate":"standard rate","reducedRate":"reduced rate","noVatShown":"0 % (no VAT shown)","eurOverview":"overview",
@@ -1074,6 +1087,7 @@ function applyStaticTranslations(){
   document.querySelectorAll('[data-i18n-title]').forEach(el=>{el.title=t(el.dataset.i18nTitle);});
   document.querySelectorAll('[data-i18n-html]').forEach(el=>{el.innerHTML=t(el.dataset.i18nHtml);});
   document.querySelectorAll('.ver').forEach(el=>{el.textContent=APP_VERSION;});
+  updateLegalLinks();   // last: the checkbox text above contains legal links that were just created
 }
 function setLanguage(lang){
   uiLang=I18N[lang]?lang:'en';
@@ -1101,7 +1115,7 @@ let activeYear=new Date().getFullYear(), fname='rechnungen.xlsx';
 let editInvId=null, editCostId=null, dirty=false, idSeq=1;
 
 // Column order in the Excel file (left → right). When reading, headings count, not position.
-const APP_VERSION='V0.2';
+const APP_VERSION='V0.3';
 const RISK='Die Nutzung erfolgt auf eigenes Risiko. Keine Steuer- oder Rechtsberatung; für Richtigkeit und Vollständigkeit wird keine Gewähr übernommen.';
 const SETTINGS_KEYS=['Land','Ihr Name','Berufsbezeichnung','Firmenname','Straße','PLZ','Ort','Land (Anschrift)','Steuernummer','USt-IdNr.','IBAN','BIC','Bank','Kleinunternehmer (ja/nein)','Standard Zahlungsziel (Tage)','Rechnungstext Fußzeile'];
 // ── COUNTRY RULES (Germany / Austria) ───────────────
@@ -2453,7 +2467,7 @@ const GOOGLE_CLIENT_ID='37267156022-rf3schbrt9g3479ukr468klsitdvv35p.apps.google
 const SCOPE='https://www.googleapis.com/auth/drive.file';
 const DRIVE_FILE='rechnungen.xlsx',DRIVE_FOLDER='FreelanceManager';
 const XLSX_MIME='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
-const STORAGE_KEYS={cid:'fmClientId',linked:'fmDriveLinked',file:'fmDriveFileId'};
+const STORAGE_KEYS={cid:'fmClientId',linked:'fmDriveLinked',file:'fmDriveFileId',consent:'fmConsent'};
 const lsGet=k=>{try{return localStorage.getItem(k)||'';}catch(e){return '';}};
 const lsSet=(k,v)=>{try{v?localStorage.setItem(k,v):localStorage.removeItem(k);}catch(e){}};
 const drive={token:'',exp:0,fileId:lsGet(STORAGE_KEYS.file),basis:'',linked:lsGet(STORAGE_KEYS.linked)==='1',busy:false};
@@ -2462,10 +2476,36 @@ const isHttps=()=>/^https?:$/.test(location.protocol);
 const fmtTs=iso=>iso?new Date(iso).toLocaleString('de-DE',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'}):'–';
 const enc=encodeURIComponent;
 
+// ── LEGAL: terms acceptance (clickwrap), consent to load Google's script, links to the legal pages ──
+const LEGAL_VERSION='2026-11-20';   // change together with "Stand" in the legal pages to make users accept the terms again
+const consent={
+  read(){try{return JSON.parse(lsGet(STORAGE_KEYS.consent)||'{}');}catch(e){return {};}},
+  write(patch){lsSet(STORAGE_KEYS.consent,JSON.stringify({...this.read(),...patch}));},
+  termsAccepted(){return this.read().terms===LEGAL_VERSION;},
+  googleAllowed(){return this.read().google===true;}
+};
+// Links to the static legal pages open the section in the current UI language (German is the binding version)
+function updateLegalLinks(){
+  document.querySelectorAll('a[data-legal]').forEach(link=>{link.href=`${link.dataset.legal}.html#${uiLang==='de'?'de':'en'}`;link.target='_blank';link.rel='noopener';});
+}
+// The entry buttons stay disabled until the terms are accepted; the acceptance is remembered per legal version
+function initTermsGate(){
+  const box=byId('acceptTerms'),gated=['btnDriveLoad','dzLink','btnNew','btnDraft'].map(byId);
+  const apply=()=>gated.forEach(button=>{button.disabled=!box.checked;});
+  box.checked=consent.termsAccepted();apply();
+  box.addEventListener('change',()=>{consent.write({terms:box.checked?LEGAL_VERSION:''});apply();});
+  document.querySelectorAll('[data-reset-consent]').forEach(link=>link.addEventListener('click',e=>{
+    e.preventDefault();
+    if(!confirm(t('resetConsentsConfirm')))return;
+    lsSet(STORAGE_KEYS.consent,'');location.reload();
+  }));
+}
+
 let gisPromise=null,tokenClient=null,pending=null;
 function gisReady(){return !!(window.google&&google.accounts&&google.accounts.oauth2);}
 function loadGIS(){
   if(gisReady())return Promise.resolve();
+  if(!consent.googleAllowed())return Promise.reject(new Error(t('googleConsentDeclined')));   // never contact Google without consent
   if(gisPromise)return gisPromise;
   gisPromise=new Promise((res,rej)=>{
     const s=document.createElement('script');s.src='https://accounts.google.com/gsi/client';s.async=true;
@@ -2491,6 +2531,10 @@ function initTokenClient(){
 }
 function ensureToken(){
   if(drive.token&&Date.now()<drive.exp)return Promise.resolve(drive.token);
+  if(!gisReady()&&!consent.googleAllowed()){   // first use: ask before any request to Google is made
+    if(!confirm(t('googleConsentText')))return Promise.reject(new Error(t('googleConsentDeclined')));
+    consent.write({google:true});
+  }
   const request=()=>new Promise((res,rej)=>{initTokenClient();pending={res,rej};tokenClient.requestAccessToken({});});
   return gisReady()?request():loadGIS().then(request);   // already loaded → the sign-in popup opens directly on tap/click
 }
@@ -2648,7 +2692,7 @@ byId('btnClientId').addEventListener('click',e=>{e.preventDefault();if(!isHttps(
 if(GOOGLE_CLIENT_ID)byId('clientLink').hidden=true;
 byId('btnDriveLoad').dataset.i18n=drive.linked?'continueDrive':'startDrive';
 renderDrivePanel();
-if(clientId()&&isHttps())loadGIS().catch(()=>{});   // preload so that the sign-in popup opens right on tap
+if(clientId()&&isHttps()&&consent.googleAllowed())loadGIS().catch(()=>{});   // preload so that the sign-in popup opens right on tap
 
 // ── EXPORTS ────────────────────────────────────────────────
 function csvCell(v){
@@ -2868,6 +2912,7 @@ byId('logoDel').addEventListener('click',()=>{if(confirm(t('removeTheLogoInvoice
 byId('riskInfo').addEventListener('click',e=>{e.preventDefault();byId('infoOv').classList.add('open');});
 document.querySelectorAll('.ver').forEach(e=>e.textContent=APP_VERSION);
 initDialogBehaviour();
+initTermsGate();
 initLanguage();
 </script>
 </body>
